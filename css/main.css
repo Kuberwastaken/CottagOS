@@ -1,0 +1,2426 @@
+/* Main CottagOS Styles */
+
+/* Color Variables */
+:root {
+  /* Primary Colors */
+  --cottage-beige: #F5E6D3;
+  --cottage-sage: #9CAF88;
+  --cottage-rose: #E7C4B5;
+  --cottage-lavender: #D3C0E6;
+  
+  /* Accent Colors */
+  --cottage-goldenrod: #E9B44C;
+  --cottage-moss: #6D8B74;
+  --cottage-raspberry: #C45C66;
+  
+  /* Text Colors */
+  --cottage-sepia: #4A3F35;
+  --cottage-softblack: #2E2E2E;
+  
+  /* UI Colors */
+  --window-border: #9CAF88;
+  --window-titlebar: #E7C4B5;
+  --window-background: rgba(245, 230, 211, 0.95);
+  --taskbar-background: rgba(245, 230, 211, 0.85);
+  
+  /* Animation Timings */
+  --hover-transition: 0.2s ease-out;
+}
+
+/* Reset and Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Quicksand', sans-serif;
+  color: var(--cottage-sepia);
+  background-color: var(--cottage-beige);
+  cursor: url('../assets/cursors/leaf-cursor.png'), auto;
+}
+
+/* Custom cursor for clickable elements */
+a, button, .desktop-icon, .window-controls button, .resize-handle, .taskbar-app {
+  cursor: url('../assets/cursors/flower-cursor.png'), pointer !important;
+}
+
+/* Day Cycle Backgrounds */
+body {
+  background-image: url('../assets/wallpapers/meadow-day.jpg');
+  background-size: cover;
+  background-position: center;
+  transition: background-image 5s ease;
+}
+
+body.night-mode {
+  background-image: url('../assets/wallpapers/meadow-night.jpg');
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.handwritten {
+  font-family: 'Nanum Pen Script', cursive;
+}
+
+.monospace {
+  font-family: 'Fira Code', monospace;
+}
+
+/* CottagOS Container */
+.cottage-os {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Desktop */
+.desktop {
+  width: 100%;
+  height: calc(100% - 90px);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  margin-top: 40px; /* Space for topbar */
+}
+
+/* Desktop Icons */
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  margin: 15px;
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--hover-transition);
+}
+
+.desktop-icon:hover {
+  transform: translateY(-5px);
+}
+
+.icon-img {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 2px solid var(--cottage-sage);
+  margin-bottom: 8px;
+  transition: all var(--hover-transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.desktop-icon:hover .icon-img {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: var(--cottage-goldenrod);
+}
+
+.icon-img img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.icon-label {
+  text-align: center;
+  color: var(--cottage-sepia);
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+
+/* Topbar */
+.topbar {
+  height: 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--window-titlebar);
+  background-image: url('../assets/textures/linen-texture.png');
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  border-bottom: 2px solid var(--cottage-sage);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.topbar-menu-item {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--cottage-sepia);
+  cursor: pointer;
+  position: relative;
+}
+
+.topbar-menu-item:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--cottage-goldenrod);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.topbar-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Taskbar */
+.taskbar {
+  height: 50px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--taskbar-background);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  border-top: 2px solid var(--cottage-rose);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+}
+
+/* Taskbar Left (OS Logo) */
+.taskbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.os-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.logo-flower {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  animation: spin-slow 8s linear infinite;
+}
+
+.petal {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: var(--cottage-rose);
+  border-radius: 50% 50% 0 50%;
+  transform-origin: bottom right;
+}
+
+.petal:nth-child(1) {
+  top: 2px;
+  left: 2px;
+  transform: rotate(0deg);
+}
+
+.petal:nth-child(2) {
+  top: 2px;
+  right: 2px;
+  transform: rotate(90deg);
+}
+
+.petal:nth-child(3) {
+  bottom: 2px;
+  right: 2px;
+  transform: rotate(180deg);
+}
+
+.petal:nth-child(4) {
+  bottom: 2px;
+  left: 2px;
+  transform: rotate(270deg);
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50%;
+}
+
+.os-logo span {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--cottage-sepia);
+}
+
+/* Taskbar Center (Open Apps) */
+.taskbar-center {
+  display: flex;
+  gap: 10px;
+}
+
+.taskbar-app {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--cottage-sage);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.taskbar-app:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-3px);
+}
+
+.taskbar-app.active {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: var(--cottage-goldenrod);
+}
+
+.taskbar-app img {
+  width: 24px;
+  height: 24px;
+}
+
+.taskbar-app::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--cottage-goldenrod);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.taskbar-app.active::after {
+  opacity: 1;
+}
+
+/* Taskbar Right (System Tray) */
+.taskbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.system-tray {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.tray-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Clock Styling */
+.pocket-watch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--cottage-goldenrod);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--cottage-sepia);
+  position: relative;
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--cottage-sepia);
+}
+
+.pocket-watch::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50%;
+  border: 1px solid var(--cottage-sepia);
+}
+
+/* Volume Control */
+.pitcher {
+  width: 25px;
+  height: 25px;
+  background-color: var(--cottage-lavender);
+  border-radius: 5px 5px 10px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pitcher::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: -3px;
+  width: 8px;
+  height: 10px;
+  border: 2px solid var(--cottage-lavender);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+.pitcher-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-color: rgba(173, 216, 230, 0.6);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: var(--cottage-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.sun-moon {
+  width: 20px;
+  height: 20px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle.night .sun-moon {
+  background-color: var(--cottage-lavender);
+  box-shadow: inset -3px 0 0 5px var(--cottage-beige);
+  transform: rotate(-45deg);
+}
+
+/* Window Styles */
+.cottage-window {
+  position: absolute;
+  background-color: var(--window-background);
+  border: 3px solid var(--window-border);
+  border-radius: 15px;
+  min-width: 350px;
+  min-height: 250px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+  z-index: 100;
+  top: 80px;
+  left: 80px;
+}
+
+.cottage-window:not(.active) {
+  opacity: 0.8;
+  filter: grayscale(20%) blur(1px);
+}
+
+.window-titlebar {
+  height: 35px;
+  background-color: var(--window-titlebar);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  cursor: move;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  background-image: url('../assets/textures/linen-texture.png');
+  background-size: cover;
+  border-bottom: 2px solid var(--window-border);
+}
+
+.window-title {
+  color: var(--cottage-sepia);
+  font-size: 16px;
+}
+
+.window-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.window-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cottage-sepia);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.window-minimize {
+  background-color: var(--cottage-sage) !important;
+}
+
+.window-close {
+  background-color: var(--cottage-raspberry) !important;
+}
+
+.window-controls button:hover {
+  transform: scale(1.1);
+}
+
+.window-content {
+  padding: 15px;
+  height: calc(100% - 35px);
+  overflow: auto;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  cursor: nwse-resize;
+  background-image: url('../assets/icons/resize-handle.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+}
+
+/* SYNEVA Styling */
+.syneva-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/paper-texture.png');
+  border-radius: 0 0 10px 10px;
+}
+
+.syneva-output {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-family: 'Fira Code', monospace;
+  color: var(--cottage-moss);
+  line-height: 1.5;
+}
+
+.syneva-output p {
+  margin-bottom: 10px;
+}
+
+.typing-indicator {
+  padding: 8px;
+  color: var(--cottage-moss);
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 16px;
+  text-align: center;
+  border-top: 1px dashed var(--cottage-sage);
+  background-color: rgba(255, 255, 255, 0.5);
+  display: none;
+}
+
+.syneva-input-container {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid var(--cottage-sage);
+  padding: 10px 15px;
+}
+
+.quill-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.syneva-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  color: var(--cottage-sepia);
+  outline: none;
+}
+
+.syneva-link {
+  text-align: center;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-top: 1px dashed var(--cottage-sage);
+  font-size: 12px;
+}
+
+.syneva-link a {
+  color: var(--cottage-moss);
+  text-decoration: none;
+}
+
+.syneva-link a:hover {
+  text-decoration: underline;
+  color: var(--cottage-raspberry);
+}
+
+/* Mossbell Pet (Duck) Styling */
+.mossbell-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/moss-background.png');
+  background-size: cover;
+  padding: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pond {
+  position: absolute;
+  bottom: 20px;
+  width: 90%;
+  height: 25%;
+  background: linear-gradient(to bottom, rgba(173, 216, 230, 0.7), rgba(64, 164, 223, 0.5));
+  border-radius: 50% / 20%;
+  box-shadow: 0 0 10px rgba(173, 216, 230, 0.4);
+  overflow: hidden;
+}
+
+.pond::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../assets/textures/water-texture.png');
+  opacity: 0.3;
+  animation: drift 20s linear infinite;
+}
+
+.lily-pad {
+  position: absolute;
+  width: 40px;
+  height: 35px;
+  background-color: var(--cottage-sage);
+  border-radius: 50%;
+  bottom: 30px;
+}
+
+.lily-pad:nth-child(1) {
+  left: 20%;
+  transform: scale(0.8);
+}
+
+.lily-pad:nth-child(2) {
+  left: 60%;
+  transform: scale(1.2);
+}
+
+.mossbell-pet {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 20px 0;
+  z-index: 5;
+}
+
+.duck-body {
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 80px;
+  height: 60px;
+  background-color: #FFFFCC;
+  border-radius: 60% 60% 50% 50%;
+  transform-origin: bottom center;
+  z-index: 3;
+  transition: all 0.5s ease;
+}
+
+.duck-head {
+  position: absolute;
+  top: -30px;
+  left: 50px;
+  width: 50px;
+  height: 40px;
+  background-color: #FFFFCC;
+  border-radius: 60% 80% 60% 70%;
+  z-index: 4;
+  transition: all 0.5s ease;
+}
+
+.duck-beak {
+  position: absolute;
+  top: 15px;
+  right: -10px;
+  width: 30px;
+  height: 15px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50% 50% 50% 50%;
+  transform: rotate(10deg);
+  z-index: 4;
+}
+
+.duck-eye {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--cottage-softblack);
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.duck-wing {
+  position: absolute;
+  top: 20px;
+  left: -5px;
+  width: 30px;
+  height: 25px;
+  background-color: #FFEE99;
+  border-radius: 60% 50% 50% 40%;
+  transform: rotate(-10deg);
+  transform-origin: right center;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.duck-tail {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 25px;
+  height: 15px;
+  background-color: #FFEE99;
+  border-radius: 30% 50% 50% 30%;
+  transform: rotate(-15deg);
+  z-index: 1;
+}
+
+.duck-feet {
+  position: absolute;
+  bottom: -10px;
+  left: 35px;
+  width: 15px;
+  height: 10px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50% 50% 0 0;
+  z-index: 2;
+  transform: rotate(-10deg);
+}
+
+.duck-feet::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -15px;
+  width: 15px;
+  height: 10px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-10deg);
+}
+
+/* Duck animations */
+.duck-swimming .duck-body {
+  transform: translate(10px, 5px) rotate(5deg);
+  animation: float 3s ease-in-out infinite;
+}
+
+.duck-swimming .duck-head {
+  transform: rotate(5deg);
+  animation: float 3s ease-in-out infinite reverse;
+}
+
+.duck-swimming .duck-wing {
+  animation: flutter 2s ease-in-out infinite;
+}
+
+.duck-sleeping .duck-body {
+  transform: rotate(-5deg);
+}
+
+.duck-sleeping .duck-head {
+  transform: rotate(-20deg) translate(0, 5px);
+}
+
+.duck-sleeping .duck-eye {
+  height: 1px;
+  transform: rotate(-10deg);
+}
+
+.duck-excited .duck-body {
+  transform: translate(0, -5px);
+  animation: bounce-gentle 0.5s ease-in-out infinite;
+}
+
+.duck-excited .duck-head {
+  transform: translate(0, -5px) rotate(5deg);
+  animation: bounce-gentle 0.5s ease-in-out infinite reverse;
+}
+
+.duck-excited .duck-wing {
+  transform: rotate(20deg);
+  animation: flutter 0.5s ease-in-out infinite;
+}
+
+.duck-hungry .duck-body {
+  transform: rotate(5deg);
+}
+
+.duck-hungry .duck-head {
+  transform: translate(5px, 0) rotate(15deg);
+}
+
+.duck-hungry .duck-beak {
+  animation: flutter 1s ease-in-out infinite;
+}
+
+.mood-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 5px 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+}
+
+.status-bubbles {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.status-bubble {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--cottage-sage);
+}
+
+.status-bubble.active {
+  background-color: var(--cottage-goldenrod);
+  animation: pulse-gentle 2s infinite;
+}
+
+.hunger-meter {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hunger-label {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.acorn-bowl {
+  display: flex;
+  gap: 5px;
+  background-color: var(--cottage-sage);
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.acorn {
+  width: 15px;
+  height: 20px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.acorn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 8px;
+  background-color: var(--cottage-sepia);
+  border-radius: 8px 8px 0 0;
+}
+
+.happiness-meter {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.happiness-label {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.flower-row {
+  display: flex;
+  gap: 5px;
+  background-color: var(--cottage-lavender);
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.flower {
+  width: 15px;
+  height: 15px;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.flower::before {
+  content: '❀';
+  font-size: 15px;
+  color: var(--cottage-rose);
+}
+
+.energy-meter {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.energy-label {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.sunbeam-row {
+  display: flex;
+  gap: 5px;
+  background-color: var(--cottage-goldenrod);
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.sunbeam {
+  width: 15px;
+  height: 15px;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.sunbeam::before {
+  content: '☀';
+  font-size: 15px;
+  color: #FFEE99;
+}
+
+.pet-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.pet-controls button {
+  background-color: var(--cottage-sage);
+  border: none;
+  border-radius: 15px;
+  padding: 8px 15px;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pet-controls button:hover {
+  background-color: var(--cottage-moss);
+  transform: translateY(-2px);
+}
+
+.food-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+  display: none;
+}
+
+.food-options.visible {
+  display: flex;
+}
+
+.food-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--cottage-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.food-option:hover {
+  transform: scale(1.1);
+}
+
+.food-option.bread::before {
+  content: '🍞';
+  font-size: 20px;
+}
+
+.food-option.berries::before {
+  content: '🫐';
+  font-size: 20px;
+}
+
+.food-option.corn::before {
+  content: '🌽';
+  font-size: 20px;
+}
+
+.play-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+  display: none;
+}
+
+.play-options.visible {
+  display: flex;
+}
+
+.play-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--cottage-lavender);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-option:hover {
+  transform: scale(1.1);
+}
+
+.play-option.ball::before {
+  content: '🏐';
+  font-size: 20px;
+}
+
+.play-option.bubbles::before {
+  content: '🫧';
+  font-size: 20px;
+}
+
+.play-option.music::before {
+  content: '🎵';
+  font-size: 20px;
+}
+
+.duck-toy {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.duck-toy.visible {
+  opacity: 1;
+}
+
+.duck-food {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.duck-food.visible {
+  opacity: 1;
+}
+
+/* Weather Widget Styling */
+.weather-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 15px;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/paper-texture.png');
+  background-size: cover;
+}
+
+.stained-glass {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 15px solid var(--cottage-sepia);
+  overflow: hidden;
+  background-color: rgba(211, 235, 255, 0.5);
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(74, 63, 53, 0.3);
+}
+
+.stained-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/textures/stained-glass-texture.png');
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.stained-glass-frame {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: calc(100% + 30px);
+  height: calc(100% + 30px);
+  background: transparent;
+  border: 2px solid var(--cottage-goldenrod);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.stained-glass-frame::before, .stained-glass-frame::after {
+  content: '';
+  position: absolute;
+  background-color: var(--cottage-sepia);
+  z-index: 6;
+}
+
+.stained-glass-frame::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.stained-glass-frame::after {
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.weather-animation {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.weather-animation.sunny {
+  background: radial-gradient(circle, var(--cottage-goldenrod) 0%, transparent 70%);
+  animation: pulse-gentle 4s ease-in-out infinite;
+}
+
+.sun-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+}
+
+.sun-ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 2px;
+  background-color: rgba(255, 220, 100, 0.7);
+  transform-origin: 0 0;
+}
+
+.sun-ray:nth-child(1) { transform: rotate(0deg) translateY(-1px); }
+.sun-ray:nth-child(2) { transform: rotate(45deg) translateY(-1px); }
+.sun-ray:nth-child(3) { transform: rotate(90deg) translateY(-1px); }
+.sun-ray:nth-child(4) { transform: rotate(135deg) translateY(-1px); }
+.sun-ray:nth-child(5) { transform: rotate(180deg) translateY(-1px); }
+.sun-ray:nth-child(6) { transform: rotate(225deg) translateY(-1px); }
+.sun-ray:nth-child(7) { transform: rotate(270deg) translateY(-1px); }
+.sun-ray:nth-child(8) { transform: rotate(315deg) translateY(-1px); }
+
+.weather-animation.rain {
+  background-color: rgba(100, 149, 237, 0.3);
+}
+
+.raindrop {
+  position: absolute;
+  width: 2px;
+  height: 15px;
+  background-color: rgba(173, 216, 230, 0.7);
+  border-radius: 0 0 5px 5px;
+  animation: raindrop 1.5s linear infinite;
+}
+
+.cloud {
+  position: absolute;
+  width: 60px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 30px;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+.cloud::before {
+  width: 30px;
+  height: 30px;
+  top: -15px;
+  left: 10px;
+}
+
+.cloud::after {
+  width: 25px;
+  height: 25px;
+  top: -10px;
+  left: 30px;
+}
+
+.weather-animation.snow {
+  background-color: rgba(240, 248, 255, 0.5);
+}
+
+.snowflake {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.8;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  animation: snowfall 8s linear infinite;
+}
+
+.weather-animation.cloudy .cloud {
+  animation: drift 10s ease-in-out infinite;
+}
+
+.weather-animation.cloudy::before {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 25px;
+  top: 60px;
+  left: 30px;
+  z-index: 2;
+  animation: drift 12s ease-in-out infinite reverse;
+}
+
+.weather-animation.stormy {
+  background-color: rgba(50, 50, 80, 0.4);
+}
+
+.lightning {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 40px;
+  background-color: #FFF8B0;
+  z-index: 4;
+  opacity: 0;
+  box-shadow: 0 0 10px #FFF8B0, 0 0 20px #FFFFB0;
+  animation: lightning 4s ease-in-out infinite;
+}
+
+.weather-info {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid var(--cottage-sage);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.weather-status {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: var(--cottage-sepia);
+}
+
+.weather-temp {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+}
+
+.weather-details {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.weather-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--cottage-softblack);
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+}
+
+.forecast {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.forecast-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day-name {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.day-icon {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
+}
+
+.day-temp {
+  font-size: 12px;
+}
+
+/* Garden Planner Styling */
+.garden-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/paper-texture.png');
+}
+
+.garden-toolbar {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-bottom: 2px solid var(--cottage-sage);
+}
+
+.garden-tool {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cottage-sage);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.garden-tool:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.garden-tool.active {
+  background-color: var(--cottage-sage);
+  color: white;
+}
+
+.tool-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.garden-plot {
+  flex: 1;
+  background-color: var(--cottage-moss);
+  background-image: url('../assets/textures/soil-texture.png');
+  background-size: cover;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px;
+  padding: 20px;
+  overflow: auto;
+}
+
+.plot-cell {
+  background-color: rgba(109, 139, 116, 0.8);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.plot-cell:hover {
+  background-color: rgba(156, 175, 136, 0.8);
+}
+
+.plot-cell.planted::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-image: url('../assets/icons/seedling.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: all 0.5s ease;
+}
+
+.plot-cell.watered::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background-color: rgba(173, 216, 230, 0.3);
+  animation: pulse-gentle 2s infinite;
+}
+
+.garden-panel {
+  width: 200px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-left: 2px solid var(--cottage-sage);
+}
+
+.plant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.plant-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plant-item:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.plant-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.plant-name {
+  font-size: 14px;
+  color: var(--cottage-sepia);
+}
+
+/* Settings Cottage Styling */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/wood-texture.png');
+  background-size: cover;
+  padding: 15px;
+}
+
+.settings-header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+}
+
+.settings-group {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 2px solid var(--cottage-sage);
+}
+
+.settings-group-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--cottage-sepia);
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed var(--cottage-sage);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.setting-label {
+  font-size: 14px;
+  color: var(--cottage-sepia);
+}
+
+.setting-control {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: var(--cottage-rose);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-switch.active {
+  background-color: var(--cottage-sage);
+}
+
+.toggle-switch::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+}
+
+.toggle-switch.active::before {
+  left: calc(100% - 22px);
+}
+
+.slider-control {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+}
+
+.slider-track {
+  height: 10px;
+  background-color: var(--cottage-lavender);
+  border-radius: 5px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.slider-handle {
+  width: 20px;
+  height: 20px;
+  background-color: var(--cottage-rose);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slider-handle:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.slider-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--cottage-sepia);
+}
+
+.theme-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.theme-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-option:hover {
+  transform: scale(1.1);
+}
+
+.theme-option.selected {
+  border-color: var(--cottage-goldenrod);
+}
+
+.theme-meadow {
+  background: linear-gradient(to bottom, #9CAF88, #F5E6D3);
+}
+
+.theme-lavender {
+  background: linear-gradient(to bottom, #D3C0E6, #E7C4B5);
+}
+
+.theme-sunset {
+  background: linear-gradient(to bottom, #E9B44C, #C45C66);
+}
+
+.font-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.font-option {
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.font-option:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.font-option.selected {
+  background-color: var(--cottage-sage);
+  color: white;
+}
+
+.font-option.cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-option.quicksand {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.font-option.nanum {
+  font-family: 'Nanum Pen Script', cursive;
+}
+
+.cursor-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.cursor-option {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.cursor-option:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.cursor-option.selected {
+  border-color: var(--cottage-goldenrod);
+}
+
+.cursor-option.leaf::before {
+  content: '🍃';
+  font-size: 18px;
+}
+
+.cursor-option.flower::before {
+  content: '🌸';
+  font-size: 18px;
+}
+
+.cursor-option.mushroom::before {
+  content: '🍄';
+  font-size: 18px;
+}
+
+/* Terminal Styling */
+.terminal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--cottage-sepia);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+.terminal-frame {
+  flex: 1;
+  border: none;
+  background-color: var(--cottage-sepia);
+  color: var(--cottage-sage);
+  font-family: 'Fira Code', monospace;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.terminal-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.terminal-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 20px rgba(156, 175, 136, 0.3);
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Recipes Book Styling */
+.recipes-container {
+  display: flex;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  position: relative;
+  overflow: hidden;
+}
+
+.recipe-book {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+}
+
+.book-cover {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
+  background-color: var(--cottage-sepia);
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transform-origin: center left;
+  z-index: 1;
+  transition: transform 0.5s ease;
+}
+
+.book-spine {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  left: 0;
+  background-color: var(--cottage-moss);
+  z-index: 0;
+}
+
+.book-pages {
+  flex: 1;
+  display: flex;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/paper-texture.png');
+  overflow: hidden;
+}
+
+.left-page, .right-page {
+  flex: 1;
+  padding: 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.left-page::after, .right-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 100%;
+}
+
+.left-page::after {
+  right: 0;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05));
+}
+
+.right-page::before {
+  left: 0;
+  background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.1));
+}
+
+.page-number {
+  position: absolute;
+  bottom: 10px;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  color: var(--cottage-sepia);
+}
+
+.left-page .page-number {
+  left: 20px;
+}
+
+.right-page .page-number {
+  right: 20px;
+}
+
+.recipe-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+  margin-bottom: 15px;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--cottage-sage);
+}
+
+.recipe-description {
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 18px;
+  color: var(--cottage-sepia);
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.recipe-image {
+  width: 100%;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ingredients-list {
+  margin-bottom: 15px;
+}
+
+.ingredients-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.ingredients-title::before {
+  content: '✿';
+  margin-right: 10px;
+  color: var(--cottage-rose);
+}
+
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.ingredient-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--cottage-sage);
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ingredient-checkbox.checked::before {
+  content: '✓';
+  color: var(--cottage-sage);
+  font-size: 12px;
+}
+
+.ingredient-name {
+  font-size: 14px;
+  color: var(--cottage-sepia);
+}
+
+.instructions-list {
+  margin-bottom: 15px;
+}
+
+.instructions-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.instructions-title::before {
+  content: '⚓';
+  margin-right: 10px;
+  color: var(--cottage-goldenrod);
+}
+
+.instruction-item {
+  margin-bottom: 10px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.instruction-step {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--cottage-rose);
+  color: white;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 10px;
+}
+
+.instruction-text {
+  font-size: 14px;
+  color: var(--cottage-sepia);
+  line-height: 1.5;
+}
+
+.book-navigation {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 50px;
+  z-index: 20;
+}
+
+.page-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--cottage-rose);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.page-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Fortune Teller Styling */
+.fortune-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/paper-texture.png');
+  background-size: cover;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.crystal-ball {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(211, 192, 230, 0.5) 70%);
+  box-shadow: 0 0 20px rgba(211, 192, 230, 0.5);
+  position: relative;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.crystal-ball::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 70% 70%, transparent, rgba(255, 255, 255, 0.2) 20%, transparent 60%);
+  animation: pulse-gentle 3s infinite;
+}
+
+.crystal-ball::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 20px;
+  background-color: var(--cottage-sepia);
+  border-radius: 50%;
+  filter: blur(5px);
+  opacity: 0.3;
+}
+
+.crystal-stand {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 20px;
+  background-color: var(--cottage-sepia);
+  border-radius: 5px;
+  z-index: -1;
+}
+
+.crystal-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.fortune-swirl {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    var(--cottage-rose),
+    var(--cottage-lavender),
+    var(--cottage-sage),
+    var(--cottage-goldenrod),
+    var(--cottage-rose)
+  );
+  opacity: 0.3;
+  border-radius: 50%;
+  animation: spin-slow 10s linear infinite;
+}
+
+.fortune-text {
+  position: relative;
+  z-index: 10;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--cottage-sepia);
+  text-align: center;
+  max-width: 80%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.fortune-text.visible {
+  opacity: 1;
+}
+
+.tarot-cards {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.tarot-card {
+  width: 80px;
+  height: 130px;
+  background-color: var(--cottage-rose);
+  border-radius: 10px;
+  border: 2px solid var(--cottage-goldenrod);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tarot-card:hover {
+  transform: translateY(-10px) rotate(5deg);
+}
+
+.tarot-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/textures/tarot-back.png');
+  background-size: cover;
+  transition: all 0.5s ease;
+}
+
+.tarot-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.tarot-card.flipped .tarot-back {
+  opacity: 0;
+  transform: rotateY(180deg);
+}
+
+.tarot-card.flipped .tarot-face {
+  opacity: 1;
+}
+
+.tarot-symbol {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+
+.tarot-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+}
+
+.fortune-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: var(--cottage-lavender);
+  border: none;
+  border-radius: 20px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  color: var(--cottage-sepia);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.fortune-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Ambient Animations */
+.dandelion-seeds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.seed {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  animation: drift 15s linear infinite;
+}
+
+.butterflies {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.butterfly {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.wing {
+  position: absolute;
+  width: 10px;
+  height: 15px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50% 50% 0 50%;
+}
+
+.wing.left {
+  left: 0;
+  transform-origin: right center;
+  animation: flutter 0.2s alternate infinite ease-in-out;
+}
+
+.wing.right {
+  right: 0;
+  transform: scaleX(-1);
+  transform-origin: left center;
+  animation: flutter 0.2s alternate infinite ease-in-out reverse;
+}
+
+.body {
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  width: 2px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Keyframe Animations */
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift-x, 100px), var(--drift-y, -200px)) rotate(var(--drift-rotate, 360deg));
+    opacity: 0;
+  }
+}
+
+@keyframes flutter {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+
+@keyframes raindrop {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10px) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px) translateX(var(--drift-x, 20px));
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes lightning {
+  0%, 30%, 33%, 36%, 100% { opacity: 0; }
+  31%, 32%, 34%, 35% { opacity: 1; }
+}
+
+/* Mobile Fallback */
+@media (max-width: 768px) {
+  .cottage-os {
+    display: none;
+  }
+  
+  body::before {
+    content: "CottagOS thrives best on a desktop, where the fairies can see you. ✨";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--cottage-beige);
+    color: var(--cottage-sepia);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    padding: 30px;
+    background-image: url('../assets/textures/paper-texture.png');
+  }
+}
