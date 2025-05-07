@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Nanum+Pen+Script&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/text-editor.css" />
+    <link rel="stylesheet" href="css/paint-app.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicons/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png" />
@@ -102,6 +103,14 @@
               <img src="assets/icons/text-editor.svg" alt="Text Editor" />
             </div>
             <span class="icon-label">Text Editor</span>
+          </div>
+        </div>
+        <div class="desktop-row">
+          <div class="desktop-icon" data-app="paint">
+            <div class="icon-img">
+              <img src="assets/icons/paint.svg" alt="Paint App" />
+            </div>
+            <span class="icon-label">Paint App</span>
           </div>
         </div>
         <!-- Dandelion Seeds Animation -->
@@ -511,6 +520,33 @@
       <div class="text-editor-mount"></div>
     </template>
     
+    <!-- Paint App Template -->
+    <template id="paint-template">
+      <div class="cottagecore-paint-app">
+        <div class="paint-toolbar">
+          <button class="tool-btn" data-tool="pencil" title="Pencil">✏️</button>
+          <button class="tool-btn" data-tool="brush" title="Brush">🖌️</button>
+          <button class="tool-btn" data-tool="eraser" title="Eraser">🧽</button>
+          <button class="tool-btn" data-tool="line" title="Line">/</button>
+          <button class="tool-btn" data-tool="rect" title="Rectangle">▭</button>
+          <button class="tool-btn" data-tool="ellipse" title="Ellipse">◯</button>
+          <button class="tool-btn" data-tool="fill" title="Fill">🪣</button>
+          <div class="toolbar-section">
+            <label class="toolbar-label" for="paint-color">🎨</label>
+            <input type="color" id="paint-color" class="paint-color-picker" value="#9CAF88" />
+          </div>
+          <div class="toolbar-section">
+            <label class="toolbar-label" for="paint-size">🪶</label>
+            <input type="range" id="paint-size" class="paint-size-slider" min="1" max="20" value="4" />
+          </div>
+          <button class="tool-btn clear-canvas" title="Clear Canvas">🧹</button>
+        </div>
+        <div class="paint-canvas-container">
+          <canvas class="paint-canvas" width="700" height="500"></canvas>
+        </div>
+      </div>
+    </template>
+    
     <!-- Scripts -->
     <script src="js/main.js"></script>
     <script src="js/garden-svgs.js"></script>
@@ -521,5 +557,6 @@
     <script src="js/ambient.js"></script>
     <script src="js/recipes.js"></script>
     <script src="js/text-editor.js"></script>
+    <script src="js/paint-app.js"></script>
   </body>
 </html>

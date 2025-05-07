@@ -415,7 +415,8 @@ function updateAppIconsForTheme() {
     weather: 'weather',
     recipes: 'recipes',
     fortune: 'fortune',
-    'text-editor': 'text-editor'
+    'text-editor': 'text-editor',
+    paint: 'paint'
   };
   // Desktop icons
   document.querySelectorAll('.desktop-icon').forEach(icon => {

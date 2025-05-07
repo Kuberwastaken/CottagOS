@@ -128,6 +128,11 @@ class WindowManager {
         windowNode.style.width = '800px';
         windowNode.style.height = '600px';
         break;
+      case 'paint':
+        titleElement.textContent = 'Paint App';
+        windowNode.style.width = '900px';
+        windowNode.style.height = '700px';
+        break;
       default:
         titleElement.textContent = 'CottagOS Window';
         windowNode.style.width = '400px';
@@ -400,6 +405,14 @@ class WindowManager {
           const mountNode = windowNode.querySelector('.text-editor-mount');
           if (window.initCottagecoreTextEditor && mountNode) {
             window.initCottagecoreTextEditor(mountNode);
+          }
+        }, 0);
+        break;
+      case 'paint':
+        setTimeout(() => {
+          const mountNode = windowNode.querySelector('.cottagecore-paint-app');
+          if (window.initCottagecorePaintApp && mountNode) {
+            window.initCottagecorePaintApp(mountNode);
           }
         }, 0);
         break;
