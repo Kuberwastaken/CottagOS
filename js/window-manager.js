@@ -68,18 +68,25 @@ class WindowManager {
     switch (appName) {
       case 'syneva':
         titleElement.textContent = 'SYNEVA Chat';
-        windowNode.style.width = '450px';
-        windowNode.style.height = '400px';
+        windowNode.style.width = '800px';
+        windowNode.style.height = '600px';
         break;
       case 'mossbell':
         titleElement.textContent = 'Mossbell Pet';
-        windowNode.style.width = '380px';
-        windowNode.style.height = '500px';
+        windowNode.style.width = '400px';
+        windowNode.style.height = '520px';
         break;
       case 'garden':
         titleElement.textContent = 'Garden Planner';
-        windowNode.style.width = '650px';
-        windowNode.style.height = '500px';
+        windowNode.style.width = '900px';
+        windowNode.style.height = '700px';
+        // Initialize the new garden planner game in the .garden-game container
+        setTimeout(() => {
+          const gameContainer = windowNode.querySelector('.garden-game');
+          if (window.initGardenPlanner && gameContainer) {
+            window.initGardenPlanner(gameContainer);
+          }
+        }, 0);
         break;
       case 'weather':
         titleElement.textContent = 'Weather Widget';
@@ -364,9 +371,7 @@ class WindowManager {
         }
         break;
       case 'mossbell':
-        if (typeof initMossbell === 'function') {
-          initMossbell(windowNode);
-        }
+        this.initMossbell(windowNode);
         break;
       case 'weather':
         this.initWeather(windowNode);
@@ -778,6 +783,54 @@ class WindowManager {
       });
     });
   }
+  
+  initMossbell(windowElement) {
+    const mossbellPet = windowElement.querySelector('.mossbell-pet');
+    const feedButton = windowElement.querySelector('.mossbell-button[data-action="feed"]');
+    const playButton = windowElement.querySelector('.mossbell-button[data-action="play"]');
+    const sleepButton = windowElement.querySelector('.mossbell-button[data-action="sleep"]');
+    const statusElement = windowElement.querySelector('.mossbell-status'); // Optional status display
+
+    // Center the main content
+    windowElement.querySelector('.window-content').style.display = 'flex';
+    windowElement.querySelector('.window-content').style.flexDirection = 'column';
+    windowElement.querySelector('.window-content').style.alignItems = 'center';
+    windowElement.querySelector('.window-content').style.justifyContent = 'center';
+
+    // Add button labels if not present
+    if (playButton && !playButton.nextElementSibling) {
+      const playLabel = document.createElement('span');
+      playLabel.textContent = 'Play';
+      playLabel.className = 'mossbell-btn-label';
+      playButton.parentNode.appendChild(playLabel);
+    }
+    if (feedButton && !feedButton.nextElementSibling) {
+      const feedLabel = document.createElement('span');
+      feedLabel.textContent = 'Feed';
+      feedLabel.className = 'mossbell-btn-label';
+      feedButton.parentNode.appendChild(feedLabel);
+    }
+    if (sleepButton && !sleepButton.nextElementSibling) {
+      const sleepLabel = document.createElement('span');
+      sleepLabel.textContent = 'Sleep';
+      sleepLabel.className = 'mossbell-btn-label';
+      sleepButton.parentNode.appendChild(sleepLabel);
+    }
+
+    // Add a stylized border to the main pet screen
+    const petScreen = windowElement.querySelector('.mossbell-screen');
+    if (petScreen) {
+      petScreen.style.border = '4px solid #a17f6c';
+      petScreen.style.borderRadius = '18px';
+      petScreen.style.background = 'linear-gradient(135deg, #fdf6e3 80%, #e7c4b5 100%)';
+      petScreen.style.boxShadow = '0 4px 24px #e7c4b5';
+      petScreen.style.margin = '18px 0';
+    }
+
+    // Add Tamagotchi-style device background
+    windowElement.querySelector('.window-content').style.background = 'radial-gradient(circle at 60% 40%, #ffe44b 60%, #e7c4b5 100%)';
+    windowElement.querySelector('.window-content').style.borderRadius = '40% 40% 40% 40% / 55% 55% 45% 45%';
+  }
 }
 
 // Initialize Window Manager when DOM is loaded
@@ -820,6 +873,7 @@ function initMossbell(windowElement) {
   const mossbellPet = windowElement.querySelector('.mossbell-pet');
   const feedButton = windowElement.querySelector('.mossbell-button[data-action="feed"]');
   const playButton = windowElement.querySelector('.mossbell-button[data-action="play"]');
+  const sleepButton = windowElement.querySelector('.mossbell-button[data-action="sleep"]');
   const statusElement = windowElement.querySelector('.mossbell-status'); // Optional status display
 
   if (!mossbellPet || !feedButton || !playButton) {

@@ -207,11 +207,110 @@ function animateButterfly(butterfly) {
 // Initialize Desktop Icons
 function initializeDesktopIcons() {
   const icons = document.querySelectorAll('.desktop-icon');
-  
+  const desktop = document.getElementById('desktop');
+
+  // Load saved positions
+  const savedPositions = JSON.parse(localStorage.getItem('desktopIconPositions') || '{}');
   icons.forEach(icon => {
-    icon.addEventListener('click', function() {
+    const app = icon.getAttribute('data-app');
+    if (savedPositions[app]) {
+      icon.style.position = 'absolute';
+      icon.style.left = savedPositions[app].left;
+      icon.style.top = savedPositions[app].top;
+      icon.classList.add('draggable');
+    }
+  });
+
+  icons.forEach(icon => {
+    let dragTimer = null;
+    let readyToDrag = false;
+    let offsetX, offsetY, isDragging = false;
+
+    icon.addEventListener('mousedown', function(e) {
+      if (e.button !== 0) return; // Only left mouse
+      readyToDrag = false;
+      dragTimer = setTimeout(() => {
+        readyToDrag = true;
+        icon.classList.add('can-drag');
+      }, 3000);
+      offsetX = e.clientX;
+      offsetY = e.clientY;
+    });
+
+    icon.addEventListener('mouseleave', function() {
+      clearTimeout(dragTimer);
+      readyToDrag = false;
+      icon.classList.remove('can-drag');
+    });
+
+    icon.addEventListener('mouseup', function() {
+      clearTimeout(dragTimer);
+      if (!isDragging) {
+        readyToDrag = false;
+        icon.classList.remove('can-drag');
+      }
+    });
+
+    icon.addEventListener('click', function(e) {
+      // Prevent click if dragging
+      if (icon.classList.contains('dragging')) return;
       const appName = this.getAttribute('data-app');
       openApp(appName);
+    });
+
+    icon.addEventListener('mousemove', function(e) {
+      // Only start drag if readyToDrag is true and mouse is down
+      if (readyToDrag && e.buttons === 1 && !isDragging) {
+        isDragging = true;
+        icon.classList.add('dragging', 'draggable');
+
+        // Always get icon's position relative to desktop BEFORE moving
+        const iconRect = icon.getBoundingClientRect();
+        const desktopRect = desktop.getBoundingClientRect();
+        const left = iconRect.left - desktopRect.left;
+        const top = iconRect.top - desktopRect.top;
+
+        // If icon is still inside a .desktop-row, move it to .desktop
+        const desktopRow = icon.parentElement;
+        if (desktopRow.classList.contains('desktop-row')) {
+          icon.style.position = 'absolute';
+          icon.style.left = left + 'px';
+          icon.style.top = top + 'px';
+          desktop.appendChild(icon);
+        }
+
+        offsetX = e.clientX - left;
+        offsetY = e.clientY - top;
+        document.body.style.userSelect = 'none';
+      }
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      const desktopRect = desktop.getBoundingClientRect();
+      let x = e.clientX - desktopRect.left - offsetX;
+      let y = e.clientY - desktopRect.top - offsetY;
+      // Clamp within desktop
+      x = Math.max(0, Math.min(x, desktopRect.width - icon.offsetWidth));
+      y = Math.max(0, Math.min(y, desktopRect.height - icon.offsetHeight));
+      icon.style.left = x + 'px';
+      icon.style.top = y + 'px';
+    });
+
+    document.addEventListener('mouseup', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      icon.classList.remove('dragging');
+      icon.classList.remove('can-drag'); // Remove can-drag after drag
+      clearTimeout(dragTimer);
+      readyToDrag = false;
+      // Save position
+      const app = icon.getAttribute('data-app');
+      const pos = { left: icon.style.left, top: icon.style.top };
+      const allPositions = JSON.parse(localStorage.getItem('desktopIconPositions') || '{}');
+      allPositions[app] = pos;
+      localStorage.setItem('desktopIconPositions', JSON.stringify(allPositions));
+      document.body.style.userSelect = '';
     });
   });
 }

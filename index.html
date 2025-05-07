@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CottagOS - Enchanted Forest OS</title>
+    <title>CottagOS</title>
     <meta name="description" content="A cottagecore faux operating system" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Nanum+Pen+Script&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css" />
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <link rel="icon" type="image/x-icon" href="assets/favicons/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png" />
+    <link rel="manifest" href="assets/favicons/site.webmanifest" />
   </head>
   <body>
     <div class="cottage-os">
@@ -39,66 +42,63 @@
       
       <!-- Desktop Area -->
       <div class="desktop" id="desktop">
-        <!-- Desktop Icons -->
-        <div class="desktop-icon" data-app="syneva">
-          <div class="icon-img">
-            <img src="assets/icons/syneva.svg" alt="SYNEVA Chat" />
+        <!-- Desktop Icons in rows of 3 -->
+        <div class="desktop-row">
+          <div class="desktop-icon" data-app="syneva">
+            <div class="icon-img">
+              <img src="assets/icons/syneva.svg" alt="SYNEVA Chat" />
+            </div>
+            <span class="icon-label">SYNEVA Chat</span>
           </div>
-          <span class="icon-label">SYNEVA Chat</span>
-        </div>
-        
-        <div class="desktop-icon" data-app="mossbell">
-          <div class="icon-img">
-            <img src="assets/icons/mossbell.svg" alt="Mossbell Pet" />
+          <div class="desktop-icon" data-app="terminal">
+            <div class="icon-img">
+              <img src="assets/icons/terminal.svg" alt="Starlight Terminal" />
+            </div>
+            <span class="icon-label">Starlight Terminal</span>
           </div>
-          <span class="icon-label">Mossbell</span>
-        </div>
-        
-        <div class="desktop-icon" data-app="garden">
-          <div class="icon-img">
-            <img src="assets/icons/garden.svg" alt="Garden Planner" />
+          <div class="desktop-icon" data-app="settings">
+            <div class="icon-img">
+              <img src="assets/icons/settings.svg" alt="Settings Cottage" />
+            </div>
+            <span class="icon-label">Settings Cottage</span>
           </div>
-          <span class="icon-label">Garden Planner</span>
         </div>
-        
-        <div class="desktop-icon" data-app="weather">
-          <div class="icon-img">
-            <img src="assets/icons/weather.svg" alt="Weather" />
+        <div class="desktop-row">
+          <div class="desktop-icon" data-app="mossbell">
+            <div class="icon-img">
+              <img src="assets/icons/mossbell.svg" alt="Mossbell Pet" />
+            </div>
+            <span class="icon-label">Mossbell</span>
           </div>
-          <span class="icon-label">Weather</span>
-        </div>
-        
-        <div class="desktop-icon" data-app="recipes">
-          <div class="icon-img">
-            <img src="assets/icons/recipes.svg" alt="Recipe Book" />
+          <div class="desktop-icon" data-app="garden">
+            <div class="icon-img">
+              <img src="assets/icons/garden.svg" alt="Garden Planner" />
+            </div>
+            <span class="icon-label">Garden Planner</span>
           </div>
-          <span class="icon-label">Hearthfire Recipes</span>
-        </div>
-        
-        <div class="desktop-icon" data-app="terminal">
-          <div class="icon-img">
-            <img src="assets/icons/terminal.svg" alt="Terminal" />
+          <div class="desktop-icon" data-app="weather">
+            <div class="icon-img">
+              <img src="assets/icons/weather.svg" alt="Weather" />
+            </div>
+            <span class="icon-label">Weather</span>
           </div>
-          <span class="icon-label">Starlight Terminal</span>
         </div>
-        
-        <div class="desktop-icon" data-app="settings">
-          <div class="icon-img">
-            <img src="assets/icons/settings.svg" alt="Settings" />
+        <div class="desktop-row">
+          <div class="desktop-icon" data-app="recipes">
+            <div class="icon-img">
+              <img src="assets/icons/recipes.svg" alt="Recipe Book" />
+            </div>
+            <span class="icon-label">Hearthfire Recipes</span>
           </div>
-          <span class="icon-label">Settings Cottage</span>
-        </div>
-        
-        <div class="desktop-icon" data-app="fortune">
-          <div class="icon-img">
-            <img src="assets/icons/fortune.svg" alt="Fortune Teller" />
+          <div class="desktop-icon" data-app="fortune">
+            <div class="icon-img">
+              <img src="assets/icons/fortune.svg" alt="Fortune Teller" />
+            </div>
+            <span class="icon-label">Fortuna's Lens</span>
           </div>
-          <span class="icon-label">Fortuna's Lens</span>
         </div>
-        
         <!-- Dandelion Seeds Animation -->
         <div class="dandelion-seeds" id="dandelion-seeds"></div>
-        
         <!-- Butterflies Animation -->
         <div class="butterflies" id="butterflies"></div>
       </div>
@@ -182,7 +182,7 @@
     <template id="about-template">
       <div class="simple-text-window">
         <h2>About CottagOS</h2>
-        <p><strong>CottagOS: Enchanted Forest Edition</strong></p>
+        <p><strong>CottagOS</strong></p>
         <p>Version: 0.1.0 (Willow Whisper)</p>
         <p>A whimsical desktop experience crafted with HTML, CSS, and JavaScript.</p>
         <p>Created with ✿ by the wind spirits.</p>
@@ -210,117 +210,42 @@
     <!-- Mossbell Pet App Template -->
     <template id="mossbell-template">
       <div class="mossbell-container">
-        <div class="mood-indicator">Mood: <span>Content</span></div>
-        <div class="mossbell-pet duck-content">
-          <div class="duck-tail"></div>
-          <div class="duck-body"></div>
-          <div class="duck-wing"></div>
-          <div class="duck-head">
-            <div class="duck-eye"></div>
-            <div class="duck-beak"></div>
+        <header>Mossbell Pet</header>
+        <section class="screen">
+          <marquee scrollamount="4">
+            <p>
+              <span>__</span>
+              <span id="moss-clock"></span>
+              <span> __ HAPPY: </span><span id="happy"></span><span>%</span>
+              <span> __ TUMMY: </span><span id="tummy"></span><span>%</span>
+              <span> __ ENERGY: </span><span id="energy"></span><span>%</span>
+              <span>__</span>
+            </p>
+          </marquee>
+          <div class="pet-container pacing">
+            <div class="pet"></div>
           </div>
-          <div class="duck-feet"></div>
-        </div>
-        <div class="mossbell-controls">
-          <button class="mossbell-button" data-action="feed">Feed</button>
-          <button class="mossbell-button" data-action="play">Play</button>
-        </div>
-        <div class="pond">
-          <div class="lily-pad"></div>
-          <div class="lily-pad"></div>
-        </div>
-        <div class="status-bubbles">
-          <div class="status-bubble active"></div>
-          <div class="status-bubble"></div>
-          <div class="status-bubble"></div>
-        </div>
-        <div class="hunger-meter">
-          <div class="hunger-label">Hunger</div>
-          <div class="acorn-bowl">
-            <div class="acorn"></div>
-            <div class="acorn"></div>
-            <div class="acorn"></div>
+        </section>
+        <section class="button-container">
+          <div>
+            <button id="play"></button>
+            <p id="play-text" class="button-text">PLAY</p>
           </div>
-        </div>
-        <div class="happiness-meter">
-          <div class="happiness-label">Happiness</div>
-          <div class="flower-row">
-            <div class="flower"></div>
-            <div class="flower"></div>
-            <div class="flower"></div>
+          <div class="middle-button">
+            <button id="feed"></button>
+            <p id="feed-text" class="button-text">FEED</p>
           </div>
-        </div>
-        <div class="energy-meter">
-          <div class="energy-label">Energy</div>
-          <div class="sunbeam-row">
-            <div class="sunbeam"></div>
-            <div class="sunbeam"></div>
-            <div class="sunbeam"></div>
+          <div>
+            <button id="sleep"></button>
+            <p class="button-text">SLEEP</p>
           </div>
-        </div>
-        <div class="pet-controls">
-          <button class="feed-button">🥖 Feed</button>
-          <button class="play-button">🎾 Play</button>
-          <button class="pat-button">✋ Pat</button>
-          <button class="sleep-button">😴 Sleep</button>
-        </div>
-        <div class="food-options">
-          <div class="food-option bread"></div>
-          <div class="food-option berries"></div>
-          <div class="food-option corn"></div>
-        </div>
-        <div class="play-options">
-          <div class="play-option ball"></div>
-          <div class="play-option bubbles"></div>
-          <div class="play-option music"></div>
-        </div>
+        </section>
       </div>
     </template>
     
     <!-- Garden Planner Template -->
     <template id="garden-template">
-      <div class="garden-container">
-        <div class="garden-toolbar">
-          <div class="garden-tool" data-tool="seed">
-            <!-- Seed Icon (CSS) -->
-          </div>
-          <div class="garden-tool" data-tool="water">
-            <!-- Water Icon (CSS) -->
-          </div>
-          <div class="garden-tool" data-tool="harvest">
-            <!-- Harvest Icon (CSS) -->
-          </div>
-          <div class="garden-tool" data-tool="delete">
-            <!-- Delete Icon (CSS) -->
-          </div>
-        </div>
-        <div class="garden-main">
-          <div class="garden-plot">
-            <!-- Will be populated with grid cells via JavaScript -->
-          </div>
-          <div class="garden-panel">
-            <h3>Plants</h3>
-            <div class="plant-list">
-              <div class="plant-item" data-plant="tulip">
-                <!-- Tulip Icon (CSS) -->
-                <span class="plant-name">Tulip</span>
-              </div>
-              <div class="plant-item" data-plant="tomato">
-                <!-- Tomato Icon (CSS) -->
-                <span class="plant-name">Tomato</span>
-              </div>
-              <div class="plant-item" data-plant="lavender">
-                <!-- Lavender Icon (CSS) -->
-                <span class="plant-name">Lavender</span>
-              </div>
-              <div class="plant-item" data-plant="mushroom">
-                <!-- Mushroom Icon (CSS) -->
-                <span class="plant-name">Mushroom</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="garden-game"></div>
     </template>
     
     <!-- Weather Widget Template -->
@@ -576,6 +501,8 @@
     
     <!-- Scripts -->
     <script src="js/main.js"></script>
+    <script src="js/garden-svgs.js"></script>
+    <script src="js/garden.js"></script>
     <script src="js/window-manager.js"></script>
     <script src="js/syneva.js"></script>
     <script src="js/mossbell.js"></script>

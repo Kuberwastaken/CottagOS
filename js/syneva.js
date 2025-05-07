@@ -921,7 +921,7 @@ Place the bowl where moonlight touches it. As you light each candle, whisper wha
   // Function to "type" out response with varying speeds based on content
   function typeResponse(text, element, callback) {
     let i = 0;
-    let baseSpeed = 25; // Base typing speed in ms
+    let baseSpeed = 8; // Base typing speed in ms (was 25)
     let currentSpeed = baseSpeed;
     
     // Style enhancements

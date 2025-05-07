@@ -90,6 +90,18 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   padding: 20px;
   margin-top: 40px; /* Space for topbar */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.desktop-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 /* Desktop Icons */
@@ -102,6 +114,12 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   cursor: pointer;
   transition: transform var(--hover-transition);
+  user-select: none;
+}
+
+.desktop-icon.draggable {
+  position: absolute !important;
+  z-index: 10;
 }
 
 .desktop-icon:hover {
@@ -1129,6 +1147,366 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 1;
 }
 
+/* Mossbell (Tamagotchi) styles */
+.mossbell-container {
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  height: 480px;
+  width: 360px;
+  background-color: #ffe44b;
+  color: rgb(70, 152, 206);
+  font-family: 'Syncopate', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.mossbell-container header {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+.mossbell-container .screen {
+  margin: 10px 0 30px;
+  height: 40%;
+  width: 50%;
+  border: 3px solid rgb(210, 0, 0);
+  border-radius: 10px;
+  padding: 10px;
+  background: #cfe4f1;
+  color: #222;
+  font-family: 'VCR-Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  transition: 1s ease-in-out;
+}
+.mossbell-container .pet-container {
+  height: 50%;
+  width: 100%;
+  display: flex;
+}
+.mossbell-container .center-pet {
+  justify-content: center;
+}
+.mossbell-container .pet {
+  margin: 0;
+  height: 100%;
+  width: 40%;
+  background-image: url('../assets/graphics/pacing.gif');
+  background-size: 100% 100%;
+  transition: 0s;
+}
+.mossbell-container .pacing {
+  animation: pacing 10s alternate infinite;
+}
+@keyframes pacing {
+  0% {
+    justify-content: flex-start;
+  }
+  50% {
+    justify-content: center;
+  }
+  100% {
+    justify-content: flex-end;
+  }
+}
+.mossbell-container .playing {
+  background-image: url('../assets/graphics/dancing.gif');
+  background-size: 100% 100%;
+  animation: playing 0.2s alternate infinite;
+}
+@keyframes playing {
+  0% {
+    bottom: 10px;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+.mossbell-container .sleeping {
+  background-image: url('../assets/graphics/sleeping.gif');
+  background-size: 100% 100%;
+}
+.mossbell-container .eating {
+  background-image: url('../assets/graphics/eating.gif');
+  background-size: 100% 100%;
+}
+.mossbell-container .button-container {
+  height: 10%;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.mossbell-container .disable-buttons {
+  pointer-events: none;
+}
+.mossbell-container .middle-button {
+  align-self: flex-end;
+}
+.mossbell-container button {
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 4px 4px 4px rgba(0, 0, 255, 0.1);
+  background-color: rgb(140, 123, 252);
+  cursor: pointer;
+}
+.mossbell-container .button-text {
+  position: absolute;
+  margin-top: 7px;
+  font-size: 0.7rem;
+  display: none;
+}
+.mossbell-container button:hover + .button-text {
+  display: block;
+}
+@media (max-width: 800px) {
+  .mossbell-container .button-text {
+    display: block;
+  }
+}
+
+/* Mossbell Pet Styles */
+.mossbell-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--cottage-beige);
+  background-image: url('../assets/textures/moss-background.png');
+  background-size: cover;
+  padding: 15px;
+  font-family: var(--font-quicksand);
+}
+
+.mossbell-mood-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mood-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.1em;
+}
+
+.mood-icon {
+  font-size: 1.2em;
+}
+
+.status-bars {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-bar {
+  margin-bottom: 10px;
+}
+
+.status-bar .label {
+  font-size: 0.9em;
+  margin-bottom: 4px;
+  color: var(--cottage-sepia);
+}
+
+.meter {
+  display: flex;
+  gap: 8px;
+}
+
+.meter > div {
+  font-size: 1.2em;
+  transition: opacity 0.3s ease;
+}
+
+.pet-area {
+  flex: 1;
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pond {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 30%;
+  background: linear-gradient(to bottom, #a2d2df, #89c8d6);
+  border-radius: 50% 50% 0 0;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.mossbell-pet {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  transition: all 0.5s ease;
+}
+
+.duck-body {
+  position: absolute;
+  width: 60px;
+  height: 40px;
+  background: #f4e4bc;
+  border-radius: 50% 60% 50% 50%;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.duck-head {
+  position: absolute;
+  top: -20px;
+  left: 40px;
+  width: 30px;
+  height: 30px;
+  background: #f4e4bc;
+  border-radius: 50%;
+  transform-origin: bottom center;
+  transition: transform 0.3s ease;
+}
+
+.duck-head::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 20px;
+  height: 10px;
+  background: #ffa726;
+  border-radius: 50% 50% 50% 50%;
+  transform: rotate(30deg);
+}
+
+.duck-wing {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 25px;
+  height: 20px;
+  background: #ede0c8;
+  border-radius: 60% 50% 50% 40%;
+  transform-origin: top left;
+  transform: rotate(-10deg);
+  transition: transform 0.3s ease;
+}
+
+.interaction-area {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.primary-actions, .secondary-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.action-options {
+  display: none;
+  gap: 10px;
+  margin: 10px 0;
+  justify-content: center;
+}
+
+.action-options.visible {
+  display: flex;
+}
+
+.feed-button, .play-button, .pat-button, .sleep-button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cottage-sage);
+  color: white;
+  font-family: var(--font-quicksand);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feed-button:hover, .play-button:hover, .pat-button:hover, .sleep-button:hover {
+  background: var(--cottage-moss);
+  transform: translateY(-2px);
+}
+
+.food-option, .play-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.food-option:hover, .play-option:hover {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Duck States */
+.duck-hungry .duck-body { transform: scale(0.95); }
+.duck-hungry .duck-head { transform: rotate(-10deg); }
+
+.duck-sleepy .duck-head { transform: rotate(20deg); }
+.duck-sleepy .duck-wing { transform: rotate(0deg); }
+
+.duck-excited .duck-body { animation: bounce 1s infinite; }
+.duck-excited .duck-wing { animation: flap 0.5s infinite; }
+
+.duck-swimming .duck-body { animation: float 2s infinite; }
+.duck-swimming .duck-wing { animation: paddle 1s infinite; }
+
+.duck-sleeping .duck-body { transform: scale(0.9); }
+.duck-sleeping .duck-head { transform: rotate(40deg); }
+.duck-sleeping .duck-wing { transform: rotate(20deg); }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes flap {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(20deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes paddle {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
 /* Weather Widget Styling */
 .weather-container {
   display: flex;
@@ -1427,10 +1805,52 @@ h1, h2, h3, h4, h5, h6 {
 
 .garden-toolbar {
   display: flex;
-  padding: 10px;
-  gap: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-bottom: 2px solid var(--cottage-sage);
+  gap: 24px;
+  margin-bottom: 16px;
+  background: #f9f5ef;
+  border-radius: 12px;
+  padding: 16px 24px 12px 24px;
+  align-items: center;
+  box-shadow: 0 2px 8px #e7c4b5;
+  border: 2px solid #d3c0e6;
+  position: relative;
+}
+.garden-toolbar .garden-tool {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #e7c4b5;
+  border: 2px solid #9caf88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cottage-sepia);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(156, 175, 136, 0.08);
+  transition: background 0.2s, border 0.2s, box-shadow 0.2s, color 0.2s, transform 0.1s;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+.garden-toolbar .garden-tool.selected {
+  background: #9caf88;
+  color: #fff;
+  border-color: #e7c4b5;
+  box-shadow: 0 4px 16px #a17f6c;
+  transform: scale(1.08);
+  z-index: 1;
+}
+.garden-toolbar .garden-tool:hover {
+  background: #d3c0e6;
+  color: #7d5a50;
+  border-color: #c45c66;
+  box-shadow: 0 4px 16px #e7c4b5;
+  transform: translateY(-2px) scale(1.04);
 }
 
 .garden-tool {
@@ -1993,7 +2413,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .instructions-list {
-  margin-bottom: 15px;
+  margin-bottom: 15px.
 }
 
 .instructions-title {
@@ -2423,4 +2843,179 @@ h1, h2, h3, h4, h5, h6 {
     padding: 30px;
     background-image: url('../assets/textures/paper-texture.png');
   }
+}
+
+/* Mossbell Pet Tamagotchi Styles */
+.mossbell-btn-label {
+  display: block;
+  text-align: center;
+  font-family: 'Quicksand', 'Syncopate', sans-serif;
+  font-size: 0.85rem;
+  color: #7d5a50;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+
+.mossbell-screen {
+  border: 4px solid #a17f6c !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, #fdf6e3 80%, #e7c4b5 100%) !important;
+  box-shadow: 0 4px 24px #e7c4b5 !important;
+  margin: 18px 0 !important;
+  padding: 18px !important;
+  min-width: 240px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cottage-window[data-app="mossbell"] .window-content {
+  background: radial-gradient(circle at 60% 40%, #ffe44b 60%, #e7c4b5 100%) !important;
+  border-radius: 40% 40% 40% 40% / 55% 55% 45% 45% !important;
+  box-shadow: 0 8px 32px #e7c4b5;
+  padding: 32px 0 0 0;
+}
+
+.cottage-window[data-app="mossbell"] .mossbell-button {
+  background: #8c7bfc;
+  border: 2px solid #a17f6c;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  margin: 0 12px;
+  box-shadow: 0 2px 8px #e7c4b5;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.cottage-window[data-app="mossbell"] .mossbell-button:hover {
+  background: #a17f6c;
+  box-shadow: 0 4px 16px #a17f6c;
+}
+
+/* Garden Planner Game Styles */
+.garden-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.garden-toolbar .garden-tool {
+  background: #e7c4b5;
+  border: 2px solid #9caf88;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.garden-toolbar .garden-tool.selected {
+  background: #9caf88;
+  color: #fff;
+  border-color: #e7c4b5;
+}
+.plant-panel {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.plant-btn {
+  background: #f5e6d3;
+  border: 2px solid #9caf88;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.plant-btn.selected {
+  background: #e7c4b5;
+  border-color: #c45c66;
+}
+.garden-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 48px);
+  grid-template-rows: repeat(4, 48px);
+  gap: 8px;
+  background: #f5e6d3;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 2px 8px #e7c4b5;
+  margin: 0 auto;
+}
+.garden-cell {
+  width: 48px;
+  height: 48px;
+  background: #fffbe9;
+  border: 2px solid #9caf88;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  position: relative;
+}
+.garden-cell.watered {
+  background: #cfe4f1;
+  border-color: #6d8b74;
+}
+.garden-cell.mature {
+  box-shadow: 0 0 8px 2px #e9b44c;
+  border-color: #e9b44c;
+}
+.garden-cell:hover {
+  background: #e7c4b5;
+  border-color: #c45c66;
+}
+
+.garden-sidebar {
+  width: 140px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12px;
+  padding: 16px 10px;
+  margin-right: 18px;
+  float: left;
+  font-family: 'Quicksand', sans-serif;
+  box-shadow: 0 2px 8px #e7c4b5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.garden-mainarea {
+  margin-left: 158px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+}
+.garden-weather-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.12;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.garden-cell.wilted svg {
+  filter: grayscale(1) brightness(0.7);
+  opacity: 0.7;
+}
+.sidebar-section {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+.weather-icon svg {
+  vertical-align: middle;
+  width: 28px;
+  height: 28px;
 }
