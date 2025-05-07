@@ -83,11 +83,12 @@ body.night-mode {
   --cottage-raspberry: #6B3A4A;
   --window-titlebar: #3B3553;
   --window-background: rgba(35, 33, 43, 0.97);
-  --taskbar-background: rgba(35, 33, 43, 0.90);
+  --taskbar-background: rgba(35, 33, 43, 0.60);
   --cottage-sepia: #E6E1D3;
-  background-color: #23212B !important;
-  color: var(--cottage-sepia) !important;
-  background-image: url('../assets/wallpapers/meadow-night.jpg');
+  background-image: url('../assets/wallpapers/cherry-blossom-night.gif') !important;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 5s ease;
 }
 
 body.night-mode .window-content,
@@ -96,7 +97,7 @@ body.night-mode .taskbar,
 body.night-mode .topbar,
 body.night-mode .desktop,
 body.night-mode .settings-container {
-  background: var(--window-background) !important;
+  background: transparent !important;
   color: var(--cottage-sepia) !important;
 }
 
@@ -110,8 +111,14 @@ body.night-mode .taskbar {
 }
 
 body.night-mode .desktop-icon .icon-label {
-  background: rgba(40, 40, 60, 0.7) !important;
-  color: var(--cottage-sepia) !important;
+  background: rgba(59, 53, 83, 0.85) !important;
+  color: #fff !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+body.night-mode .desktop-icon .icon-img {
+  background-color: rgba(59, 53, 83, 0.85) !important;
+  border-color: #bfae80 !important;
 }
 
 /* Reset and Global Styles */
@@ -138,14 +145,30 @@ a, button, .desktop-icon, .window-controls button, .resize-handle, .taskbar-app 
 
 /* Day Cycle Backgrounds */
 body {
-  background-image: url('../assets/wallpapers/meadow-day.jpg');
+  background-image: url('../assets/wallpapers/cherry-blossom-day.gif');
   background-size: cover;
   background-position: center;
   transition: background-image 5s ease;
 }
 
 body.night-mode {
-  background-image: url('../assets/wallpapers/meadow-night.jpg');
+  --cottage-beige: #23212B;
+  --cottage-sage: #3A4D39;
+  --cottage-rose: #4B3B47;
+  --cottage-lavender: #3B3553;
+  --cottage-goldenrod: #BFAE80;
+  --cottage-moss: #2C3A2F;
+  --cottage-raspberry: #6B3A4A;
+  --window-titlebar: #3B3553;
+  --window-background: rgba(35, 33, 43, 0.97);
+  --taskbar-background: rgba(35, 33, 43, 0.60);
+  --cottage-sepia: #E6E1D3;
+  background-color: #23212B !important;
+  color: var(--cottage-sepia) !important;
+  background-image: url('../assets/wallpapers/cherry-blossom-night.gif') !important;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 5s ease;
 }
 
 /* Typography */
@@ -257,7 +280,7 @@ h1, h2, h3, h4, h5, h6 {
   top: 0;
   left: 0;
   right: 0;
-  background-color: var(--window-titlebar);
+  background-color: rgba(231, 196, 181, 0.65);
   background-image: url('../assets/textures/linen-texture.png');
   display: flex;
   justify-content: space-between;
@@ -266,6 +289,7 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 2px solid var(--cottage-sage);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1001;
+  backdrop-filter: blur(8px) saturate(1.2);
 }
 
 .topbar-left {
@@ -320,14 +344,14 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: var(--taskbar-background);
+  background-color: rgba(245, 230, 211, 0.60);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 15px;
   border-top: 2px solid var(--cottage-rose);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px) saturate(1.2);
   z-index: 1000;
 }
 

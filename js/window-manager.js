@@ -115,13 +115,17 @@ class WindowManager {
         break;
       case 'help':
         titleElement.textContent = 'Help';
-        windowNode.style.width = '450px';
-        windowNode.style.height = '350px';
+        windowNode.style.width = '600px';
+        windowNode.style.height = '500px';
+        const helpContent = windowNode.querySelector('.window-content');
+        if (helpContent) helpContent.style.overflowY = 'auto';
         break;
       case 'about':
         titleElement.textContent = 'About CottagOS';
-        windowNode.style.width = '400px';
-        windowNode.style.height = '300px';
+        windowNode.style.width = '600px';
+        windowNode.style.height = '500px';
+        const aboutContent = windowNode.querySelector('.window-content');
+        if (aboutContent) aboutContent.style.overflowY = 'auto';
         break;
       case 'text-editor':
         titleElement.textContent = 'Parchment Notes';
