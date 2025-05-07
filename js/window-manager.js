@@ -124,12 +124,12 @@ class WindowManager {
         windowNode.style.height = '300px';
         break;
       case 'text-editor':
-        titleElement.textContent = 'Text Editor';
+        titleElement.textContent = 'Parchment Notes';
         windowNode.style.width = '800px';
         windowNode.style.height = '600px';
         break;
       case 'paint':
-        titleElement.textContent = 'Paint App';
+        titleElement.textContent = 'Wildflower Paint';
         windowNode.style.width = '900px';
         windowNode.style.height = '700px';
         break;
