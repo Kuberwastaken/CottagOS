@@ -25,6 +25,121 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Create folder for cursor images
   createFolderIfNeeded('assets/cursors');
+
+  // Mobile app launcher logic
+  const mobileLauncher = document.querySelector('.mobile-launcher');
+  const mobileModal = document.querySelector('.mobile-app-modal');
+  if (mobileLauncher && mobileModal) {
+    mobileLauncher.addEventListener('click', function(e) {
+      const btn = e.target.closest('.mobile-app-icon');
+      if (!btn) return;
+      const appName = btn.getAttribute('data-app');
+      if (!appName) return;
+      // Hide launcher, show modal
+      mobileLauncher.style.display = 'none';
+      mobileModal.innerHTML = '';
+      mobileModal.classList.add('active');
+      // Clone the app template and insert into modal
+      const template = document.getElementById(appName + '-template');
+      if (template) {
+        // Wrap in a div for styling
+        const modalContent = document.createElement('div');
+        modalContent.className = 'mobile-app-modal-content';
+        modalContent.appendChild(template.content.cloneNode(true));
+        mobileModal.appendChild(modalContent);
+      } else {
+        mobileModal.innerHTML = `<div class='mobile-app-modal-content'><p style='padding:2em;text-align:center;'>Loading ${appName}...</p></div>`;
+      }
+    });
+  }
+
+  // Show new mobile home, hide old launcher (if present)
+  if (document.body.classList.contains('mobile-mode')) {
+    console.log('Mobile mode detected. Setting up mobile home...'); // DEBUG
+    const mobileHome = document.querySelector('.mobile-home');
+    const mobileLauncher = document.querySelector('.mobile-launcher');
+    if (mobileHome) {
+      mobileHome.style.display = 'flex';
+      console.log('.mobile-home display set to flex.'); // DEBUG
+      // Attach the handler IMMEDIATELY after showing
+      attachMobileHomeAppHandler();
+    } else {
+      console.error('.mobile-home element not found!'); // DEBUG Error
+    }
+    if (mobileLauncher) {
+       mobileLauncher.style.display = 'none';
+    }
+  } else {
+     console.log('Not in mobile mode.'); // DEBUG
+  }
+
+  // Mobile home screen swipe navigation
+  const mobilePages = document.querySelector('.mobile-pages');
+  if (mobilePages) {
+    let startX = 0;
+    let scrollStart = 0;
+    let isTouching = false;
+    let pageWidth = mobilePages.offsetWidth;
+    let currentPage = 0;
+    const pages = Array.from(mobilePages.children);
+    const totalPages = pages.length;
+
+    function goToPage(idx) {
+      currentPage = Math.max(0, Math.min(idx, totalPages - 1));
+      mobilePages.scrollTo({ left: currentPage * pageWidth, behavior: 'smooth' });
+    }
+
+    mobilePages.addEventListener('touchstart', function(e) {
+      if (e.touches.length !== 1) return;
+      isTouching = true;
+      startX = e.touches[0].clientX;
+      scrollStart = mobilePages.scrollLeft;
+      pageWidth = mobilePages.offsetWidth;
+    });
+    mobilePages.addEventListener('touchmove', function(e) {
+      if (!isTouching) return;
+      const dx = e.touches[0].clientX - startX;
+      mobilePages.scrollLeft = scrollStart - dx;
+    });
+    mobilePages.addEventListener('touchend', function(e) {
+      if (!isTouching) return;
+      isTouching = false;
+      pageWidth = mobilePages.offsetWidth;
+      const page = Math.round(mobilePages.scrollLeft / pageWidth);
+      goToPage(page);
+    });
+    // Optional: snap to page on resize
+    window.addEventListener('resize', () => {
+      pageWidth = mobilePages.offsetWidth;
+      goToPage(currentPage);
+    });
+  }
+
+  // At the end, initialize mobile drag & drop and icon remove if in mobile mode
+  if (document.body.classList.contains('mobile-mode')) {
+    initializeMobileIconDragAndDrop();
+    initializeMobileIconRemove();
+    
+    // Initialize mobile night mode toggle
+    initializeMobileNightModeToggle();
+  }
+
+  // Handle mobile app modal closing (to detect when settings is closed/opened)
+  if (mobileModal) {
+    // Watch for changes to the modal to detect when settings is opened
+    const observer = new MutationObserver(function(mutations) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+          // Check if settings app was opened
+          const settingsContainer = mobileModal.querySelector('.settings-container');
+          if (settingsContainer) {
+            setupMobileNightModeToggle();
+          }
+        }
+      }
+    });
+    observer.observe(mobileModal, { childList: true, subtree: true });
+  }
 });
 
 // Initialize Theme based on time of day
@@ -438,4 +553,591 @@ function updateAppIconsForTheme() {
         : `assets/icons/${iconMap[app]}.svg`;
     }
   });
+}
+
+// --- Mobile Home Screen Drag & Drop Rearrangement ---
+function initializeMobileIconDragAndDrop() {
+  const mobileHome = document.querySelector('.mobile-home');
+  if (!mobileHome) return;
+
+  // Helper: get all icons (home + dock)
+  function getAllIcons() {
+    return [
+      ...mobileHome.querySelectorAll('.mobile-app-icon'),
+      ...mobileHome.querySelectorAll('.mobile-dock-icon')
+    ];
+  }
+
+  // Only allow drag & drop in edit mode
+  function isEditMode() {
+    return mobileHome.classList.contains('edit-mode');
+  }
+
+  let dragging = null;
+  let dragOverIcon = null;
+  let startPage = null;
+  let startIndex = null;
+  let ghost = null;
+  let iconsOrder = [];
+
+  // Build initial order (per page, then dock)
+  function buildOrder() {
+    iconsOrder = [];
+    mobileHome.querySelectorAll('.mobile-page').forEach(page => {
+      const pageIcons = Array.from(page.querySelectorAll('.mobile-app-icon'));
+      iconsOrder.push(...pageIcons);
+    });
+    iconsOrder.push(...mobileHome.querySelectorAll('.mobile-dock-icon'));
+  }
+
+  buildOrder();
+
+  // Utility: swap two icons in DOM and in iconsOrder
+  function swapIcons(iconA, iconB) {
+    if (!iconA || !iconB || iconA === iconB) return;
+    const parentA = iconA.parentNode;
+    const parentB = iconB.parentNode;
+    const nextA = iconA.nextSibling;
+    const nextB = iconB.nextSibling;
+    parentA.insertBefore(iconB, nextA);
+    parentB.insertBefore(iconA, nextB);
+    // Update order array
+    const idxA = iconsOrder.indexOf(iconA);
+    const idxB = iconsOrder.indexOf(iconB);
+    if (idxA > -1 && idxB > -1) {
+      [iconsOrder[idxA], iconsOrder[idxB]] = [iconsOrder[idxB], iconsOrder[idxA]];
+    }
+  }
+
+  // Animate icon bounce
+  function bounceIcon(icon) {
+    icon.classList.add('bounce');
+    setTimeout(() => icon.classList.remove('bounce'), 400);
+  }
+
+  // Drag start handler
+  function onDragStart(e, icon) {
+    if (!isEditMode()) return;
+    e.preventDefault();
+    dragging = icon;
+    dragOverIcon = null;
+    startPage = icon.closest('.mobile-page') || icon.closest('.mobile-dock');
+    startIndex = Array.from(icon.parentNode.children).indexOf(icon);
+    // Create ghost
+    ghost = icon.cloneNode(true);
+    ghost.style.opacity = '0.5';
+    ghost.style.position = 'absolute';
+    ghost.style.pointerEvents = 'none';
+    ghost.style.zIndex = '9999';
+    ghost.classList.add('drag-ghost');
+    document.body.appendChild(ghost);
+    moveGhost(e);
+    icon.classList.add('dragging');
+    document.body.style.userSelect = 'none';
+  }
+
+  // Move ghost icon to pointer
+  function moveGhost(e) {
+    if (!ghost) return;
+    let x, y;
+    if (e.touches && e.touches[0]) {
+      x = e.touches[0].clientX;
+      y = e.touches[0].clientY;
+    } else {
+      x = e.clientX;
+      y = e.clientY;
+    }
+    ghost.style.left = (x - 30) + 'px';
+    ghost.style.top = (y - 30) + 'px';
+  }
+
+  // Drag over handler
+  function onDragOver(e) {
+    if (!dragging || !isEditMode()) return;
+    moveGhost(e);
+    const allIcons = getAllIcons();
+    let found = false;
+    for (const icon of allIcons) {
+      if (icon === dragging) continue;
+      const rect = icon.getBoundingClientRect();
+      let x, y;
+      if (e.touches && e.touches[0]) {
+        x = e.touches[0].clientX;
+        y = e.touches[0].clientY;
+      } else {
+        x = e.clientX;
+        y = e.clientY;
+      }
+      if (
+        x >= rect.left && x <= rect.right &&
+        y >= rect.top && y <= rect.bottom
+      ) {
+        if (dragOverIcon !== icon) {
+          swapIcons(dragging, icon);
+          bounceIcon(icon);
+          dragOverIcon = icon;
+        }
+        found = true;
+        break;
+      }
+    }
+    if (!found) dragOverIcon = null;
+  }
+
+  // Drag end handler
+  function onDragEnd(e) {
+    if (!dragging) return;
+    if (ghost) ghost.remove();
+    dragging.classList.remove('dragging');
+    dragging = null;
+    dragOverIcon = null;
+    document.body.style.userSelect = '';
+    buildOrder();
+  }
+
+  // Attach listeners to all icons
+  function attachListeners(icon) {
+    // Mouse
+    icon.addEventListener('mousedown', e => {
+      if (!isEditMode()) return;
+      onDragStart(e, icon);
+      window.addEventListener('mousemove', onDragOver);
+      window.addEventListener('mouseup', onDragEnd, { once: true });
+    });
+    // Touch
+    icon.addEventListener('touchstart', e => {
+      if (!isEditMode()) return;
+      onDragStart(e, icon);
+      window.addEventListener('touchmove', onDragOver, { passive: false });
+      window.addEventListener('touchend', onDragEnd, { once: true });
+    });
+  }
+
+  // Re-attach listeners on mode change or DOM update
+  function refreshListeners() {
+    getAllIcons().forEach(icon => {
+      icon.onmousedown = icon.ontouchstart = null;
+      attachListeners(icon);
+    });
+  }
+
+  // Listen for edit mode changes
+  const observer = new MutationObserver(() => {
+    refreshListeners();
+  });
+  observer.observe(mobileHome, { attributes: true, attributeFilter: ['class'] });
+
+  // Initial attach
+  refreshListeners();
+}
+
+// --- End Mobile Drag & Drop ---
+
+// --- Mobile Home Icon Removal with Cozy Confirmation ---
+function initializeMobileIconRemove() {
+  const mobileHome = document.querySelector('.mobile-home');
+  if (!mobileHome) return;
+
+  // Helper: show confirmation dialog
+  function showRemoveConfirm(icon, onConfirm) {
+    // Remove any existing dialog
+    const oldDialog = document.getElementById('remove-icon-dialog');
+    if (oldDialog) oldDialog.remove();
+    // Create dialog
+    const dialog = document.createElement('div');
+    dialog.id = 'remove-icon-dialog';
+    dialog.style.position = 'fixed';
+    dialog.style.left = '0';
+    dialog.style.top = '0';
+    dialog.style.width = '100vw';
+    dialog.style.height = '100vh';
+    dialog.style.background = 'rgba(245,230,211,0.85)';
+    dialog.style.display = 'flex';
+    dialog.style.alignItems = 'center';
+    dialog.style.justifyContent = 'center';
+    dialog.style.zIndex = '99999';
+    dialog.innerHTML = `
+      <div style="background: #fff8f2; border: 3px solid #bfae80; border-radius: 18px; box-shadow: 0 6px 32px #bfae80; padding: 2em 1.5em; max-width: 90vw; text-align: center; font-family: 'Cormorant Garamond', serif;">
+        <div style='font-size:2.2em; margin-bottom:0.5em;'>🍃</div>
+        <div style='font-size:1.2em; margin-bottom:1em;'>Remove <span style='font-family: "Indie Flower", cursive;'>"${icon.querySelector('.mobile-app-label')?.textContent || icon.querySelector('span')?.textContent || 'this app'}"</span> from your home screen?</div>
+        <div style='display:flex; gap:1.5em; justify-content:center; margin-top:1em;'>
+          <button id='remove-icon-confirm' style='background:#c45c66; color:#fff; border:none; border-radius:12px; font-size:1em; padding:0.6em 1.4em; font-family:"Indie Flower",cursive; box-shadow:0 2px 8px #c45c66;'>Remove</button>
+          <button id='remove-icon-cancel' style='background:#9caf88; color:#fff; border:none; border-radius:12px; font-size:1em; padding:0.6em 1.4em; font-family:"Indie Flower",cursive; box-shadow:0 2px 8px #9caf88;'>Cancel</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    dialog.querySelector('#remove-icon-confirm').onclick = () => {
+      dialog.remove();
+      onConfirm();
+    };
+    dialog.querySelector('#remove-icon-cancel').onclick = () => {
+      dialog.remove();
+    };
+  }
+
+  // Attach X button and handler to each icon in edit mode
+  function updateRemoveButtons() {
+    const allIcons = [
+      ...mobileHome.querySelectorAll('.mobile-app-icon'),
+      ...mobileHome.querySelectorAll('.mobile-dock-icon')
+    ];
+    allIcons.forEach(icon => {
+      let xBtn = icon.querySelector('.icon-remove-btn');
+      if (!xBtn) {
+        xBtn = document.createElement('button');
+        xBtn.className = 'icon-remove-btn';
+        xBtn.type = 'button';
+        xBtn.innerHTML = '✕';
+        icon.appendChild(xBtn);
+      }
+      xBtn.style.display = isEditMode() ? 'flex' : 'none';
+      xBtn.onclick = e => {
+        e.stopPropagation();
+        if (!isEditMode()) return;
+        showRemoveConfirm(icon, () => {
+          icon.remove();
+        });
+      };
+    });
+  }
+
+  // Only show X in edit mode
+  function isEditMode() {
+    return mobileHome.classList.contains('edit-mode');
+  }
+
+  // Observe edit mode changes
+  const observer = new MutationObserver(() => {
+    updateRemoveButtons();
+  });
+  observer.observe(mobileHome, { attributes: true, attributeFilter: ['class'] });
+
+  // Initial setup
+  updateRemoveButtons();
+}
+
+// --- End Mobile Icon Remove ---
+
+function attachMobileHomeAppHandler() {
+  const mobileHome = document.querySelector('.mobile-home');
+  const mobileModal = document.querySelector('.mobile-app-modal');
+  if (mobileHome && mobileModal && !mobileHome._appHandlerAttached) {
+    console.log('Attaching mobile home click listener...'); // DEBUG
+    mobileHome.addEventListener('click', function(e) {
+      console.log('Mobile home area clicked. Target:', e.target); // DEBUG
+      if (mobileHome.classList.contains('edit-mode')) {
+        console.log('In edit mode, ignoring click.'); // DEBUG
+        return;
+      }
+      const btn = e.target.closest('.mobile-app-icon, .mobile-dock-icon');
+      if (!btn) {
+        console.log('Click was not on an app icon.'); // DEBUG
+        return;
+      }
+      const appName = btn.getAttribute('data-app');
+      if (!appName) {
+        console.log('Icon has no data-app attribute.'); // DEBUG
+        return;
+      }
+      console.log('Attempting to open app:', appName); // DEBUG
+      mobileModal.innerHTML = '';
+      mobileModal.classList.add('active');
+      const template = document.getElementById(appName + '-template');
+      if (template) {
+        const modalContent = document.createElement('div');
+        modalContent.className = 'mobile-app-modal-content';
+        modalContent.appendChild(template.content.cloneNode(true));
+        
+        // Add close button to return to home screen
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'mobile-app-close-btn';
+        closeBtn.innerHTML = '←';
+        closeBtn.addEventListener('click', function() {
+          mobileModal.classList.remove('active');
+          mobileModal.innerHTML = '';
+        });
+        modalContent.appendChild(closeBtn);
+        
+        mobileModal.appendChild(modalContent);
+        const initFn = window['init' + appName.charAt(0).toUpperCase() + appName.slice(1)];
+        if (typeof initFn === 'function') {
+          const container = modalContent.querySelector('.' + appName + '-container') || modalContent;
+          initFn(container);
+        }
+      } else {
+        console.error('Template not found for:', appName); // DEBUG Error
+        mobileModal.innerHTML = `<div class='mobile-app-modal-content'><p style='padding:2em;text-align:center;'>Error: Template for ${appName} not found.</p></div>`;
+      }
+    });
+    mobileHome._appHandlerAttached = true;
+    console.log('Mobile home click listener attached.'); // DEBUG
+  }
+}
+
+// Initialize Mobile Night Mode Toggle
+function initializeMobileNightModeToggle() {
+  const nightModeToggle = document.querySelector('.mobile-app-modal .setting-item .toggle-switch[data-setting="night-mode"]');
+  if (!nightModeToggle) {
+    // Add a mutation observer to detect when settings page is opened
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.addedNodes && mutation.addedNodes.length) {
+          for (let i = 0; i < mutation.addedNodes.length; i++) {
+            // Check if the settings app was added to the DOM
+            if (mutation.addedNodes[i].classList && 
+                mutation.addedNodes[i].classList.contains('mobile-app-modal-content')) {
+              // Try to find the night mode toggle
+              const settingsToggle = document.querySelector('.mobile-app-modal .setting-item .toggle-switch[data-setting="night-mode"]');
+              if (settingsToggle) {
+                attachNightModeToggleHandler(settingsToggle);
+                observer.disconnect();
+              }
+            }
+          }
+        }
+      });
+    });
+    
+    // Start observing the document body for changes
+    observer.observe(document.body, { childList: true, subtree: true });
+  } else {
+    attachNightModeToggleHandler(nightModeToggle);
+  }
+}
+
+// Attach handler to night mode toggle
+function attachNightModeToggleHandler(toggle) {
+  console.log('Attaching night mode handler to mobile toggle');
+  
+  // Set initial state based on body class
+  const isNightMode = document.body.classList.contains('night-mode');
+  if (isNightMode) {
+    toggle.classList.add('active');
+  } else {
+    toggle.classList.remove('active');
+  }
+  
+  // Add click handler
+  toggle.addEventListener('click', function(e) {
+    console.log('Night mode toggle clicked');
+    
+    // Get current state and explicitly toggle instead of using classList.toggle
+    const isCurrentlyNight = document.body.classList.contains('night-mode');
+    
+    // Set to opposite state
+    if (isCurrentlyNight) {
+      document.body.classList.remove('night-mode');
+      this.classList.remove('active');
+      console.log('Night mode is now: false');
+    } else {
+      document.body.classList.add('night-mode');
+      this.classList.add('active');
+      console.log('Night mode is now: true');
+    }
+    
+    // Save to localStorage (with the new toggled state)
+    const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+    settings.nightMode = !isCurrentlyNight;
+    localStorage.setItem('cottagosSettings', JSON.stringify(settings));
+    
+    // Update icons for the theme change
+    updateAppIconsForTheme();
+    
+    // Prevent event bubbling to avoid conflicts
+    e.stopPropagation();
+    e.preventDefault();
+    
+    // Log success
+    console.log('Night mode setting saved:', !isCurrentlyNight);
+    
+    return false; // Cancel further propagation
+  });
+}
+
+// Simple direct function to set up the night mode toggle
+function setupMobileNightModeToggle() {
+  console.log('Setting up night mode toggle in mobile settings');
+  
+  // Find night mode toggle directly
+  const nightModeToggle = document.querySelector('.setting-item .toggle-switch[data-setting="night-mode"]');
+  if (!nightModeToggle) {
+    console.error('Night mode toggle not found');
+    return;
+  }
+  
+  // Clean up any existing handler
+  if (nightModeToggle._handlerAttached) {
+    return;
+  }
+  
+  // Set initial toggle state based on body class
+  if (document.body.classList.contains('night-mode')) {
+    nightModeToggle.classList.add('active');
+  } else {
+    nightModeToggle.classList.remove('active');
+  }
+  
+  // Add the click handler with debug
+  nightModeToggle.addEventListener('click', function(e) {
+    console.log('Night mode toggle clicked');
+    
+    // Get current state and explicitly toggle instead of using classList.toggle
+    const isCurrentlyNight = document.body.classList.contains('night-mode');
+    
+    // Set to opposite state
+    if (isCurrentlyNight) {
+      document.body.classList.remove('night-mode');
+      this.classList.remove('active');
+      console.log('Night mode is now: false');
+    } else {
+      document.body.classList.add('night-mode');
+      this.classList.add('active');
+      console.log('Night mode is now: true');
+    }
+    
+    // Save to localStorage (with the new toggled state)
+    const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+    settings.nightMode = !isCurrentlyNight;
+    localStorage.setItem('cottagosSettings', JSON.stringify(settings));
+    
+    // Update icons for the theme change
+    updateAppIconsForTheme();
+    
+    // Prevent event bubbling to avoid conflicts
+    e.stopPropagation();
+    e.preventDefault();
+    
+    // Log success
+    console.log('Night mode setting saved:', !isCurrentlyNight);
+    
+    return false; // Cancel further propagation
+  });
+  
+  // Mark the toggle as having a handler attached
+  nightModeToggle._handlerAttached = true;
+  console.log('Night mode toggle handler attached successfully');
+}
+
+// Initialize SYNEVA
+function initSyneva(container) {
+  const output = container.querySelector('.syneva-output');
+  const input = container.querySelector('.syneva-input');
+  const typingIndicator = container.querySelector('.typing-indicator');
+  
+  // Add back button if not already present
+  if (!container.querySelector('.mobile-app-close-btn')) {
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'mobile-app-close-btn';
+    closeBtn.innerHTML = '←';
+    closeBtn.addEventListener('click', function() {
+      const mobileModal = document.querySelector('.mobile-app-modal');
+      if (mobileModal) {
+        mobileModal.classList.remove('active');
+        mobileModal.innerHTML = '';
+      }
+    });
+    container.appendChild(closeBtn);
+  }
+  
+  // Initialize input handler
+  if (input && output && typingIndicator) {
+    // Clear previous messages
+    output.innerHTML = '';
+    
+    // Add welcome message
+    const welcomeMessage = document.createElement('p');
+    welcomeMessage.textContent = "Welcome to SYNEVA, your cottage companion. How may I assist you today?";
+    output.appendChild(welcomeMessage);
+    
+    // Handle input submission
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        
+        // Get user input
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
+        
+        // Display user message
+        const userMessageElement = document.createElement('p');
+        userMessageElement.textContent = userMessage;
+        output.appendChild(userMessageElement);
+        
+        // Clear input
+        input.value = '';
+        
+        // Show typing indicator
+        typingIndicator.style.display = 'block';
+        
+        // Scroll to bottom
+        output.scrollTop = output.scrollHeight;
+        
+        // Simulate response after a delay
+        setTimeout(function() {
+          // Hide typing indicator
+          typingIndicator.style.display = 'none';
+          
+          // Generate response
+          const response = generateSynevaResponse(userMessage);
+          
+          // Display response
+          const responseElement = document.createElement('p');
+          responseElement.textContent = response;
+          output.appendChild(responseElement);
+          
+          // Scroll to bottom
+          output.scrollTop = output.scrollHeight;
+        }, 1500);
+      }
+    });
+  }
+}
+
+// Generate a response from SYNEVA
+function generateSynevaResponse(message) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Basic response mapping
+  if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+    return "Hello there! It's lovely to chat with you today. How is your cottage life?";
+  }
+  
+  if (lowerMessage.includes('how are you')) {
+    return "I'm as peaceful as a morning in the meadow, thank you for asking. How about you?";
+  }
+  
+  if (lowerMessage.includes('weather')) {
+    return "The weather outside is quite delightful. Perfect for tending to the garden or perhaps collecting wildflowers.";
+  }
+  
+  if (lowerMessage.includes('recipe') || lowerMessage.includes('cook') || lowerMessage.includes('bake')) {
+    return "I'd recommend trying a rustic lavender bread or perhaps some wild berry jam. The recipe book has many delightful options!";
+  }
+  
+  if (lowerMessage.includes('garden') || lowerMessage.includes('flower') || lowerMessage.includes('plant')) {
+    return "Your garden is flourishing beautifully! Remember that chamomile prefers morning sun, and mint needs to be watched or it will take over!";
+  }
+  
+  if (lowerMessage.includes('mossbell') || lowerMessage.includes('pet')) {
+    return "Your Mossbell pet seems quite content today. Have you spent time playing with them recently?";
+  }
+  
+  if (lowerMessage.includes('help') || lowerMessage.includes('assist')) {
+    return "I can help with many things around your digital cottage - from recipes and weather to caring for your Mossbell pet. What would you like assistance with?";
+  }
+  
+  // Default responses
+  const defaultResponses = [
+    "The gentle pace of cottage life gives us time to appreciate the little things, doesn't it?",
+    "Have you tried watching the butterflies in the meadow? They're particularly active today.",
+    "I find that a cup of herbal tea makes any cottage day better. Perhaps chamomile or mint?",
+    "The sounds of nature are so soothing. I particularly enjoy the chorus of birds at dawn.",
+    "Your cottage has such wonderful energy. It's a perfect little sanctuary.",
+    "I noticed some wildflowers blooming near the path. They would make a lovely centerpiece.",
+    "Sometimes I like to imagine what stories these old cottage walls could tell if they could speak.",
+    "Have you tried the stargazing feature? The night sky is particularly clear tonight."
+  ];
+  
+  return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
 }

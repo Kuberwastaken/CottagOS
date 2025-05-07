@@ -2935,235 +2935,1069 @@ h1, h2, h3, h4, h5, h6 {
 /* Mobile Fallback */
 @media (max-width: 768px) {
   .cottage-os {
+    display: none !important;
+  }
+  .mobile-launcher {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100vw;
+    background: var(--cottage-beige);
+    background-image: url('../assets/wallpapers/cherry-blossom-day.gif');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+  }
+  body.night-mode .mobile-launcher {
+    background-image: url('../assets/wallpapers/cherry-blossom-night.gif');
+  }
+  .mobile-launcher-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 0 12px 0;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--cottage-sepia);
+    text-shadow: 0 2px 8px rgba(255,255,255,0.18);
+  }
+  .mobile-logo {
+    font-size: 2.2rem;
+  }
+  .mobile-app-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    padding: 0 0 80px 0;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+  @media (min-width: 601px) and (max-width: 900px) {
+    .mobile-app-list {
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 600px;
+    }
+  }
+  .mobile-app-icon {
+  flex-direction: column;
+  justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 100px;
+    font-size: 1.1rem;
+    padding: 18px 0;
+    margin: 0;
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(156,175,136,0.08);
+    background: rgba(255,255,255,0.85);
+    border: 2px solid var(--cottage-sage);
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s, color 0.2s, transform 0.1s;
+  }
+  .mobile-app-icon img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1.5px solid var(--cottage-sage);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .mobile-app-icon span {
+    text-align: center;
+    font-size: 1.05em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .mobile-app-icon:active, .mobile-app-icon:focus {
+    background: var(--cottage-sage);
+    color: #fff;
+    border-color: var(--cottage-goldenrod);
+    transform: scale(0.98);
+  }
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 60px;
+    background: rgba(245,230,211,0.92);
+    border-top: 2px solid var(--cottage-rose);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    z-index: 2100;
+  display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.7em;
+    padding: 0 8px;
+}
+  .mobile-nav-btn {
+    background: rgba(255,255,255,0.95);
+    border: 2px solid var(--cottage-sage);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+    font-size: 1.3em;
+    color: var(--cottage-sepia);
+    margin: 0 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  cursor: pointer;
+    transition: background 0.2s, border 0.2s, color 0.2s, transform 0.1s;
+    outline: none;
+}
+  .mobile-nav-btn:active, .mobile-nav-btn:focus {
+    background: var(--cottage-sage);
+  color: #fff;
+    border-color: var(--cottage-goldenrod);
+    transform: scale(0.96);
+  }
+  .mobile-app-modal {
     display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 3000;
+    background: rgba(245,230,211,0.98);
+    background-image: url('../assets/wallpapers/cherry-blossom-day.gif');
+    background-size: cover;
+    background-position: center;
+    align-items: stretch;
+    justify-content: center;
+    overflow-y: auto;
+    transition: opacity 0.3s;
+}
+  body.night-mode .mobile-app-modal {
+    background-image: url('../assets/wallpapers/cherry-blossom-night.gif');
+    background-color: #23212B;
+  }
+  .mobile-app-modal.active {
+    display: flex !important;
+    flex-direction: column;
   }
   
-  body::before {
-    content: "CottagOS thrives best on a desktop, where the fairies can see you. ✨";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  .mobile-app-close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 44px;
+    height: 44px;
+  border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    border: 2px solid var(--cottage-sage);
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    background-color: var(--cottage-beige);
     color: var(--cottage-sepia);
-    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5em;
+    z-index: 99999;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+  }
+  
+  .mobile-app-close-btn:hover {
+    background: rgba(255,255,255,0.6);
+  }
+  
+  .mobile-app-close-btn:active {
+    background: var(--cottage-sage);
+    color: #fff;
+    transform: scale(0.96);
+  }
+  
+  .mobile-app-modal-content {
+    flex: 1;
+    width: 100vw;
+    min-height: 100vh;
+    max-width: 100vw;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 0 32px 0 rgba(156,175,136,0.10);
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  body.night-mode .mobile-app-modal-content {
+    background: rgba(35,33,43,0.97);
+  }
+  
+  /* Hide window-container on mobile when modal is open */
+  .mobile-app-modal.active ~ .window-container {
+    display: none !important;
+  }
+  
+  /* Optional: make .cottage-window fill modal on mobile */
+  .mobile-app-modal .cottage-window {
+    position: static !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1 !important;
+  }
+
+  .mobile-app-modal .window-titlebar {
+    cursor: default !important;
+    border-radius: 0 !important;
+    font-size: 1.2em;
+    min-height: 48px;
+    height: 48px;
+    padding: 0 18px;
+  }
+  
+  .mobile-app-modal .window-controls {
+    gap: 18px;
+  }
+  
+  .mobile-app-modal .window-content {
+    height: calc(100vh - 48px);
+    min-height: 0;
+    padding: 0;
+    overflow-y: auto;
+  }
+  
+  .mobile-app-modal .resize-handle {
+    display: none !important;
+  }
+  
+  .mobile-home {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100vw;
+    background: var(--cottage-beige);
+    background-image: url('../assets/wallpapers/cherry-blossom-day.gif');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    overflow: hidden;
+  }
+  
+  body.night-mode .mobile-home {
+    background-image: url('../assets/wallpapers/cherry-blossom-night.gif');
+  }
+  
+  .mobile-pages {
+    flex: 1;
+  display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    width: 100vw;
+    height: calc(100vh - 90px);
+    /* leave space for dock */
+  }
+  
+  .mobile-page {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, auto);
+    gap: 0;
+    justify-items: center;
+    align-items: start;
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw;
+    padding: 5px 0 60px 0;
+    scroll-snap-align: start;
+    background: transparent;
+  }
+  
+  .mobile-app-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 70px;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 5px 0 !important;
+    padding: 0 !important;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s, box-shadow 0.2s;
+  }
+  
+  .mobile-app-icon img {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px 0 rgba(156, 175, 136, 0.18), 0 0 0 4px rgba(255,255,255,0.18);
+    background: #fff8f2;
+    border: 2px solid var(--cottage-sage);
+    margin-bottom: 4px;
+    transition: box-shadow 0.2s, border 0.2s;
+  }
+  
+  .mobile-app-icon:active img, .mobile-app-icon:focus img {
+    box-shadow: 0 4px 16px 0 var(--cottage-goldenrod), 0 0 0 6px rgba(255,255,255,0.22);
+    border-color: var(--cottage-goldenrod);
+    transform: scale(0.97);
+  }
+  
+  .mobile-app-label {
+    font-family: 'Indie Flower', cursive !important;
+    font-size: 12px !important;
+    color: #4A3F35 !important;
+  text-align: center;
+    line-height: 1.1;
+    word-break: break-word;
+    max-width: 70px;
+  margin: 0 auto;
+    padding: 0 2px;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px #fffbe9;
+    font-weight: 400;
+    display: block;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .mobile-dock {
+    position: fixed;
+    left: 12px; 
+    right: 12px;
+    bottom: 10px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 2100;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  body.night-mode .mobile-dock {
+    background: rgba(50, 50, 70, 0.7);
+  }
+  
+  .mobile-dock::before {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+  }
+  
+  .mobile-dock-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s;
+    position: relative;
+  }
+  
+  .mobile-dock-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    object-fit: contain;
+    transition: transform 0.2s;
+  }
+  
+  .mobile-dock-icon:active img {
+    transform: scale(0.9);
+  }
+  
+  .mobile-dock-icon .mobile-app-label {
+    display: none;
+  }
+  
+  body.edit-mode .mobile-dock {
+    opacity: 0.7;
+    transform: translateY(10px);
+  }
+  
+  @keyframes wiggle {
+    0% { transform: rotate(-3deg); }
+    10% { transform: rotate(3deg); }
+    20% { transform: rotate(-3deg); }
+    30% { transform: rotate(3deg); }
+    40% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+    60% { transform: rotate(-1deg); }
+    70% { transform: rotate(1deg); }
+    80% { transform: rotate(-1deg); }
+    90% { transform: rotate(1deg); }
+    100% { transform: rotate(-3deg); }
+  }
+  
+  @keyframes bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.12); }
+    50% { transform: scale(0.96); }
+    70% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  
+  .mobile-home.edit-mode .mobile-app-icon,
+  .mobile-home.edit-mode .mobile-dock-icon {
+    animation: wiggle 0.6s infinite;
+    position: relative;
+  }
+  
+  .mobile-app-icon.bounce,
+  .mobile-dock-icon.bounce {
+    animation: bounce 0.4s;
+  }
+  
+  .icon-remove-btn {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: #fff8f2;
+    border: 2px solid var(--cottage-raspberry);
+    border-radius: 50%;
+    color: var(--cottage-raspberry);
+    font-size: 1.1em;
+    font-family: 'Indie Flower', cursive;
+    box-shadow: 0 2px 6px rgba(196,92,102,0.12);
+    z-index: 2;
+  cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    transition: background 0.2s, border 0.2s, color 0.2s;
+  }
+  
+  .mobile-home.edit-mode .mobile-app-icon .icon-remove-btn,
+  .mobile-home.edit-mode .mobile-dock-icon .icon-remove-btn {
+    display: flex;
+  }
+  
+  .icon-remove-btn:active {
+    background: var(--cottage-raspberry);
+  color: #fff;
+    border-color: var(--cottage-goldenrod);
+  }
+  
+  .mobile-app-icon, .mobile-dock-icon {
+    position: relative;
+  }
+  
+  /* Enhanced mobile SYNEVA styles */
+  .mobile-app-modal .syneva-container {
+    height: 100vh !important;
+    min-height: 100vh !important;
+  display: flex;
+    flex-direction: column;
+    background: #f8f3e6;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background-image: url('../assets/textures/paper-texture-light.png');
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Add decorative elements */
+  .mobile-app-modal .syneva-container::before {
+    content: "🌿";
+    position: absolute;
+    top: 20px;
+    right: 20px;
     font-size: 24px;
-    padding: 30px;
-    background-image: url('../assets/textures/paper-texture.png');
+    opacity: 0.6;
+  }
+  
+  .mobile-app-modal .syneva-container::after {
+    content: "🌸";
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    font-size: 24px;
+    opacity: 0.6;
+  }
+  
+  .mobile-app-close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid var(--cottage-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    color: var(--cottage-sepia);
+    font-size: 1.5em;
+    z-index: 99999;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+  }
+  
+  .mobile-app-close-btn:hover {
+    background: rgba(255,255,255,0.6);
+  }
+  
+  .mobile-app-close-btn:active {
+    background: var(--cottage-sage);
+    color: #fff;
+    transform: scale(0.96);
+  }
+  
+  .mobile-app-modal .syneva-output {
+    flex: 1 1 0;
+    max-height: none !important;
+    min-height: 0;
+    font-size: 1.1em;
+    padding: 60px 12px 16px 12px;
+    border-radius: 0 !important;
+    background: rgba(255,252,245,0.92);
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    color: #4A3F35;
+    background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(156,175,136,0.1));
+  }
+  
+  .mobile-app-modal .syneva-output p {
+    margin-bottom: 18px;
+    color: #4A3F35;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    position: relative;
+    padding-left: 10px;
+    font-weight: 500;
+  }
+  
+  .mobile-app-modal .syneva-output p::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 3px;
+    height: calc(100% - 12px);
+  background: #e7c4b5;
+    border-radius: 3px;
+  }
+  
+  .mobile-app-modal .syneva-output p:nth-child(odd)::before {
+    background: #9caf88;
+  }
+  
+  .mobile-app-modal .typing-indicator {
+    padding: 12px 16px;
+    font-size: 1.1em;
+    background: rgba(255,255,255,0.9);
+    color: #6D8B74;
+  font-family: 'Quicksand', sans-serif;
+    border-top: 2px dashed #9caf88;
+  }
+  
+  .mobile-app-modal .syneva-input-container {
+    padding: 15px 10px;
+    background: rgba(255,252,245,0.95);
+    border-radius: 0 0 0 0;
+    border-top: 2px solid #e7c4b5;
+  display: flex;
+  align-items: center;
+    margin-top: auto;
+    background-image: url('../assets/textures/linen-texture.png');
+    background-size: cover;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .mobile-app-modal .syneva-input {
+    font-size: 1.2em;
+    padding: 12px 15px;
+    min-height: 44px;
+    border-radius: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #9caf88;
+    color: #4A3F35;
+    background: #fffdf7;
+    font-family: 'Quicksand', sans-serif;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .mobile-app-modal .syneva-input:focus {
+    outline: none;
+    border-color: #e7c4b5;
+    box-shadow: 0 0 0 3px rgba(231, 196, 181, 0.3), inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .mobile-app-modal .quill-icon {
+    color: #9caf88;
+    margin-right: 12px;
+    font-size: 1.4em;
+  }
+  
+  .mobile-app-modal .syneva-link {
+    padding: 8px 0;
+    text-align: center;
+    background: rgba(255,255,255,0.8);
+    border-top: 1px dashed #9caf88;
+    font-family: 'Quicksand', sans-serif;
+  }
+  
+  .mobile-app-modal .syneva-link a {
+    color: #6D8B74;
+    text-decoration: none;
+    font-size: 1em;
+    position: relative;
+  }
+  
+  .mobile-app-modal .syneva-link a:after {
+    content: "";
+  position: absolute;
+  left: 0;
+    bottom: -2px;
+  width: 100%;
+    height: 1px;
+    background: #e7c4b5;
+    opacity: 0.7;
   }
 }
 
-/* Mossbell Pet Tamagotchi Styles */
-.mossbell-btn-label {
-  display: block;
+/* Mobile Settings Cottage styling */
+.mobile-app-modal .settings-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh !important;
+  background-color: #23212B;
+  background-image: url('../assets/textures/wood-texture.png');
+  background-size: cover;
+  padding: 10px 15px 60px 15px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-app-modal .settings-header {
   text-align: center;
-  font-family: 'Quicksand', 'Syncopate', sans-serif;
-  font-size: 0.85rem;
-  color: #7d5a50;
-  margin-top: 4px;
-  letter-spacing: 0.04em;
+  margin: 60px 0 25px 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #FFF5E9;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 
-.mossbell-screen {
-  border: 4px solid #a17f6c !important;
-  border-radius: 18px !important;
-  background: linear-gradient(135deg, #fdf6e3 80%, #e7c4b5 100%) !important;
-  box-shadow: 0 4px 24px #e7c4b5 !important;
-  margin: 18px 0 !important;
-  padding: 18px !important;
-  min-width: 240px;
-  min-height: 160px;
+.mobile-app-modal .settings-group {
+  background-color: rgba(245, 240, 235, 0.85);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px solid var(--cottage-sage);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.mobile-app-modal .settings-group-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: #3A2E22;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--cottage-sage);
+  font-weight: 600;
+}
+
+.mobile-app-modal .setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 6px 0;
+}
+
+.mobile-app-modal .setting-label {
+  font-size: 16px;
+  color: #3A2E22;
+  font-weight: 500;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Fix Mossbell container mobile styling */
+.mobile-app-modal .mossbell-container {
+  height: 100vh !important;
+  background-image: url('../assets/textures/moss-background.png');
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+  padding: 70px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.cottage-window[data-app="mossbell"] .window-content {
-  background: radial-gradient(circle at 60% 40%, #ffe44b 60%, #e7c4b5 100%) !important;
-  border-radius: 40% 40% 40% 40% / 55% 55% 45% 45% !important;
-  box-shadow: 0 8px 32px #e7c4b5;
-  padding: 32px 0 0 0;
-}
-
-.cottage-window[data-app="mossbell"] .mossbell-button {
-  background: #8c7bfc;
-  border: 2px solid #a17f6c;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  margin: 0 12px;
-  box-shadow: 0 2px 8px #e7c4b5;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-
-.cottage-window[data-app="mossbell"] .mossbell-button:hover {
-  background: #a17f6c;
-  box-shadow: 0 4px 16px #a17f6c;
-}
-
-/* Garden Planner Game Styles */
-.garden-toolbar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.garden-toolbar .garden-tool {
-  background: #e7c4b5;
-  border: 2px solid #9caf88;
-  border-radius: 8px;
-  padding: 8px 18px;
-  font-family: 'Quicksand', sans-serif;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-}
-.garden-toolbar .garden-tool.selected {
-  background: #9caf88;
-  color: #fff;
-  border-color: #e7c4b5;
-}
-.plant-panel {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.plant-btn {
-  background: #f5e6d3;
-  border: 2px solid #9caf88;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-}
-.plant-btn.selected {
-  background: #e7c4b5;
-  border-color: #c45c66;
-}
-.garden-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 48px);
-  grid-template-rows: repeat(4, 48px);
-  gap: 8px;
-  background: #f5e6d3;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 2px 8px #e7c4b5;
-  margin: 0 auto;
-}
-.garden-cell {
-  width: 48px;
-  height: 48px;
-  background: #fffbe9;
-  border: 2px solid #9caf88;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.7rem;
-  cursor: pointer;
-  transition: background 0.2s, border 0.2s;
-  position: relative;
-}
-.garden-cell.watered {
+.mobile-app-modal .screen {
+  margin: 20px 0;
+  height: 40%;
+  width: 90%;
+  border: 4px solid #a17f6c;
+  border-radius: 16px;
+  padding: 12px;
   background: #cfe4f1;
-  border-color: #6d8b74;
-}
-.garden-cell.mature {
-  box-shadow: 0 0 8px 2px #e9b44c;
-  border-color: #e9b44c;
-}
-.garden-cell:hover {
-  background: #e7c4b5;
-  border-color: #c45c66;
-}
-
-.garden-sidebar {
-  width: 140px;
-  background: rgba(255,255,255,0.7);
-  border-radius: 12px;
-  padding: 16px 10px;
-  margin-right: 18px;
-  float: left;
-  font-family: 'Quicksand', sans-serif;
-  box-shadow: 0 2px 8px #e7c4b5;
+  color: #222;
+  font-family: 'VCR-Mono', monospace;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-.garden-mainarea {
-  margin-left: 158px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  min-height: 350px;
-}
-.garden-weather-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0.12;
-  z-index: 10;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-}
-.garden-cell.wilted svg {
-  filter: grayscale(1) brightness(0.7);
-  opacity: 0.7;
-}
-.sidebar-section {
-  margin-bottom: 8px;
-  font-size: 15px;
-}
-.weather-icon svg {
-  vertical-align: middle;
-  width: 28px;
-  height: 28px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-body.night-mode .weather-container,
-body.night-mode .settings-container {
-  background: #23212B !important;
-  color: #F5F5F5 !important;
+.mobile-app-modal .button-container {
+  height: auto;
+  width: 90%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  padding: 0 10px;
 }
-body.night-mode .weather-info {
-  background: rgba(40, 40, 60, 0.95) !important;
-  color: #F5F5F5 !important;
-  border: 2px solid var(--cottage-lavender) !important;
+
+.mobile-app-modal .pet-container {
+  height: 70%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-body.night-mode .forecast {
-  background: rgba(60, 60, 80, 0.7) !important;
-  color: #F5F5F5 !important;
+
+@media (max-width: 600px) {
+  .mobile-app-modal .mossbell-container marquee {
+    width: 100%;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-app-modal .mossbell-container marquee span {
+    color: #222;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    margin: 0 4px;
+  }
+  
+  .mobile-app-modal .button-text {
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
 }
-body.night-mode .forecast-day .day-name,
-body.night-mode .forecast-day .day-temp {
-  color: #F5F5F5 !important;
+
+/* Duck sprite instead of GIF */
+.mobile-app-modal .duck-body {
+  position: absolute;
+  width: 80px;
+  height: 60px;
+  background-color: #FFFFCC;
+  border-radius: 60% 60% 50% 50%;
+  transform-origin: bottom center;
+  bottom: 0;
+  left: 20px;
+  animation: float 3s ease-in-out infinite;
 }
-body.night-mode .settings-group {
-  background: rgba(40, 40, 60, 0.95) !important;
-  color: #F5F5F5 !important;
-  border: 2px solid var(--cottage-lavender) !important;
+
+.mobile-app-modal .duck-head {
+  position: absolute;
+  top: -30px;
+  left: 50px;
+  width: 50px;
+  height: 40px;
+  background-color: #FFFFCC;
+  border-radius: 60% 80% 60% 70%;
+  z-index: 4;
+  animation: float 3s ease-in-out infinite reverse;
 }
-body.night-mode .settings-header,
-body.night-mode .settings-group-title,
-body.night-mode .setting-label {
-  color: #F5F5F5 !important;
+
+.mobile-app-modal .duck-beak {
+  position: absolute;
+  top: 15px;
+  right: -10px;
+  width: 30px;
+  height: 15px;
+  background-color: #E9B44C;
+  border-radius: 50% 50% 50% 50%;
+  transform: rotate(10deg);
 }
-body.night-mode .slider-track {
-  background-color: var(--cottage-lavender) !important;
+
+.mobile-app-modal .duck-eye {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  background-color: #2E2E2E;
+  border-radius: 50%;
 }
-body.night-mode .slider-handle {
-  background-color: var(--cottage-rose) !important;
+
+.mobile-app-modal .duck-wing {
+  position: absolute;
+  top: 20px;
+  left: -5px;
+  width: 30px;
+  height: 25px;
+  background-color: #FFEE99;
+  border-radius: 60% 50% 50% 40%;
+  transform: rotate(-10deg);
+  transform-origin: right center;
+  animation: flutter 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes flutter {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Mobile Settings Toggle Switches */
+.mobile-app-modal .toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: var(--cottage-rose);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-app-modal .toggle-switch.active {
+  background-color: var(--cottage-sage);
+}
+
+.mobile-app-modal .toggle-switch::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-app-modal .toggle-switch.active::before {
+  left: calc(100% - 22px);
+}
+
+/* Add specific style for night mode toggle to ensure it's recognizable */
+.mobile-app-modal .toggle-switch[data-setting="night-mode"] {
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"].active {
+  background-color: #3A4D39;
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"]::before {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Improve mobile settings toggle visibility and interaction */
+.mobile-app-modal .toggle-switch[data-setting="night-mode"] {
+  position: relative;
+  width: 55px;
+  height: 28px;
+  border-radius: 14px;
+  background-color: var(--cottage-rose);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"]:active {
+  transform: scale(0.95);
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"]:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"].active {
+  background-color: #3A4D39;
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"]::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: white;
+  top: 1px;
+  left: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"].active::before {
+  left: calc(100% - 24px);
+  background-color: #FFF9E5;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3), 0 0 15px rgba(255, 249, 229, 0.5);
+}
+
+/* Day/night icons inside toggle */
+.mobile-app-modal .toggle-switch[data-setting="night-mode"]::after {
+  content: '☀️';
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+.mobile-app-modal .toggle-switch[data-setting="night-mode"].active::after {
+  content: '🌙';
+  right: auto;
+  left: 7px;
+}
+
+.mobile-app-modal .button-container {
+  height: 10%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.mobile-app-modal button {
+  height: 60px;
+  width: 60px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #9caf88, #e7c4b5);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.mobile-app-modal button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-app-modal .button-text {
+  display: block;
+  font-size: 1rem;
+  position: relative;
+  margin-top: 10px;
+  text-align: center;
+  color: #4a3f35;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+}
+
+.mobile-app-modal .disable-buttons {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.mobile-app-modal .middle-button {
+  align-self: flex-end;
+}
+
+.mobile-app-modal .pacing {
+  animation: pacing 10s alternate infinite;
+}
+
+.mobile-app-modal .playing {
+  background-image: url('../assets/graphics/dancing.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: playing 0.2s alternate infinite;
+}
+
+.mobile-app-modal .sleeping {
+  background-image: url('../assets/graphics/sleeping.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mobile-app-modal .eating {
+  background-image: url('../assets/graphics/eating.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mobile-app-modal .pet-container {
+  height: 70%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-app-modal .center-pet {
+  justify-content: center;
+}
+
+.mobile-app-modal .pet {
+  margin: 0;
+  height: 100%;
+  width: 70%;
+  background-image: url('../assets/graphics/pacing.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: 0s;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }

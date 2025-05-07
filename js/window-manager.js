@@ -386,7 +386,11 @@ class WindowManager {
         }
         break;
       case 'mossbell':
-        this.initMossbell(windowNode);
+        if (typeof initMossbell === 'function') {
+          initMossbell(windowNode);
+        } else {
+          console.error('Mossbell initialization function not found!');
+        }
         break;
       case 'weather':
         this.initWeather(windowNode);
@@ -781,37 +785,36 @@ class WindowManager {
     const fortuneButton = windowNode.querySelector('.fortune-button');
     const tarotCards = windowNode.querySelectorAll('.tarot-card');
     
-    if (!crystalBall || !fortuneText || !fortuneButton) return;
+    if (!crystalBall || !fortuneText || !fortuneButton || !tarotCards.length) return;
     
-    // Fortune phrases
+    // Fortune generation data
     const subjects = [
-      'The willow',
-      'A distant star',
-      'The old oak',
-      'The morning mist',
-      'A gentle breeze',
-      'The full moon',
-      'A secret garden',
-      'The autumn leaf',
-      'A hidden path',
-      'The crystal stream'
+      'The sun',
+      'The moon',
+      'A sparrow',
+      'The wind',
+      'A bee',
+      'The river',
+      'An old tree',
+      'A wildflower',
+      'The morning dew',
+      'A teacup'
     ];
     
     const verbs = [
       'whispers of',
+      'brings',
       'reveals',
-      'conceals',
-      'guides you toward',
-      'warns against',
-      'celebrates',
-      'remembers',
-      'dreams about',
-      'transforms into',
-      'connects with'
+      'dances with',
+      'guides toward',
+      'reminds you of',
+      'awakens',
+      'nurtures',
+      'illuminates',
+      'transforms into'
     ];
     
     const objects = [
-      'forgotten paths',
       'new beginnings',
       'unexpected journeys',
       'ancient wisdom',
@@ -872,54 +875,6 @@ class WindowManager {
       });
     });
   }
-  
-  initMossbell(windowElement) {
-    const mossbellPet = windowElement.querySelector('.mossbell-pet');
-    const feedButton = windowElement.querySelector('.mossbell-button[data-action="feed"]');
-    const playButton = windowElement.querySelector('.mossbell-button[data-action="play"]');
-    const sleepButton = windowElement.querySelector('.mossbell-button[data-action="sleep"]');
-    const statusElement = windowElement.querySelector('.mossbell-status'); // Optional status display
-
-    // Center the main content
-    windowElement.querySelector('.window-content').style.display = 'flex';
-    windowElement.querySelector('.window-content').style.flexDirection = 'column';
-    windowElement.querySelector('.window-content').style.alignItems = 'center';
-    windowElement.querySelector('.window-content').style.justifyContent = 'center';
-
-    // Add button labels if not present
-    if (playButton && !playButton.nextElementSibling) {
-      const playLabel = document.createElement('span');
-      playLabel.textContent = 'Play';
-      playLabel.className = 'mossbell-btn-label';
-      playButton.parentNode.appendChild(playLabel);
-    }
-    if (feedButton && !feedButton.nextElementSibling) {
-      const feedLabel = document.createElement('span');
-      feedLabel.textContent = 'Feed';
-      feedLabel.className = 'mossbell-btn-label';
-      feedButton.parentNode.appendChild(feedLabel);
-    }
-    if (sleepButton && !sleepButton.nextElementSibling) {
-      const sleepLabel = document.createElement('span');
-      sleepLabel.textContent = 'Sleep';
-      sleepLabel.className = 'mossbell-btn-label';
-      sleepButton.parentNode.appendChild(sleepLabel);
-    }
-
-    // Add a stylized border to the main pet screen
-    const petScreen = windowElement.querySelector('.mossbell-screen');
-    if (petScreen) {
-      petScreen.style.border = '4px solid #a17f6c';
-      petScreen.style.borderRadius = '18px';
-      petScreen.style.background = 'linear-gradient(135deg, #fdf6e3 80%, #e7c4b5 100%)';
-      petScreen.style.boxShadow = '0 4px 24px #e7c4b5';
-      petScreen.style.margin = '18px 0';
-    }
-
-    // Add Tamagotchi-style device background
-    windowElement.querySelector('.window-content').style.background = 'radial-gradient(circle at 60% 40%, #ffe44b 60%, #e7c4b5 100%)';
-    windowElement.querySelector('.window-content').style.borderRadius = '40% 40% 40% 40% / 55% 55% 45% 45%';
-  }
 }
 
 // Initialize Window Manager when DOM is loaded
@@ -956,58 +911,4 @@ function initSyneva(windowElement) {
   } else {
     console.error('SYNEVA initialization function not found!');
   }
-}
-
-function initMossbell(windowElement) {
-  const mossbellPet = windowElement.querySelector('.mossbell-pet');
-  const feedButton = windowElement.querySelector('.mossbell-button[data-action="feed"]');
-  const playButton = windowElement.querySelector('.mossbell-button[data-action="play"]');
-  const sleepButton = windowElement.querySelector('.mossbell-button[data-action="sleep"]');
-  const statusElement = windowElement.querySelector('.mossbell-status'); // Optional status display
-
-  if (!mossbellPet || !feedButton || !playButton) {
-    console.error('Mossbell elements not found!');
-    return;
-  }
-  
-  // Pet state (basic example)
-  let petState = {
-    hunger: 3,
-    happiness: 3,
-    lastAction: 'none'
-  };
-
-  function triggerReaction() {
-    // Remove previous animation class if present, then add
-    mossbellPet.classList.remove('reacting');
-    // Force reflow/repaint before adding the class again
-    void mossbellPet.offsetWidth;
-    mossbellPet.classList.add('reacting');
-  }
-  
-  // Remove animation class when done
-  mossbellPet.addEventListener('animationend', () => {
-    if (mossbellPet.classList.contains('reacting')) {
-       mossbellPet.classList.remove('reacting');
-    }
-  });
-
-  feedButton.addEventListener('click', () => {
-    console.log('Feeding Mossbell...');
-    petState.hunger = Math.max(0, petState.hunger - 1);
-    petState.lastAction = 'feed';
-    triggerReaction();
-    // TODO: Update statusElement if needed
-  });
-
-  playButton.addEventListener('click', () => {
-    console.log('Playing with Mossbell...');
-    petState.happiness = Math.min(5, petState.happiness + 1);
-    petState.lastAction = 'play';
-    triggerReaction();
-    // TODO: Update statusElement if needed
-  });
-
-  // Initial status update (optional)
-  // if (statusElement) statusElement.textContent = "Mossbell is content.";
 }

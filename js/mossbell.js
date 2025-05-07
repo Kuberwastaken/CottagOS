@@ -75,16 +75,16 @@ function initMossbell(windowElement) {
   function setPetGif(state) {
     switch (state) {
       case 'playing':
-        pet.style.backgroundImage = "url('tamagotchi/graphics/dancing.gif')";
+        pet.style.backgroundImage = "url('assets/graphics/dancing.gif')";
         break;
       case 'eating':
-        pet.style.backgroundImage = "url('tamagotchi/graphics/eating.gif')";
+        pet.style.backgroundImage = "url('assets/graphics/eating.gif')";
         break;
       case 'sleeping':
-        pet.style.backgroundImage = "url('tamagotchi/graphics/sleeping.gif')";
+        pet.style.backgroundImage = "url('assets/graphics/sleeping.gif')";
         break;
       default:
-        pet.style.backgroundImage = "url('tamagotchi/graphics/pacing.gif')";
+        pet.style.backgroundImage = "url('assets/graphics/pacing.gif')";
     }
   }
 

@@ -7,7 +7,7 @@
     <meta name="description" content="A cottagecore faux operating system" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Nanum+Pen+Script&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Nanum+Pen+Script&family=Fira+Code:wght@400;500&family=Indie+Flower&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/text-editor.css" />
     <link rel="stylesheet" href="css/paint-app.css" />
@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png" />
     <link rel="manifest" href="assets/favicons/site.webmanifest" />
   </head>
-  <body>
+  <body class="mobile-mode">
     <div class="cottage-os">
       <!-- Topbar -->
       <div class="topbar">
@@ -38,7 +38,11 @@
           </div>
         </div>
         <div class="topbar-right">
-          <div class="topbar-icon">📚</div>
+          <a class="topbar-icon" href="https://github.com/Kuberwastaken/CottagOS" target="_blank" rel="noopener" title="View on GitHub" aria-label="GitHub Repository">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.339-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.338 4.695-4.566 4.944.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2z" fill="#24292f"/>
+            </svg>
+          </a>
         </div>
       </div>
       
@@ -164,6 +168,35 @@
         <!-- Windows will be created here by JavaScript -->
       </div>
     </div>
+    
+    <!-- Mobile App Launcher (shown only in mobile mode) -->
+    <div class="mobile-home" style="display: none;">
+      <div class="mobile-pages">
+        <!-- Page 1 -->
+        <div class="mobile-page">
+          <button class="mobile-app-icon" data-app="syneva"><img src="assets/icons/syneva.svg" alt="SYNEVA Chat" /><span class="mobile-app-label">SYNEVA Chat</span></button>
+          <button class="mobile-app-icon" data-app="terminal"><img src="assets/icons/terminal.svg" alt="Starlight Terminal" /><span class="mobile-app-label">Starlight Terminal</span></button>
+          <button class="mobile-app-icon" data-app="settings"><img src="assets/icons/settings.svg" alt="Settings Cottage" /><span class="mobile-app-label">Settings Cottage</span></button>
+          <button class="mobile-app-icon" data-app="mossbell"><img src="assets/icons/mossbell.svg" alt="Mossbell Pet" /><span class="mobile-app-label">Mossbell</span></button>
+          <button class="mobile-app-icon" data-app="garden"><img src="assets/icons/garden.svg" alt="Garden Planner" /><span class="mobile-app-label">Garden Planner</span></button>
+          <button class="mobile-app-icon" data-app="weather"><img src="assets/icons/weather.svg" alt="Weather" /><span class="mobile-app-label">Weather</span></button>
+          <button class="mobile-app-icon" data-app="recipes"><img src="assets/icons/recipes.svg" alt="Hearthfire Recipes" /><span class="mobile-app-label">Hearthfire Recipes</span></button>
+          <button class="mobile-app-icon" data-app="fortune"><img src="assets/icons/fortune.svg" alt="Fortuna's Lens" /><span class="mobile-app-label">Fortuna's Lens</span></button>
+          <button class="mobile-app-icon" data-app="text-editor"><img src="assets/icons/text-editor.svg" alt="Parchment Notes" /><span class="mobile-app-label">Parchment Notes</span></button>
+          <button class="mobile-app-icon" data-app="paint"><img src="assets/icons/paint.svg" alt="Wildflower Paint" /><span class="mobile-app-label">Wildflower Paint</span></button>
+        </div>
+        <!-- Add more .mobile-page divs for additional pages if needed -->
+      </div>
+      <div class="mobile-dock">
+        <button class="mobile-dock-icon" data-app="garden"><img src="assets/icons/garden.svg" alt="Garden Planner" /><span class="mobile-app-label">Garden</span></button>
+        <button class="mobile-dock-icon" data-app="recipes"><img src="assets/icons/recipes.svg" alt="Hearthfire Recipes" /><span class="mobile-app-label">Recipes</span></button>
+        <button class="mobile-dock-icon" data-app="text-editor"><img src="assets/icons/text-editor.svg" alt="Parchment Notes" /><span class="mobile-app-label">Notes</span></button>
+        <button class="mobile-dock-icon" data-app="paint"><img src="assets/icons/paint.svg" alt="Wildflower Paint" /><span class="mobile-app-label">Paint</span></button>
+      </div>
+    </div>
+    
+    <!-- Mobile App Modal (for full-screen app views on mobile) -->
+    <div class="mobile-app-modal"></div>
     
     <!-- Templates for Windows -->
     <template id="window-template">
@@ -572,6 +605,25 @@
         </div>
       </div>
     </template>
+    
+    <!-- Mobile Detection Script -->
+    <script>
+      (function() {
+        function isMobile() {
+          return window.matchMedia('(max-width: 768px)').matches ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        function setMobileModeClass() {
+          if (isMobile()) {
+            document.body.classList.add('mobile-mode');
+          } else {
+            document.body.classList.remove('mobile-mode');
+          }
+        }
+        setMobileModeClass();
+        window.addEventListener('resize', setMobileModeClass);
+      })();
+    </script>
     
     <!-- Scripts -->
     <script src="js/main.js"></script>
