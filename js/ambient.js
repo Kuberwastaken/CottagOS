@@ -1,4 +1,3 @@
-
 // Ambient effects for Weather Widget and other animations
 function initWeather(windowElement) {
   const weatherAnimation = windowElement.querySelector('#weather-animation');
@@ -278,3 +277,39 @@ function initWeather(windowElement) {
     }, 3000);
   });
 })();
+
+// --- Ambient Sound Controls ---
+window.cottageOS = window.cottageOS || {};
+window.cottageOS.Ambient = {
+  ambientAudio: null,
+  isAmbientOn: false,
+  volume: 70,
+  ensureAudio() {
+    if (!this.ambientAudio) {
+      this.ambientAudio = document.getElementById('ambient-audio');
+      if (!this.ambientAudio) {
+        this.ambientAudio = document.createElement('audio');
+        this.ambientAudio.id = 'ambient-audio';
+        this.ambientAudio.src = 'assets/sounds/ambient.mp3'; // Replace with your ambient sound file
+        this.ambientAudio.loop = true;
+        this.ambientAudio.volume = this.volume / 100;
+        document.body.appendChild(this.ambientAudio);
+      }
+    }
+  },
+  toggleAmbient(on) {
+    this.ensureAudio();
+    this.isAmbientOn = on;
+    if (on) {
+      this.ambientAudio.volume = this.volume / 100;
+      this.ambientAudio.play().catch(()=>{});
+    } else {
+      this.ambientAudio.pause();
+    }
+  },
+  setVolume(vol) {
+    this.volume = vol;
+    this.ensureAudio();
+    this.ambientAudio.volume = this.volume / 100;
+  }
+};

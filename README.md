@@ -1,4 +1,4 @@
-# 🌿✨ CottagOS: Enchanted Forest OS ✨🌿
+# 🌿✨ CottagOS ✨🌿
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=fff&style=for-the-badge)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=fff&style=for-the-badge)
@@ -39,8 +39,8 @@
 
 1. **Download or Clone the Repository**
    ```sh
-   git clone <YOUR_GIT_URL>
-   cd enchanted-forest-os
+   git clone https://github.com/Kuberwastaken/CottagOS
+   cd CottagOS
    ```
 2. **Open the App**
    - Simply open `index.html` in your favorite web browser.
@@ -82,10 +82,6 @@ Pull requests are welcome! If you have ideas for new apps, themes, or magical fe
 This project is open source and available under the MIT License.
 
 ---
-
-<p align="center">
-  <img src="assets/wallpapers/meadow-day.jpg" alt="CottagOS Meadow" width="400" style="border-radius: 16px; box-shadow: 0 4px 24px #E7C4B5; margin-top: 2em;" />
-</p>
 
 <p align="center" style="font-family: 'Nanum Pen Script', cursive; font-size: 1.2em; color: #9CAF88;">
   May your code be as cozy as a cottage in the woods 🌲

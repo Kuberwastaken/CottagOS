@@ -123,6 +123,11 @@ class WindowManager {
         windowNode.style.width = '400px';
         windowNode.style.height = '300px';
         break;
+      case 'text-editor':
+        titleElement.textContent = 'Text Editor';
+        windowNode.style.width = '800px';
+        windowNode.style.height = '600px';
+        break;
       default:
         titleElement.textContent = 'CottagOS Window';
         windowNode.style.width = '400px';
@@ -157,6 +162,7 @@ class WindowManager {
     
     taskbarApp.appendChild(icon);
     this.taskbarApps.appendChild(taskbarApp);
+    updateAppIconsForTheme && updateAppIconsForTheme();
     
     // Click event to focus window or restore if minimized
     taskbarApp.addEventListener('click', () => {
@@ -388,6 +394,15 @@ class WindowManager {
       case 'fortune':
         this.initFortune(windowNode);
         break;
+      case 'text-editor':
+        // Mount the text editor app
+        setTimeout(() => {
+          const mountNode = windowNode.querySelector('.text-editor-mount');
+          if (window.initCottagecoreTextEditor && mountNode) {
+            window.initCottagecoreTextEditor(mountNode);
+          }
+        }, 0);
+        break;
       // Add initialization for other apps as needed
     }
   }
@@ -609,76 +624,133 @@ class WindowManager {
     const fontOptions = windowNode.querySelectorAll('.font-option');
     const cursorOptions = windowNode.querySelectorAll('.cursor-option');
     const sliderHandle = windowNode.querySelector('.slider-handle');
-    
-    // Toggle switches
+    const sliderTrack = windowNode.querySelector('.slider-track');
+    const ambientToggle = windowNode.querySelector('.toggle-switch[data-setting="ambient-sounds"]');
+
+    // Load saved settings
+    const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+    // Apply settings to UI and document
+    if (settings.nightMode) document.body.classList.add('night-mode');
+    if (settings.theme) document.documentElement.setAttribute('data-theme', settings.theme);
+    if (settings.font) document.documentElement.setAttribute('data-font', settings.font);
+    if (settings.cursor) document.body.setAttribute('data-cursor', settings.cursor);
+    if (settings.volume !== undefined && sliderHandle && sliderTrack) {
+      sliderHandle.style.left = `${settings.volume}%`;
+    }
+    if (settings.ambientSounds && ambientToggle) ambientToggle.classList.add('active');
+
+    // Sync UI state
+    themeOptions.forEach(opt => {
+      if (settings.theme && opt.getAttribute('data-theme') === settings.theme) opt.classList.add('selected');
+      else opt.classList.remove('selected');
+    });
+    fontOptions.forEach(opt => {
+      if (settings.font && opt.getAttribute('data-font') === settings.font) opt.classList.add('selected');
+      else opt.classList.remove('selected');
+    });
+    cursorOptions.forEach(opt => {
+      if (settings.cursor && opt.getAttribute('data-cursor') === settings.cursor) opt.classList.add('selected');
+      else opt.classList.remove('selected');
+    });
     toggleSwitches.forEach(toggle => {
+      const setting = toggle.getAttribute('data-setting');
+      // Sync initial state
+      if (setting === 'night-mode') {
+        if (document.body.classList.contains('night-mode')) {
+          toggle.classList.add('active');
+        } else {
+          toggle.classList.remove('active');
+        }
+      }
+      if (setting === 'ambient-sounds') {
+        if (settings.ambientSounds) {
+          toggle.classList.add('active');
+        } else {
+          toggle.classList.remove('active');
+        }
+      }
+      // Add event listener
       toggle.addEventListener('click', function() {
-        this.classList.toggle('active');
-        
-        // Apply setting
-        const setting = this.getAttribute('data-setting');
         if (setting === 'night-mode') {
-          document.body.classList.toggle('night-mode');
+          const isActive = toggle.classList.contains('active');
+          if (isActive) {
+            toggle.classList.remove('active');
+            document.body.classList.remove('night-mode');
+            settings.nightMode = false;
+          } else {
+            toggle.classList.add('active');
+            document.body.classList.add('night-mode');
+            settings.nightMode = true;
+          }
+          localStorage.setItem('cottagosSettings', JSON.stringify(settings));
+        } else if (setting === 'ambient-sounds') {
+          toggle.classList.toggle('active');
+          settings.ambientSounds = toggle.classList.contains('active');
+          // If ambient.js is present, toggle ambient sounds
+          if (window.cottageOS?.Ambient) {
+            window.cottageOS.Ambient.toggleAmbient(settings.ambientSounds);
+          }
+          localStorage.setItem('cottagosSettings', JSON.stringify(settings));
         }
       });
     });
-    
+
     // Theme selection
     themeOptions.forEach(option => {
       option.addEventListener('click', function() {
         themeOptions.forEach(opt => opt.classList.remove('selected'));
         this.classList.add('selected');
-        
-        // Apply theme
         const theme = this.getAttribute('data-theme');
         document.documentElement.setAttribute('data-theme', theme);
+        settings.theme = theme;
+        localStorage.setItem('cottagosSettings', JSON.stringify(settings));
       });
     });
-    
+
     // Font selection
     fontOptions.forEach(option => {
       option.addEventListener('click', function() {
         fontOptions.forEach(opt => opt.classList.remove('selected'));
         this.classList.add('selected');
-        
-        // Apply font
         const font = this.getAttribute('data-font');
         document.documentElement.setAttribute('data-font', font);
+        settings.font = font;
+        localStorage.setItem('cottagosSettings', JSON.stringify(settings));
       });
     });
-    
+
     // Cursor selection
     cursorOptions.forEach(option => {
       option.addEventListener('click', function() {
         cursorOptions.forEach(opt => opt.classList.remove('selected'));
         this.classList.add('selected');
-        
-        // Apply cursor
         const cursor = this.getAttribute('data-cursor');
         document.body.setAttribute('data-cursor', cursor);
+        settings.cursor = cursor;
+        localStorage.setItem('cottagosSettings', JSON.stringify(settings));
       });
     });
-    
-    // Slider functionality
-    if (sliderHandle) {
+
+    // Slider functionality (Volume)
+    if (sliderHandle && sliderTrack) {
       let isDragging = false;
-      
       sliderHandle.addEventListener('mousedown', function(e) {
         isDragging = true;
-        e.preventDefault(); // Prevent text selection
+        e.preventDefault();
       });
-      
       document.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
-        
-        const track = sliderHandle.parentElement;
-        const trackRect = track.getBoundingClientRect();
+        const trackRect = sliderTrack.getBoundingClientRect();
         const position = (e.clientX - trackRect.left) / trackRect.width;
         const clampedPosition = Math.max(0, Math.min(position, 1));
-        
         sliderHandle.style.left = `${clampedPosition * 100}%`;
+        settings.volume = Math.round(clampedPosition * 100);
+        // If ambient.js is present, set volume
+        if (window.cottageOS?.Ambient) {
+          window.cottageOS.Ambient.setVolume(settings.volume);
+        }
+        localStorage.setItem('cottagosSettings', JSON.stringify(settings));
       });
-      
       document.addEventListener('mouseup', function() {
         isDragging = false;
       });

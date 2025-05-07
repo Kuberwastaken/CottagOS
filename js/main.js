@@ -1,5 +1,8 @@
 // CottagOS Main Script
 document.addEventListener('DOMContentLoaded', function() {
+  // Load and apply saved settings
+  applySavedSettings();
+  
   // Initialize time-based theme
   initializeTheme();
   
@@ -336,10 +339,18 @@ function openApp(appName) {
 // Initialize Theme Toggle
 function initializeThemeToggle() {
   const themeToggle = document.getElementById('theme-toggle');
-  
   themeToggle.addEventListener('click', function() {
-    document.body.classList.toggle('night-mode');
-    this.classList.toggle('night');
+    const isNight = document.body.classList.toggle('night-mode');
+    if (isNight) {
+      this.classList.add('night');
+    } else {
+      this.classList.remove('night');
+    }
+    // Also update settings in localStorage
+    const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+    settings.nightMode = isNight;
+    localStorage.setItem('cottagosSettings', JSON.stringify(settings));
+    updateAppIconsForTheme();
   });
 }
 
@@ -375,4 +386,55 @@ function initializeTopbarActions() {
 function createFolderIfNeeded(folderPath) {
   // This is just a placeholder since we can't actually create folders in a browser-only app
   console.log('Would create folder if this was a Node.js app:', folderPath);
+}
+
+function applySavedSettings() {
+  const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+  if (settings.nightMode) document.body.classList.add('night-mode');
+  else document.body.classList.remove('night-mode');
+  if (settings.theme) document.documentElement.setAttribute('data-theme', settings.theme);
+  if (settings.font) document.documentElement.setAttribute('data-font', settings.font);
+  if (settings.cursor) document.body.setAttribute('data-cursor', settings.cursor);
+  if (settings.volume !== undefined && window.cottageOS?.Ambient) {
+    window.cottageOS.Ambient.setVolume(settings.volume);
+  }
+  if (settings.ambientSounds !== undefined && window.cottageOS?.Ambient) {
+    window.cottageOS.Ambient.toggleAmbient(settings.ambientSounds);
+  }
+  updateAppIconsForTheme();
+}
+
+function updateAppIconsForTheme() {
+  const isNight = document.body.classList.contains('night-mode');
+  const iconMap = {
+    syneva: 'syneva',
+    terminal: 'terminal',
+    settings: 'settings',
+    mossbell: 'mossbell',
+    garden: 'garden',
+    weather: 'weather',
+    recipes: 'recipes',
+    fortune: 'fortune',
+    'text-editor': 'text-editor'
+  };
+  // Desktop icons
+  document.querySelectorAll('.desktop-icon').forEach(icon => {
+    const app = icon.getAttribute('data-app');
+    const img = icon.querySelector('img');
+    if (img && iconMap[app]) {
+      img.src = isNight
+        ? `assets/icons/${iconMap[app]}-dark.svg`
+        : `assets/icons/${iconMap[app]}.svg`;
+    }
+  });
+  // Taskbar icons
+  document.querySelectorAll('.taskbar-app').forEach(appEl => {
+    const app = appEl.getAttribute('data-app');
+    const img = appEl.querySelector('img');
+    if (img && iconMap[app]) {
+      img.src = isNight
+        ? `assets/icons/${iconMap[app]}-dark.svg`
+        : `assets/icons/${iconMap[app]}.svg`;
+    }
+  });
 }

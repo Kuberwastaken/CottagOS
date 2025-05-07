@@ -27,6 +27,93 @@
   --hover-transition: 0.2s ease-out;
 }
 
+/* THEME: Meadow (default) */
+[data-theme="meadow"] {
+  --cottage-beige: #F5E6D3;
+  --cottage-sage: #9CAF88;
+  --cottage-rose: #E7C4B5;
+  --cottage-lavender: #D3C0E6;
+  --cottage-goldenrod: #E9B44C;
+  --cottage-moss: #6D8B74;
+  --cottage-raspberry: #C45C66;
+  --window-titlebar: #E7C4B5;
+  --window-background: rgba(245, 230, 211, 0.95);
+  --taskbar-background: rgba(245, 230, 211, 0.85);
+  --cottage-sepia: #4A3F35;
+}
+
+/* THEME: Lavender */
+[data-theme="lavender"] {
+  --cottage-beige: #F3EAFB;
+  --cottage-sage: #B6B6D8;
+  --cottage-rose: #E6D3E6;
+  --cottage-lavender: #BFAEE0;
+  --cottage-goldenrod: #E9B44C;
+  --cottage-moss: #A3A3C2;
+  --cottage-raspberry: #B97EBB;
+  --window-titlebar: #BFAEE0;
+  --window-background: rgba(243, 234, 251, 0.97);
+  --taskbar-background: rgba(243, 234, 251, 0.90);
+  --cottage-sepia: #5A4A6B;
+}
+
+/* THEME: Sunset */
+[data-theme="sunset"] {
+  --cottage-beige: #FFE5D0;
+  --cottage-sage: #F7B267;
+  --cottage-rose: #F4845F;
+  --cottage-lavender: #F27059;
+  --cottage-goldenrod: #F7B267;
+  --cottage-moss: #F25C54;
+  --cottage-raspberry: #A53860;
+  --window-titlebar: #F4845F;
+  --window-background: rgba(255, 229, 208, 0.97);
+  --taskbar-background: rgba(255, 229, 208, 0.90);
+  --cottage-sepia: #6B3A2E;
+}
+
+/* NIGHT MODE */
+body.night-mode {
+  --cottage-beige: #23212B;
+  --cottage-sage: #3A4D39;
+  --cottage-rose: #4B3B47;
+  --cottage-lavender: #3B3553;
+  --cottage-goldenrod: #BFAE80;
+  --cottage-moss: #2C3A2F;
+  --cottage-raspberry: #6B3A4A;
+  --window-titlebar: #3B3553;
+  --window-background: rgba(35, 33, 43, 0.97);
+  --taskbar-background: rgba(35, 33, 43, 0.90);
+  --cottage-sepia: #E6E1D3;
+  background-color: #23212B !important;
+  color: var(--cottage-sepia) !important;
+  background-image: url('../assets/wallpapers/meadow-night.jpg');
+}
+
+body.night-mode .window-content,
+body.night-mode .cottage-window,
+body.night-mode .taskbar,
+body.night-mode .topbar,
+body.night-mode .desktop,
+body.night-mode .settings-container {
+  background: var(--window-background) !important;
+  color: var(--cottage-sepia) !important;
+}
+
+body.night-mode .window-titlebar {
+  background: var(--window-titlebar) !important;
+  color: var(--cottage-sepia) !important;
+}
+
+body.night-mode .taskbar {
+  background: var(--taskbar-background) !important;
+}
+
+body.night-mode .desktop-icon .icon-label {
+  background: rgba(40, 40, 60, 0.7) !important;
+  color: var(--cottage-sepia) !important;
+}
+
 /* Reset and Global Styles */
 * {
   box-sizing: border-box;
@@ -477,8 +564,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Window Styles */
 .cottage-window {
   position: absolute;
-  background-color: var(--window-background);
-  border: 3px solid var(--window-border);
+  background: var(--window-background);
+  border: 2px solid var(--window-border);
   border-radius: 15px;
   min-width: 350px;
   min-height: 250px;
@@ -488,6 +575,7 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 100;
   top: 80px;
   left: 80px;
+  color: var(--cottage-sepia);
 }
 
 .cottage-window:not(.active) {
@@ -497,7 +585,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .window-titlebar {
   height: 35px;
-  background-color: var(--window-titlebar);
+  background: var(--window-titlebar);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -508,6 +596,7 @@ h1, h2, h3, h4, h5, h6 {
   background-image: url('../assets/textures/linen-texture.png');
   background-size: cover;
   border-bottom: 2px solid var(--window-border);
+  color: var(--cottage-sepia);
 }
 
 .window-title {
@@ -3018,4 +3107,39 @@ h1, h2, h3, h4, h5, h6 {
   vertical-align: middle;
   width: 28px;
   height: 28px;
+}
+
+body.night-mode .weather-container,
+body.night-mode .settings-container {
+  background: #23212B !important;
+  color: #F5F5F5 !important;
+}
+body.night-mode .weather-info {
+  background: rgba(40, 40, 60, 0.95) !important;
+  color: #F5F5F5 !important;
+  border: 2px solid var(--cottage-lavender) !important;
+}
+body.night-mode .forecast {
+  background: rgba(60, 60, 80, 0.7) !important;
+  color: #F5F5F5 !important;
+}
+body.night-mode .forecast-day .day-name,
+body.night-mode .forecast-day .day-temp {
+  color: #F5F5F5 !important;
+}
+body.night-mode .settings-group {
+  background: rgba(40, 40, 60, 0.95) !important;
+  color: #F5F5F5 !important;
+  border: 2px solid var(--cottage-lavender) !important;
+}
+body.night-mode .settings-header,
+body.night-mode .settings-group-title,
+body.night-mode .setting-label {
+  color: #F5F5F5 !important;
+}
+body.night-mode .slider-track {
+  background-color: var(--cottage-lavender) !important;
+}
+body.night-mode .slider-handle {
+  background-color: var(--cottage-rose) !important;
 }

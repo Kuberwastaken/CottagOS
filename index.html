@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Nanum+Pen+Script&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/text-editor.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicons/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png" />
@@ -95,6 +96,12 @@
               <img src="assets/icons/fortune.svg" alt="Fortune Teller" />
             </div>
             <span class="icon-label">Fortuna's Lens</span>
+          </div>
+          <div class="desktop-icon" data-app="text-editor">
+            <div class="icon-img">
+              <img src="assets/icons/text-editor.svg" alt="Text Editor" />
+            </div>
+            <span class="icon-label">Text Editor</span>
           </div>
         </div>
         <!-- Dandelion Seeds Animation -->
@@ -499,6 +506,11 @@
       </div>
     </template>
     
+    <!-- Text Editor App Template -->
+    <template id="text-editor-template">
+      <div class="text-editor-mount"></div>
+    </template>
+    
     <!-- Scripts -->
     <script src="js/main.js"></script>
     <script src="js/garden-svgs.js"></script>
@@ -508,5 +520,6 @@
     <script src="js/mossbell.js"></script>
     <script src="js/ambient.js"></script>
     <script src="js/recipes.js"></script>
+    <script src="js/text-editor.js"></script>
   </body>
 </html>

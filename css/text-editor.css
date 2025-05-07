@@ -1,0 +1,252 @@
+/* Cottagecore Text Editor Styles */
+
+.cottagecore-text-editor {
+  --parchment: var(--cottage-beige);
+  --border: var(--cottage-lavender);
+  --accent: var(--cottage-rose);
+  --shadow: 0 2px 12px 0 rgba(100, 80, 60, 0.10);
+  --toolbar-bg: var(--window-titlebar);
+  --toolbar-btn: #fff8f0;
+  --toolbar-btn-hover: var(--cottage-goldenrod);
+  --text-box-bg: rgba(255,255,255,0.85);
+  --text-box-border: var(--cottage-lavender);
+  --text-box-selected: var(--cottage-rose);
+  --text-color: var(--cottage-sepia);
+  --popup-bg: #fff8f0;
+  --popup-border: var(--cottage-sage);
+  --popup-shadow: 0 4px 32px 0 rgba(100, 80, 60, 0.18);
+  font-family: var(--ui-font, 'Cormorant Garamond', serif);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--parchment);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.cottagecore-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--toolbar-bg);
+  border-bottom: 2px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 2px 8px 0 rgba(100, 80, 60, 0.06);
+  z-index: 20;
+}
+
+.cottagecore-toolbar .toolbar-btn {
+  background: var(--toolbar-btn);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 1.1em;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px 0 rgba(100, 80, 60, 0.08);
+  outline: none;
+}
+.cottagecore-toolbar .toolbar-btn:hover,
+.cottagecore-toolbar .toolbar-btn:focus {
+  background: var(--toolbar-btn-hover);
+  border-color: var(--accent);
+}
+.cottagecore-toolbar select,
+.cottagecore-toolbar input[type="color"] {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  background: var(--toolbar-btn);
+  color: var(--text-color);
+  font-size: 1em;
+  margin-right: 4px;
+}
+.cottagecore-toolbar input[type="color"] {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border-width: 3px;
+  cursor: pointer;
+}
+
+.cottagecore-canvas {
+  flex: 1;
+  position: relative;
+  /* Diagonal glowing white stripes pattern, edge to edge */
+  background: repeating-linear-gradient(
+    45deg,
+    #fff 0px,
+    #fff 8px,
+    rgba(255,255,255,0.25) 16px,
+    transparent 32px,
+    transparent 64px
+  );
+  /* Add a glow effect using a pseudo-element */
+  border-radius: 0 0 18px 18px;
+  overflow: auto;
+  min-height: 320px;
+  min-width: 320px;
+  box-shadow: 0 2px 12px 0 rgba(100, 80, 60, 0.08) inset;
+}
+.cottagecore-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.18) 0px,
+    rgba(255,255,255,0.18) 8px,
+    transparent 16px,
+    transparent 64px
+  );
+  filter: blur(6px);
+  opacity: 0.7;
+}
+
+.text-box {
+  position: relative;
+  min-width: 40px;
+  min-height: 24px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: var(--text-box-bg);
+  border: 2px solid var(--text-box-border);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 20px;
+  box-shadow: 0 2px 8px 0 rgba(100, 80, 60, 0.10);
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  user-select: text;
+  cursor: move;
+  z-index: 10;
+}
+.text-box.selected {
+  border-color: var(--text-box-selected);
+  box-shadow: 0 0 0 3px var(--accent), 0 2px 8px 0 rgba(100, 80, 60, 0.10);
+}
+.text-box:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 8px 0 rgba(100, 80, 60, 0.10);
+}
+
+.text-box-delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 1.1em;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s;
+}
+.text-box:hover .text-box-delete,
+.text-box:focus-within .text-box-delete {
+  opacity: 1;
+}
+.text-box-delete:hover, .text-box-delete:focus {
+  background: var(--text-box-selected);
+  opacity: 1;
+  outline: 2px solid var(--accent);
+}
+
+/* Tutorial Popup */
+.cottagecore-tutorial-popup {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tutorial-parchment {
+  background: var(--popup-bg);
+  border: 3px solid var(--popup-border);
+  border-radius: 18px;
+  box-shadow: var(--popup-shadow);
+  padding: 32px 40px 24px 40px;
+  text-align: center;
+  font-family: var(--ui-font, 'Cormorant Garamond', serif);
+  color: var(--text-color);
+  max-width: 340px;
+  min-width: 220px;
+  animation: fadeIn 0.7s cubic-bezier(.4,2,.6,1);
+}
+.tutorial-parchment h2 {
+  font-family: 'Indie Flower', cursive;
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+  color: var(--accent);
+}
+.tutorial-parchment button.got-it-btn {
+  margin-top: 18px;
+  background: var(--toolbar-btn);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1.1em;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+}
+.tutorial-parchment button.got-it-btn:hover {
+  background: var(--toolbar-btn-hover);
+  border-color: var(--popup-border);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Night mode support */
+body.night-mode .cottagecore-text-editor {
+  --parchment: var(--cottage-beige);
+  --border: var(--cottage-lavender);
+  --accent: var(--cottage-goldenrod);
+  --toolbar-bg: var(--window-titlebar);
+  --toolbar-btn: #4a3f35;
+  --toolbar-btn-hover: var(--cottage-rose);
+  --text-box-bg: rgba(60,50,40,0.92);
+  --text-box-border: var(--cottage-lavender);
+  --text-box-selected: var(--cottage-goldenrod);
+  --text-color: var(--cottage-sepia);
+  --popup-bg: #3e2e2b;
+  --popup-border: var(--cottage-rose);
+}
+
+body.night-mode .cottagecore-toolbar select {
+  color: var(--text-color) !important;
+  background: var(--toolbar-btn) !important;
+}
+
+.toolbar-btn.remove-tool.active {
+  background: #c45c66;
+  color: #fff;
+  border-color: #c45c66;
+  box-shadow: 0 0 0 2px #c45c6633;
+}
+.cottagecore-text-editor.remove-mode .text-box:hover {
+  border-color: #c45c66 !important;
+  box-shadow: 0 0 0 2px #c45c6633;
+  cursor: pointer;
+} 
