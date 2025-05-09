@@ -1,16 +1,180 @@
 // CottagOS Recipe Book
 class RecipeBook {
   static initRecipes(windowNode) {
-    const bookPages = windowNode.querySelector('.book-pages');
-    const leftPage = windowNode.querySelector('.left-page');
-    const rightPage = windowNode.querySelector('.right-page');
+    console.log("Initializing recipe book...");
+    const recipeContentArea = windowNode.querySelector('.recipe-content-area');
     const prevButton = windowNode.querySelector('.prev-page');
     const nextButton = windowNode.querySelector('.next-page');
 
-    if (!bookPages || !leftPage || !rightPage || !prevButton || !nextButton) {
+    if (!recipeContentArea || !prevButton || !nextButton) {
       console.error("Recipe Book elements not found!");
       return;
     }
+
+    // Create book pages structure
+    const bookPages = document.createElement('div');
+    bookPages.classList.add('book-pages');
+    const leftPage = document.createElement('div');
+    leftPage.classList.add('left-page');
+    const rightPage = document.createElement('div');
+    rightPage.classList.add('right-page');
+    
+    // Add page structure
+    leftPage.innerHTML = `
+      <div class="recipe-title"></div>
+      <div class="recipe-description"></div>
+      <div class="recipe-image"></div>
+      <div class="ingredients-list">
+        <div class="ingredients-title">Ingredients</div>
+      </div>
+      <div class="page-number">1</div>
+    `;
+    
+    rightPage.innerHTML = `
+      <div class="instructions-list">
+        <div class="instructions-title">Instructions</div>
+      </div>
+      <div class="page-number">2</div>
+    `;
+    
+    bookPages.appendChild(leftPage);
+    bookPages.appendChild(rightPage);
+    recipeContentArea.appendChild(bookPages);
+
+    // Add book styling if not already present
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      .book-pages {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+      .left-page, .right-page {
+        flex: 1;
+        background-color: #f8f5e6;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        position: relative;
+      }
+      .left-page {
+        border-right: 1px solid #d4c1a1;
+        border-radius: 5px 0 0 5px;
+      }
+      .right-page {
+        border-left: 1px solid #d4c1a1;
+        border-radius: 0 5px 5px 0;
+      }
+      .recipe-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 24px;
+        color: #5a4a42;
+        margin-bottom: 10px;
+      }
+      .recipe-description {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px;
+        color: #7d6b5d;
+        margin-bottom: 15px;
+      }
+      .recipe-image {
+        width: 100%;
+        height: 120px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-bottom: 15px;
+      }
+      .ingredients-title, .instructions-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+        color: #5a4a42;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #d4c1a1;
+        padding-bottom: 5px;
+      }
+      .ingredient-item, .instruction-item {
+        display: flex;
+        margin-bottom: 8px;
+      }
+      .ingredient-checkbox {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #d4c1a1;
+        border-radius: 3px;
+        margin-right: 8px;
+        cursor: pointer;
+      }
+      .ingredient-checkbox.checked {
+        background-color: #9caf88;
+        position: relative;
+      }
+      .ingredient-checkbox.checked:after {
+        content: '✓';
+        position: absolute;
+        color: white;
+        font-size: 12px;
+        top: -1px;
+        left: 2px;
+      }
+      .ingredient-name {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px;
+        color: #7d6b5d;
+      }
+      .instruction-step {
+        width: 24px;
+        height: 24px;
+        background-color: #9caf88;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 14px;
+      }
+      .instruction-text {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 14px;
+        color: #7d6b5d;
+        flex: 1;
+      }
+      .page-number {
+        position: absolute;
+        bottom: 10px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 14px;
+        color: #7d6b5d;
+      }
+      .left-page .page-number {
+        right: 20px;
+      }
+      .right-page .page-number {
+        left: 20px;
+      }
+      .book-navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+      .page-button {
+        width: 30px;
+        height: 30px;
+        background-color: #9caf88;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .page-button:hover {
+        background-color: #7d9163;
+      }
+    `;
+    document.head.appendChild(styleElement);
 
     // Recipe data
     const recipes = [
