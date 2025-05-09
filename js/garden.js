@@ -2,7 +2,7 @@
 const ROWS = 4;
 const COLS = 5;
 const PLANTS = [
-  { name: 'Tulip', key: 'tulip', stages: ['seed', 'sprout', 'tulip_mature', 'tulip_harvest'], info: 'Tulip: Grows in 3 days, needs sunlight.', icon: '��' },
+  { name: 'Tulip', key: 'tulip', stages: ['seed', 'sprout', 'tulip_mature', 'tulip_harvest'], info: 'Tulip: Grows in 3 days, needs sunlight.', icon: '🌷' },
   { name: 'Tomato', key: 'tomato', stages: ['seed', 'sprout', 'tomato_mature', 'tomato_harvest'], info: 'Tomato: Grows in 4 days, needs daily watering.', icon: '🍅' },
   { name: 'Lavender', key: 'lavender', stages: ['seed', 'sprout', 'lavender_mature', 'lavender_harvest'], info: 'Lavender: Grows in 5 days, prefers sunny days.', icon: '💜' },
   { name: 'Mushroom', key: 'mushroom', stages: ['seed', 'sprout', 'mushroom_mature', 'mushroom_harvest'], info: 'Mushroom: Grows in 2 days, likes rain.', icon: '🍄' }
@@ -15,6 +15,8 @@ let resources = { water: 10, coins: 0, seeds: 2 };
 let weather = 'sun';
 let day = 1;
 let clockInterval = null;
+let isMobile = false;
+let isLogExpanded = true;
 
 function initGardenPlanner(container) {
   // Initialize garden state
@@ -34,11 +36,454 @@ function initGardenPlanner(container) {
     updateGardenGrowth();
     renderGardenUI(container);
   }, 60000); // 1 minute = 1 day
+  
+  // Check if we're in mobile mode
+  isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
+  
+  // Add window resize listener to update mobile status
+  window.addEventListener('resize', () => {
+    const wasMobile = isMobile;
+    isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
+    if (wasMobile !== isMobile) {
+      renderGardenUI(container);
+    }
+  });
+  
   renderGardenUI(container);
 }
 
 function renderGardenUI(container) {
   container.innerHTML = '';
+
+  // Add mobile-specific CSS
+  const mobileStyles = document.createElement('style');
+  mobileStyles.textContent = `
+    .garden-app-layout {
+      position: relative;
+      font-family: 'Quicksand', sans-serif;
+      width: 100%;
+      height: 100%;
+      background-color: #f8f5e6;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L10,10 M20,0 L30,10 M40,0 L50,10 M60,0 L70,10 M80,0 L90,10" stroke="%237d6b5d" stroke-width="1"/></svg>');
+    }
+    
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+      .garden-app-layout {
+        padding: 0;
+        overflow-y: auto;
+      }
+      
+      .garden-main-title {
+        font-size: 2rem !important;
+        margin: 8px 0 !important;
+      }
+      
+      .garden-content-wrapper {
+        flex-direction: column !important;
+      }
+      
+      .garden-info-panel {
+        width: 100% !important;
+        margin: 0 auto 15px !important;
+        border-radius: 12px !important;
+        max-height: ${isLogExpanded ? 'none' : '48px'} !important;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        max-width: 90% !important;
+        position: relative;
+        padding: ${isLogExpanded ? '15px' : '10px 15px'} !important;
+      }
+      
+      .collapsed-garden-info {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        height: 30px;
+      }
+      
+      .collapsed-info-item {
+        font-family: 'Nanum Pen Script', cursive;
+        font-size: 1.3rem;
+        color: #7d6b5d;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+      }
+      
+      .collapsed-info-item strong {
+        color: #8d6e63;
+        margin-right: 5px;
+      }
+      
+      .collapsed-title {
+        font-family: 'Cormorant Garamond', serif;
+        color: #8d6e63;
+        font-size: 1.2rem;
+        padding: 0 10px;
+        white-space: nowrap;
+      }
+      
+      .info-panel-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        color: #8d6e63;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+      
+      .info-panel-title {
+        display: ${isLogExpanded ? 'block' : 'none'};
+      }
+      
+      .garden-info-panel .info-item {
+        margin-bottom: 8px !important;
+        font-size: 1.2rem !important;
+        display: ${isLogExpanded ? 'flex' : 'none'};
+      }
+      
+      .info-panel-title {
+        margin-bottom: 10px !important;
+      }
+      
+      .garden-main-content {
+        width: 100% !important;
+        padding: 0 !important;
+      }
+      
+      .garden-plot-grid {
+        margin: 0 auto !important;
+        width: 85% !important;
+        max-width: 340px !important;
+        aspect-ratio: 5/4 !important;
+      }
+      
+      .garden-actions-toolbar {
+        margin: 10px auto !important;
+        width: 85% !important;
+        gap: 5px !important;
+      }
+      
+      .garden-action-btn {
+        flex: 1 !important;
+        padding: 8px 4px !important;
+        font-size: 0.9rem !important;
+      }
+      
+      .garden-plant-selection-toolbar {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        margin: 10px auto !important;
+        width: 85% !important;
+      }
+      
+      .garden-plant-item {
+        margin: 4px !important;
+        padding: 8px 4px !important;
+      }
+    }
+    
+    .corner-flower-tl, .corner-flower-tr {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.7;
+      z-index: 1;
+    }
+    
+    .corner-flower-tl {
+      top: 10px;
+      left: 10px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="%239CAF88"><path d="M12,2C8.1,2,5,5.1,5,9c0,2.4,1.2,4.5,3,5.7V17c0,2.2,1.8,4,4,4s4-1.8,4-4v-2.3c1.8-1.3,3-3.4,3-5.7C19,5.1,15.9,2,12,2z M15,9c-0.6,0.6-1.5,1-2.5,1S10.6,9.6,10,9c0.6-0.6,1.5-1,2.5-1S14.4,8.4,15,9z"/></svg>');
+      transform: rotate(-45deg);
+    }
+    
+    .corner-flower-tr {
+      top: 10px;
+      right: 10px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="%239CAF88"><path d="M12,2C8.1,2,5,5.1,5,9c0,2.4,1.2,4.5,3,5.7V17c0,2.2,1.8,4,4,4s4-1.8,4-4v-2.3c1.8-1.3,3-3.4,3-5.7C19,5.1,15.9,2,12,2z M15,9c-0.6,0.6-1.5,1-2.5,1S10.6,9.6,10,9c0.6-0.6,1.5-1,2.5-1S14.4,8.4,15,9z"/></svg>');
+      transform: rotate(45deg);
+    }
+    
+    .garden-main-title {
+      font-family: 'Indie Flower', cursive;
+      text-align: center;
+      color: #8d6e63;
+      font-size: 2.4rem;
+      margin: 15px 0;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .garden-content-wrapper {
+      display: flex;
+      padding: 0 20px;
+      flex: 1;
+      gap: 20px;
+    }
+    
+    .garden-info-panel {
+      width: 260px;
+      background-color: #f8f3e6;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(209, 196, 173, 0.4);
+      position: relative;
+      border: 1px solid #d4c1a1;
+    }
+    
+    .info-panel-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #8d6e63;
+      font-size: 1.2rem;
+      padding: 5px;
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .info-panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      color: #8d6e63;
+      margin-bottom: 12px;
+      text-align: center;
+      border-bottom: 1px solid #d4c1a1;
+      padding-bottom: 8px;
+    }
+    
+    .info-item {
+      font-family: 'Nanum Pen Script', cursive;
+      font-size: 1.3rem;
+      color: #7d6b5d;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .info-item strong {
+      width: 90px;
+      display: inline-block;
+      color: #8d6e63;
+    }
+    
+    .garden-main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .garden-actions-toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      background-color: rgba(254, 250, 238, 0.6);
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(209, 196, 173, 0.3);
+    }
+    
+    .garden-action-btn {
+      flex: 1;
+      background-color: #e6dbca;
+      border: 1px solid #d4c1a1;
+      border-radius: 8px;
+      padding: 10px 15px;
+      color: #7d6b5d;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .garden-action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M0,0 L20,20 M40,0 L60,20 M80,0 L100,20" stroke="%237d6b5d" stroke-width="1"/></svg>');
+      opacity: 0.2;
+    }
+    
+    .garden-action-btn:hover {
+      background-color: #f0e6d2;
+      transform: translateY(-2px);
+    }
+    
+    .garden-action-btn.selected {
+      background-color: #9caf88;
+      color: #fff;
+    }
+    
+    .garden-plot-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 15px;
+      background-color: #a98274;
+      padding: 8px;
+      border-radius: 12px;
+      box-shadow: 0 6px 10px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.1);
+      position: relative;
+    }
+    
+    .garden-plot-grid::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" opacity="0.1"><path d="M0,0 L60,60 M60,0 L0,60" stroke="%23fff" stroke-width="1"/></svg>');
+      opacity: 0.1;
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    
+    .garden-plot-cell {
+      aspect-ratio: 1;
+      background-color: #8d6e63;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .garden-plot-cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.2);
+    }
+    
+    .garden-plot-cell.watered::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(156, 175, 216, 0.3);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" opacity="0.5"><circle cx="10" cy="10" r="2" fill="%23a8c6df"/><circle cx="30" cy="30" r="2" fill="%23a8c6df"/><circle cx="20" cy="20" r="1" fill="%23a8c6df"/></svg>');
+      pointer-events: none;
+    }
+    
+    .garden-plot-cell.wilted {
+      opacity: 0.7;
+    }
+    
+    .garden-plot-cell.wilted::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(169, 99, 75, 0.2);
+      pointer-events: none;
+    }
+    
+    .garden-plant-selection-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      background-color: rgba(254, 250, 238, 0.6);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(209, 196, 173, 0.3);
+    }
+    
+    .garden-plant-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      background-color: #e6dbca;
+      border: 1px solid #d4c1a1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 90px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .garden-plant-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .garden-plant-item.selected {
+      background-color: #9caf88;
+      border-color: #7d9163;
+    }
+    
+    .garden-plant-item[title*="Tulip"] {
+      background-color: #f8e2e2;
+    }
+    
+    .garden-plant-item[title*="Tomato"] {
+      background-color: #f8e6dc;
+    }
+    
+    .garden-plant-item[title*="Lavender"] {
+      background-color: #e8e2f0;
+    }
+    
+    .garden-plant-item[title*="Mushroom"] {
+      background-color: #e5e8dc;
+    }
+    
+    .plant-icon-display {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .plant-name-display {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.9rem;
+      color: #7d6b5d;
+      text-align: center;
+    }
+    
+    .garden-plant-item.selected .plant-name-display {
+      color: #fff;
+    }
+  `;
+  
+  document.head.appendChild(mobileStyles);
 
   const appLayout = document.createElement('div');
   appLayout.className = 'garden-app-layout';
@@ -51,7 +496,6 @@ function renderGardenUI(container) {
   const cornerFlowerTR = document.createElement('div');
   cornerFlowerTR.className = 'corner-flower-tr';
   appLayout.appendChild(cornerFlowerTR);
-  // You can add BR and BL if you make CSS rules for them too.
 
   const mainTitle = document.createElement('h2');
   mainTitle.className = 'garden-main-title';
@@ -63,30 +507,159 @@ function renderGardenUI(container) {
 
   const infoPanel = document.createElement('div');
   infoPanel.className = 'garden-info-panel';
-  infoPanel.innerHTML = `
-    <h3 class="info-panel-title">Gardener's Log</h3>
-    <div class="info-item"><strong>Day:</strong> <span id="garden-day">${day}</span></div>
-    <div class="info-item"><strong>Weather:</strong> <span id="garden-weather-icon">${window.GARDEN_SVGS[weather] || weather}</span> <span id="garden-weather-text">${weather.charAt(0).toUpperCase() + weather.slice(1)}</span></div>
-    <div class="info-item"><strong>Water:</strong> <span id="garden-water">${resources.water}</span>💧</div>
-    <div class="info-item"><strong>Coins:</strong> <span id="garden-coins">${resources.coins}</span>💰</div>
-    <div class="info-item"><strong>Seeds:</strong> <span id="garden-seeds">${resources.seeds}</span><span class="seed-icon">🌰</span></div>
-  `;
+  
+  // Add toggle button for mobile
+  const toggleButton = document.createElement('button');
+  toggleButton.className = 'info-panel-toggle';
+  
+  if (isLogExpanded) {
+    toggleButton.innerHTML = '<span>▲ Gardener\'s Log ▲</span>';
+  } else {
+    // Create a completely new layout for collapsed mode with proper spacing
+    const collapsedInfo = document.createElement('div');
+    collapsedInfo.className = 'collapsed-garden-info';
+    
+    // Day count on the left
+    const dayItem = document.createElement('div');
+    dayItem.className = 'collapsed-info-item';
+    const dayLabel = document.createElement('strong');
+    dayLabel.textContent = 'Day:';
+    const dayValue = document.createElement('span');
+    dayValue.textContent = ' ' + day;
+    dayItem.appendChild(dayLabel);
+    dayItem.appendChild(dayValue);
+    
+    // Gardener's Log text in the middle
+    const titleSpan = document.createElement('div');
+    titleSpan.className = 'collapsed-title';
+    titleSpan.innerHTML = '▼ Gardener\'s Log ▼';
+    
+    // Seeds count on the right
+    const seedItem = document.createElement('div');
+    seedItem.className = 'collapsed-info-item';
+    const seedLabel = document.createElement('strong');
+    seedLabel.textContent = 'Seeds:';
+    const seedValue = document.createElement('span');
+    seedValue.textContent = ' ' + resources.seeds + ' 🌰';
+    seedItem.appendChild(seedLabel);
+    seedItem.appendChild(seedValue);
+    
+    // Add all elements to the collapsed info container
+    collapsedInfo.appendChild(dayItem);
+    collapsedInfo.appendChild(titleSpan);
+    collapsedInfo.appendChild(seedItem);
+    
+    // Clear the toggle button and append the new layout
+    toggleButton.innerHTML = '';
+    toggleButton.appendChild(collapsedInfo);
+  }
+  
+  toggleButton.addEventListener('click', () => {
+    isLogExpanded = !isLogExpanded;
+    renderGardenUI(container);
+  });
+  infoPanel.appendChild(toggleButton);
+  
+  const infoPanelTitle = document.createElement('h3');
+  infoPanelTitle.className = 'info-panel-title';
+  infoPanelTitle.textContent = 'Gardener\'s Log';
+  infoPanel.appendChild(infoPanelTitle);
+  
+  const dayInfo = document.createElement('div');
+  dayInfo.className = 'info-item';
+  const dayLabel = document.createElement('strong');
+  dayLabel.textContent = 'Day:';
+  const dayValue = document.createElement('span');
+  dayValue.id = 'garden-day';
+  dayValue.textContent = day;
+  dayInfo.appendChild(dayLabel);
+  dayInfo.appendChild(document.createTextNode(' '));
+  dayInfo.appendChild(dayValue);
+  infoPanel.appendChild(dayInfo);
+  
+  const weatherInfo = document.createElement('div');
+  weatherInfo.className = 'info-item';
+  const weatherLabel = document.createElement('strong');
+  weatherLabel.textContent = 'Weather:';
+  const weatherIcon = document.createElement('span');
+  weatherIcon.id = 'garden-weather-icon';
+  
+  // Use proper emoji icons for weather
+  if (weather === 'sun') {
+    weatherIcon.textContent = '☀️';
+  } else if (weather === 'rain') {
+    weatherIcon.textContent = '🌧️';
+  } else if (weather === 'cloud') {
+    weatherIcon.textContent = '☁️';
+  } else {
+    weatherIcon.textContent = weather;
+  }
+  
+  const weatherText = document.createElement('span');
+  weatherText.id = 'garden-weather-text';
+  weatherText.textContent = ' ' + weather.charAt(0).toUpperCase() + weather.slice(1);
+  
+  weatherInfo.appendChild(weatherLabel);
+  weatherInfo.appendChild(document.createTextNode(' '));
+  weatherInfo.appendChild(weatherIcon);
+  weatherInfo.appendChild(weatherText);
+  infoPanel.appendChild(weatherInfo);
+  
+  const waterInfo = document.createElement('div');
+  waterInfo.className = 'info-item';
+  const waterLabel = document.createElement('strong');
+  waterLabel.textContent = 'Water:';
+  const waterValue = document.createElement('span');
+  waterValue.id = 'garden-water';
+  waterValue.textContent = resources.water;
+  const waterIcon = document.createElement('span');
+  waterIcon.textContent = ' 💧';
+  
+  waterInfo.appendChild(waterLabel);
+  waterInfo.appendChild(document.createTextNode(' '));
+  waterInfo.appendChild(waterValue);
+  waterInfo.appendChild(waterIcon);
+  infoPanel.appendChild(waterInfo);
+  
+  const coinsInfo = document.createElement('div');
+  coinsInfo.className = 'info-item';
+  const coinsLabel = document.createElement('strong');
+  coinsLabel.textContent = 'Coins:';
+  const coinsValue = document.createElement('span');
+  coinsValue.id = 'garden-coins';
+  coinsValue.textContent = resources.coins;
+  const coinsIcon = document.createElement('span');
+  coinsIcon.textContent = ' 💰';
+  
+  coinsInfo.appendChild(coinsLabel);
+  coinsInfo.appendChild(document.createTextNode(' '));
+  coinsInfo.appendChild(coinsValue);
+  coinsInfo.appendChild(coinsIcon);
+  infoPanel.appendChild(coinsInfo);
+  
+  const seedsInfo = document.createElement('div');
+  seedsInfo.className = 'info-item';
+  const seedsLabel = document.createElement('strong');
+  seedsLabel.textContent = 'Seeds:';
+  const seedsValue = document.createElement('span');
+  seedsValue.id = 'garden-seeds';
+  seedsValue.textContent = resources.seeds;
+  const seedsIcon = document.createElement('span');
+  seedsIcon.className = 'seed-icon';
+  seedsIcon.textContent = ' 🌰';
+  
+  seedsInfo.appendChild(seedsLabel);
+  seedsInfo.appendChild(document.createTextNode(' '));
+  seedsInfo.appendChild(seedsValue);
+  seedsInfo.appendChild(seedsIcon);
+  infoPanel.appendChild(seedsInfo);
+  
   contentWrapper.appendChild(infoPanel);
 
   const mainContent = document.createElement('div');
   mainContent.className = 'garden-main-content';
 
-  const actionsToolbar = document.createElement('div');
-  actionsToolbar.className = 'garden-actions-toolbar';
-  ['plant', 'water', 'harvest', 'remove'].forEach(tool => {
-    const btn = document.createElement('button');
-    btn.textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
-    btn.className = 'garden-action-btn' + (selectedTool === tool ? ' selected' : '');
-    btn.onclick = () => { selectedTool = tool; renderGardenUI(container); };
-    actionsToolbar.appendChild(btn);
-  });
-  mainContent.appendChild(actionsToolbar);
-
+  // Create garden grid first in mobile view
   const grid = document.createElement('div');
   grid.className = 'garden-plot-grid';
   for (let r = 0; r < ROWS; r++) {
@@ -109,6 +682,19 @@ function renderGardenUI(container) {
   }
   mainContent.appendChild(grid);
 
+  // Then add action buttons
+  const actionsToolbar = document.createElement('div');
+  actionsToolbar.className = 'garden-actions-toolbar';
+  ['plant', 'water', 'harvest', 'remove'].forEach(tool => {
+    const btn = document.createElement('button');
+    btn.textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+    btn.className = 'garden-action-btn' + (selectedTool === tool ? ' selected' : '');
+    btn.onclick = () => { selectedTool = tool; renderGardenUI(container); };
+    actionsToolbar.appendChild(btn);
+  });
+  mainContent.appendChild(actionsToolbar);
+
+  // Add plant selection at the bottom
   if (selectedTool === 'plant') {
     const plantSelectionToolbar = document.createElement('div');
     plantSelectionToolbar.className = 'garden-plant-selection-toolbar';

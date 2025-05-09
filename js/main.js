@@ -857,6 +857,7 @@ function attachMobileHomeAppHandler() {
       mobileModal.classList.add('active');
       const template = document.getElementById(appName + '-template');
       if (template) {
+        console.log(`Found template for ${appName}`); // DEBUG
         const modalContent = document.createElement('div');
         modalContent.className = 'mobile-app-modal-content';
         modalContent.appendChild(template.content.cloneNode(true));
@@ -872,10 +873,43 @@ function attachMobileHomeAppHandler() {
         modalContent.appendChild(closeBtn);
         
         mobileModal.appendChild(modalContent);
-        const initFn = window['init' + appName.charAt(0).toUpperCase() + appName.slice(1)];
-        if (typeof initFn === 'function') {
-          const container = modalContent.querySelector('.' + appName + '-container') || modalContent;
-          initFn(container);
+        
+        // Special case for Garden Planner
+        if (appName === 'garden') {
+          console.log('Initializing Garden Planner app...'); // DEBUG
+          if (window.initGardenPlanner) {
+            console.log('Found initGardenPlanner function'); // DEBUG
+            const gameContainer = modalContent.querySelector('.garden-game');
+            if (gameContainer) {
+              console.log('Found garden-game container, initializing...'); // DEBUG
+              try {
+                window.initGardenPlanner(gameContainer);
+                console.log('Garden Planner initialized successfully'); // DEBUG
+              } catch (error) {
+                console.error('Error initializing Garden Planner:', error); // DEBUG
+              }
+            } else {
+              console.error('Could not find .garden-game container in the template'); // DEBUG
+            }
+          } else {
+            console.error('initGardenPlanner function not found in window object'); // DEBUG
+          }
+        } else {
+          // For other apps, use the standard pattern
+          console.log(`Looking for init function for ${appName}`); // DEBUG
+          const initFn = window['init' + appName.charAt(0).toUpperCase() + appName.slice(1)];
+          if (typeof initFn === 'function') {
+            const container = modalContent.querySelector('.' + appName + '-container') || modalContent;
+            console.log(`Calling init function for ${appName}`); // DEBUG
+            try {
+              initFn(container);
+              console.log(`${appName} initialized successfully`); // DEBUG
+            } catch (error) {
+              console.error(`Error initializing ${appName}:`, error); // DEBUG
+            }
+          } else {
+            console.warn(`No init function found for ${appName}`); // DEBUG
+          }
         }
       } else {
         console.error('Template not found for:', appName); // DEBUG Error
@@ -884,6 +918,12 @@ function attachMobileHomeAppHandler() {
     });
     mobileHome._appHandlerAttached = true;
     console.log('Mobile home click listener attached.'); // DEBUG
+  } else {
+    console.warn('Could not attach mobile home app handler:', {
+      mobileHome: !!mobileHome,
+      mobileModal: !!mobileModal,
+      alreadyAttached: mobileHome && mobileHome._appHandlerAttached
+    }); // DEBUG
   }
 }
 
