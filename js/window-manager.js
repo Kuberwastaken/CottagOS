@@ -399,6 +399,7 @@ class WindowManager {
         this.initGarden(windowNode);
         break;
       case 'recipes':
+        console.log('Window Manager: Initializing Recipes. Content of windowNode before initRecipes:', windowNode.querySelector('.window-content').innerHTML);
         this.initRecipes(windowNode);
         break;
       case 'settings':

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Setup clock
   updateClock();
-  setInterval(updateClock, 60000); // Update every minute
+  setInterval(updateClock, 10000); // Update every 10 seconds
   
   // Create ambient elements
   createDandelionSeeds();
@@ -162,7 +162,19 @@ function updateClock() {
   hours = hours % 12;
   hours = hours ? hours : 12; // the hour '0' should be '12'
   
-  document.querySelector('.pocket-watch .time').textContent = `${hours}:${minutes}`;
+  // Update all time displays in the document
+  const timeElements = document.querySelectorAll('.pocket-watch .time');
+  if (timeElements && timeElements.length > 0) {
+    timeElements.forEach(element => {
+      element.textContent = `${hours}:${minutes}`;
+    });
+  }
+  
+  // Also update Mossbell clock if it exists
+  const mossClockElement = document.getElementById('moss-clock');
+  if (mossClockElement) {
+    mossClockElement.textContent = `${hours}:${minutes}${ampm}`;
+  }
 }
 
 // Create floating dandelion seeds

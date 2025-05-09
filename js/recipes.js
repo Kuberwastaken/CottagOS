@@ -17,7 +17,7 @@ class RecipeBook {
       {
         title: 'Moonbeam Tea',
         description: 'A calming herbal tea that shimmers with the light of the moon. Perfect for evening contemplation.',
-        image: 'assets/images/moonbeam-tea.jpg',
+        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
         ingredients: [
           '1 tbsp dried chamomile flowers',
           '1 tsp dried lavender buds',
@@ -37,7 +37,7 @@ class RecipeBook {
       {
         title: 'Forest Mushroom Stew',
         description: 'A hearty vegetarian stew featuring wild mushrooms and root vegetables, perfect for a cozy dinner.',
-        image: 'assets/images/mushroom-stew.jpg',
+        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
         ingredients: [
           '2 cups assorted wild mushrooms',
           '1 onion, diced',
@@ -60,7 +60,7 @@ class RecipeBook {
       {
         title: 'Lavender Shortbread',
         description: 'Delicate, buttery cookies infused with lavender, perfect with afternoon tea.',
-        image: 'assets/images/lavender-cookies.jpg',
+        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
         ingredients: [
           '1 cup butter, softened',
           '1/2 cup sugar',
@@ -91,66 +91,98 @@ class RecipeBook {
       // Clear previous content cleanly
       const ingredientsList = leftPage.querySelector('.ingredients-list');
       const instructionsList = rightPage.querySelector('.instructions-list');
-      ingredientsList.innerHTML = '<div class="ingredients-title">Ingredients</div>';
-      instructionsList.innerHTML = '<div class="instructions-title">Instructions</div>';
+      
+      if (ingredientsList) {
+        ingredientsList.innerHTML = '<div class="ingredients-title">Ingredients</div>';
+      }
+      
+      if (instructionsList) {
+        instructionsList.innerHTML = '<div class="instructions-title">Instructions</div>';
+      }
 
       // Update left page
-      leftPage.querySelector('.recipe-title').textContent = recipe.title;
-      leftPage.querySelector('.recipe-description').textContent = recipe.description;
+      const titleElement = leftPage.querySelector('.recipe-title');
+      const descriptionElement = leftPage.querySelector('.recipe-description');
       const recipeImageDiv = leftPage.querySelector('.recipe-image');
-      if (recipe.image) {
-        recipeImageDiv.style.backgroundImage = `url(${recipe.image})`;
-        recipeImageDiv.style.display = 'block';
-      } else {
-        recipeImageDiv.style.backgroundImage = 'none';
-        recipeImageDiv.style.display = 'none';
+      
+      if (titleElement) titleElement.textContent = recipe.title;
+      if (descriptionElement) descriptionElement.textContent = recipe.description;
+      
+      if (recipeImageDiv) {
+        try {
+          // Using the recipes icon as a fallback if image doesn't exist
+          recipeImageDiv.style.backgroundImage = `url(${recipe.image})`;
+          recipeImageDiv.style.display = 'block';
+          
+          // Create a backup image element to handle load errors
+          const testImg = new Image();
+          testImg.onerror = () => {
+            // If image fails to load, use a CSS gradient as fallback
+            recipeImageDiv.style.backgroundImage = 'linear-gradient(135deg, #f0e6d2 0%, #d4c1a1 100%)';
+          };
+          testImg.src = recipe.image;
+        } catch (e) {
+          console.error("Error setting recipe image:", e);
+          recipeImageDiv.style.backgroundImage = 'linear-gradient(135deg, #f0e6d2 0%, #d4c1a1 100%)';
+        }
       }
 
       // Add new ingredients
-      recipe.ingredients.forEach(ingredient => {
-        const item = document.createElement('div');
-        item.classList.add('ingredient-item');
+      if (ingredientsList && recipe.ingredients) {
+        recipe.ingredients.forEach(ingredient => {
+          const item = document.createElement('div');
+          item.classList.add('ingredient-item');
 
-        const checkbox = document.createElement('div');
-        checkbox.classList.add('ingredient-checkbox');
-        checkbox.addEventListener('click', function() {
-          this.classList.toggle('checked');
+          const checkbox = document.createElement('div');
+          checkbox.classList.add('ingredient-checkbox');
+          checkbox.addEventListener('click', function() {
+            this.classList.toggle('checked');
+          });
+
+          const name = document.createElement('div');
+          name.classList.add('ingredient-name');
+          name.textContent = ingredient;
+
+          item.appendChild(checkbox);
+          item.appendChild(name);
+          ingredientsList.appendChild(item);
         });
-
-        const name = document.createElement('div');
-        name.classList.add('ingredient-name');
-        name.textContent = ingredient;
-
-        item.appendChild(checkbox);
-        item.appendChild(name);
-        ingredientsList.appendChild(item);
-      });
+      }
 
       // Update right page
-      recipe.instructions.forEach((instruction, index) => {
-        const item = document.createElement('div');
-        item.classList.add('instruction-item');
+      if (instructionsList && recipe.instructions) {
+        recipe.instructions.forEach((instruction, index) => {
+          const item = document.createElement('div');
+          item.classList.add('instruction-item');
 
-        const step = document.createElement('span');
-        step.classList.add('instruction-step');
-        step.textContent = index + 1;
+          const step = document.createElement('span');
+          step.classList.add('instruction-step');
+          step.textContent = index + 1;
 
-        const text = document.createElement('span');
-        text.classList.add('instruction-text');
-        text.textContent = instruction;
+          const text = document.createElement('span');
+          text.classList.add('instruction-text');
+          text.textContent = instruction;
 
-        item.appendChild(step);
-        item.appendChild(text);
-        instructionsList.appendChild(item);
-      });
+          item.appendChild(step);
+          item.appendChild(text);
+          instructionsList.appendChild(item);
+        });
+      }
 
       // Update page numbers
-      leftPage.querySelector('.page-number').textContent = recipeIndex * 2 + 1;
-      rightPage.querySelector('.page-number').textContent = recipeIndex * 2 + 2;
+      const leftPageNumber = leftPage.querySelector('.page-number');
+      const rightPageNumber = rightPage.querySelector('.page-number');
+      
+      if (leftPageNumber) leftPageNumber.textContent = recipeIndex * 2 + 1;
+      if (rightPageNumber) rightPageNumber.textContent = recipeIndex * 2 + 2;
     }
 
     // Initial page load
-    updatePages();
+    try {
+      updatePages();
+    } catch (e) {
+      console.error("Error initializing recipe book:", e);
+    }
 
     // Navigation
     prevButton.addEventListener('click', () => {

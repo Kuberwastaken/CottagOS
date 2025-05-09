@@ -1625,11 +1625,13 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* Added for vertical centering */
   height: 100%;
   padding: 15px;
   background-color: var(--cottage-beige);
   background-image: url('../assets/textures/paper-texture.png');
   background-size: cover;
+  box-sizing: border-box; /* Added for consistent padding behavior */
 }
 
 .stained-glass {
@@ -1895,6 +1897,7 @@ h1, h2, h3, h4, h5, h6 {
 .day-name {
   font-size: 12px;
   margin-bottom: 5px;
+  color: var(--cottage-sepia);
 }
 
 .day-icon {
@@ -1905,15 +1908,152 @@ h1, h2, h3, h4, h5, h6 {
 
 .day-temp {
   font-size: 12px;
+  color: var(--cottage-sepia);
+}
+
+/* Enhanced targeting for forecast text in light theme */
+body:not(.night-mode) .forecast *,
+body:not(.night-mode) .forecast .day-name,
+body:not(.night-mode) .forecast .day-temp,
+body:not(.night-mode) .mobile-app-modal .forecast *,
+body:not(.night-mode) .mobile-app-modal .weather-container .forecast * {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+/* For mobile view specifically */
+.mobile-app-modal .forecast,
+.mobile-app-modal .forecast-day,
+.mobile-app-modal .day-name,
+.mobile-app-modal .day-icon,
+.mobile-app-modal .day-temp {
+  text-shadow: none;
+}
+
+body:not(.night-mode) .mobile-app-modal .day-name,
+body:not(.night-mode) .mobile-app-modal .day-temp {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* Apply these styles specifically within the mobile app modal */
+.mobile-app-modal .weather-container {
+  padding: 20px; /* Add some padding around the content */
+  width: 100%;
+  max-width: 500px; /* Increase max-width for a larger appearance */
+  margin: auto; /* Center the container */
+  height: auto; /* Allow height to be determined by content or specific values below */
+  min-height: 80vh; /* Ensure it takes up a good portion of the screen */
+  justify-content: center; /* Center content vertically */
 }
 
 /* Garden Planner Styling */
-.garden-container {
+.garden-container { /* This is likely the main container used by garden.js */
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: var(--cottage-beige);
   background-image: url('../assets/textures/paper-texture.png');
+  padding: 15px; /* Add some padding */
+  box-sizing: border-box; /* Ensure padding is included in height/width */
+}
+
+.garden-game { /* This is the direct container from the template */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Info Bar at the top */
+.garden-info-bar {
+  display: flex;
+  justify-content: space-between; /* Distribute items like Day, Weather etc. */
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid var(--cottage-sage);
+  width: 100%; /* Make it full width */
+  box-sizing: border-box;
+}
+
+.garden-info-bar > div { /* Style for individual info items */
+  font-size: 1em;
+  color: var(--cottage-sepia);
+}
+
+/* Toolbar for actions like Plant, Water */
+.garden-actions-toolbar {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  border: 1px solid var(--cottage-sage);
+  width: 100%; /* Make it full width */
+  box-sizing: border-box;
+}
+
+.garden-actions-toolbar button {
+  padding: 8px 15px;
+  border: 1px solid var(--cottage-moss);
+  background-color: var(--cottage-rose);
+  color: var(--cottage-sepia);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.garden-actions-toolbar button.selected {
+  background-color: var(--cottage-sage);
+  color: white;
+  border-color: var(--cottage-goldenrod);
+}
+
+/* Plant selection toolbar */
+.garden-plant-selection-toolbar {
+  display: flex;
+  justify-content: center; /* Center the plant items */
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  border: 1px solid var(--cottage-sage);
+  width: 100%; /* Make it full width */
+  box-sizing: border-box;
+}
+
+.garden-plant-selection-toolbar .plant-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.garden-plant-selection-toolbar .plant-item.selected {
+  border-color: var(--cottage-goldenrod);
+  background-color: rgba(255,223,186,0.5); /* Light orange tint */
+}
+
+.garden-plant-selection-toolbar .plant-icon {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 5px;
+}
+
+.garden-plant-selection-toolbar .plant-name {
+  font-size: 0.8em;
+  text-align: center;
 }
 
 .garden-toolbar {
@@ -2009,13 +2149,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .plot-cell {
   background-color: rgba(109, 139, 116, 0.8);
-  border-radius: 8px;
+  border-radius: 15px; /* Make ovals more rounded */
+  min-height: 50px; /* Ensure cells have some height */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
+  border: 1px dashed rgba(255,255,255,0.2); /* Add a subtle border */
 }
 
 .plot-cell:hover {
@@ -2526,7 +2668,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .instructions-list {
-  margin-bottom: 15px.
+  margin-bottom: 15px;
 }
 
 .instructions-title {
@@ -4000,4 +4142,396 @@ h1, h2, h3, h4, h5, h6 {
   background-position: center;
   transition: 0s;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.mobile-app-modal .mossbell-container {
+  display: flex; /* Use flex to center its children */
+  flex-direction: column;
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically if desired, or use padding/margins */
+  width: 100%; /* Take full width to allow inner centering */
+  max-width: 400px; /* Max width for the game itself, can be adjusted */
+  margin: auto; /* This will help center the container if its parent is a block or flex container */
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%; /* Ensure it takes up available vertical space */
+}
+
+.mobile-app-modal .screen {
+  width: 100%;
+  max-width: 320px; /* Max width for the screen content */
+  margin-bottom: 20px; /* Space between screen and buttons */
+  /* Remove fixed height to allow content to dictate height */
+}
+
+.mobile-app-modal .button-container {
+  display: flex;
+  justify-content: space-around; /* Distribute buttons evenly */
+  width: 100%;
+  max-width: 300px; /* Control width of button area */
+  margin: 0 auto; /* Center the button container itself */
+}
+
+/* Apply these styles specifically within the mobile app modal */
+.mobile-app-modal .weather-container {
+  padding: 20px; /* Add some padding around the content */
+  width: 100%;
+  max-width: 500px; /* Increase max-width for a larger appearance */
+  margin: auto; /* Center the container */
+  height: auto; /* Allow height to be determined by content or specific values below */
+  min-height: 80vh; /* Ensure it takes up a good portion of the screen */
+  justify-content: center; /* Center content vertically */
+}
+
+.mobile-app-modal .stained-glass {
+  width: 220px; /* Increased size */
+  height: 220px; /* Increased size */
+  margin-bottom: 25px; /* Adjusted margin */
+  border-width: 18px; /* Scale border */
+}
+
+.mobile-app-modal .weather-info {
+  width: 100%;
+  max-width: 380px; /* Increase max-width for info section */
+  padding: 20px; /* Increased padding */
+}
+
+.mobile-app-modal .weather-status {
+  font-size: 28px; /* Larger status text */
+}
+
+.mobile-app-modal .weather-temp {
+  font-size: 24px; /* Larger temperature text */
+}
+
+.mobile-app-modal .forecast {
+  width: 100%;
+  max-width: 380px; /* Match weather-info width */
+}
+
+.mobile-app-modal .day-icon {
+  width: 35px; /* Larger forecast icons */
+  height: 35px;
+}
+
+/* Garden Planner Styling - Cottagecore Redesign REFINED */
+
+/* --- Overall Garden App Container --- */
+.garden-app-layout {
+  display: flex;
+  flex-direction: column; /* Stack title and content-wrapper */
+  height: 100%;
+  font-family: 'Nanum Pen Script', cursive;
+  background-color: #F0E8D8; /* Lighter cream - like linen */
+  /* Attempting linen texture via CSS if image not available */
+  background-image: linear-gradient(45deg, rgba(222,184,135,0.05) 25%, transparent 25%, transparent 75%, rgba(222,184,135,0.05) 75%, rgba(222,184,135,0.05)),
+                    linear-gradient(-45deg, rgba(222,184,135,0.05) 25%, transparent 25%, transparent 75%, rgba(222,184,135,0.05) 75%, rgba(222,184,135,0.05));
+  background-size: 10px 10px;
+  padding: 15px;
+  box-sizing: border-box;
+  gap: 10px;
+  position: relative; /* For pseudo-elements (borders/overlays) */
+}
+
+/* Delicate floral/ivy border - using pseudo-elements with text characters */
+.garden-app-layout::before, .garden-app-layout::after {
+  content: '✿----❀----🌿----✾----❁'; /* Example pattern */
+  position: absolute;
+  color: #9CAF88; /* Sage green */
+  opacity: 0.6;
+  font-size: 0.8em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.garden-app-layout::before {
+  top: 5px;
+  left: 10px;
+  right: 10px;
+  text-align: center;
+}
+.garden-app-layout::after {
+  bottom: 5px;
+  left: 10px;
+  right: 10px;
+  text-align: center;
+}
+/* Simple corner flower detail - placeholder for pressed flowers */
+.garden-app-layout > .corner-flower-tl {
+  position: absolute;
+  top: 15px; left: 15px; content: '🌸'; font-size: 1.2em; opacity: 0.4; transform: rotate(-15deg);
+}
+.garden-app-layout > .corner-flower-tr {
+  position: absolute;
+  top: 15px; right: 15px; content: '🌼'; font-size: 1.2em; opacity: 0.4; transform: rotate(15deg);
+}
+
+
+.garden-main-title {
+  font-family: 'Indie Flower', cursive; /* Whimsical handwritten font */
+  font-size: 2.2em;
+  color: #8B5A2B; /* Darker, warm brown */
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 5px;
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+}
+
+.garden-content-wrapper {
+  display: flex;
+  flex: 1; /* Allow this wrapper to take up remaining space */
+  gap: 10px;
+  overflow: hidden; /* Important for nested flex layouts */
+}
+
+/* --- Left Info Panel (Parchment Style) --- */
+.garden-info-panel {
+  width: 200px;
+  padding: 15px;
+  background-color: #FAF0E6; /* Soft parchment color */
+  border: 2px solid #D2B48C; /* Light tan border */
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-image: url('../assets/textures/paper-texture.png');
+  font-size: 1.1em;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.info-panel-title {
+  font-family: 'Cormorant Garamond', serif; /* Elegant serif for title */
+  font-size: 1.5em;
+  color: #8B4513; /* SaddleBrown */
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #D2B48C;
+}
+
+.info-item {
+  color: #5D4037; /* Darker brown for text */
+  line-height: 1.6;
+}
+
+.info-item strong {
+  color: #A0522D; /* Sienna */
+}
+
+#garden-weather-icon svg { /* Style for weather SVGs if used */
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 5px;
+  fill: #A0522D;
+}
+.seed-icon {
+  font-size: 0.9em;
+  margin-left: 3px;
+}
+
+/* --- Main Content Area (Toolbars & Grid) --- */
+.garden-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Increased gap for better separation */
+  overflow: hidden;
+}
+
+/* --- Action Buttons Toolbar --- */
+.garden-actions-toolbar {
+  display: flex;
+  justify-content: center; /* Center-align buttons */
+  gap: 10px;
+  padding: 10px;
+  background-color: rgba(222, 184, 135, 0.2); /* Softer BurlyWood */
+  border-radius: 12px; /* More rounded */
+  border: 1px solid rgba(222, 184, 135, 0.5);
+}
+
+.garden-action-btn {
+  padding: 10px 15px;
+  border: 1px solid #B8860B; /* DarkGoldenrod */
+  /* Attempting woodgrain with CSS gradient */
+  background-image: linear-gradient(to bottom, #DEB887, #CDAA7D 50%, #D2B48C 50%, #CDAA7D);
+  background-size: 100% 4px; /* Creates subtle stripes */
+  background-color: #D2B48C; /* Base wood color - BurlyWood */ 
+  color: #FFF8DC; /* Soft beige labels - Cornsilk */
+  border-radius: 15px; /* Rounded wooden buttons */
+  cursor: pointer;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 1.25em;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(101, 67, 33, 0.4); /* Wood-like shadow */
+  text-shadow: 1px 1px 1px rgba(101, 67, 33, 0.3);
+}
+
+.garden-action-btn:hover {
+  background-color: #CDAA7D; /* Slightly darker wood */
+  border-color: #8B4513; /* SaddleBrown */
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(101, 67, 33, 0.5);
+}
+
+.garden-action-btn.selected {
+  background-image: linear-gradient(to bottom, #8FBC8F, #79A879 50%, #8FBC8F 50%, #79A879); /* Sage green wood */
+  background-color: #8FBC8F; /* DarkSeaGreen */
+  color: white;
+  border-color: #6D8B74; /* Darker moss */
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* --- Plant Selection Toolbar --- */
+.garden-plant-selection-toolbar {
+  display: flex;
+  justify-content: flex-start; /* Align to start */
+  gap: 10px;
+  padding: 8px;
+  background-color: rgba(245, 222, 179, 0.4); /* Wheat, transparent */
+  border-radius: 8px;
+  border: 1px solid #F5DEB3; /* Wheat border */
+  flex-wrap: wrap; /* Allow items to wrap if not enough space */
+}
+
+.garden-plant-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border: 2px dashed transparent; /* Dashed for a softer look */
+  border-radius: 10px; /* More rounded */
+  cursor: pointer;
+  background-color: rgba(255, 248, 220, 0.5); /* Cornelia - very light yellow/pink */
+  transition: all 0.2s ease;
+  min-width: 70px; /* Ensure items have some width */
+}
+
+.garden-plant-item:hover {
+  border-color: #E7C4B5; /* Cottage Rose from general theme */
+  background-color: rgba(255, 248, 220, 0.8);
+}
+
+.garden-plant-item.selected {
+  border-style: solid;
+  border-color: #9CAF88; /* Sage green */
+  background-color: rgba(156, 175, 136, 0.3); /* Light sage */
+  box-shadow: 0 0 5px rgba(156, 175, 136, 0.5);
+}
+
+.plant-icon-display {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em; /* Make emoji/text icons larger */
+}
+
+/* Style for SVGs if used within plant-icon-display */
+.plant-icon-display svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Specific icon colors for charm */
+/* Tulip: terracotta red-ish pink */
+.garden-plant-item[title*="Tulip"] .plant-icon-display { color: #E2725B; }
+/* Tomato: terracotta red */
+.garden-plant-item[title*="Tomato"] .plant-icon-display { color: #CD5C5C; }
+/* Lavender: lavender purple */
+.garden-plant-item[title*="Lavender"] .plant-icon-display { color: #967BB6; }
+/* Mushroom: earthy brown/sage */
+.garden-plant-item[title*="Mushroom"] .plant-icon-display { color: #8FBC8F; }
+
+
+.plant-name-display {
+  font-size: 0.9em;
+  text-align: center;
+  color: #5D4037;
+  font-family: 'Cormorant Garamond', serif; /* Serif for plant names */
+}
+
+/* --- Garden Plot Grid --- */
+.garden-plot-grid {
+  flex: 1; /* Take remaining space */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* As per COLS = 5 */
+  grid-template-rows: repeat(4, 1fr);    /* As per ROWS = 4 */
+  gap: 8px; /* Softer gap */
+  padding: 10px;
+  background-color: #A0522D; /* Sienna - for the soil background */
+  border-radius: 10px;
+  border: 3px solid #8B4513; /* Darker brown border for depth */
+  background-image: url('../assets/textures/soil-texture.png'); /* If you have a soil texture */
+  overflow-y: auto; /* Scroll if content overflows, though grid should fit */
+}
+
+.garden-plot-cell {
+  background-color: rgba(210, 180, 140, 0.3); /* Tan, slightly transparent */
+  border-radius: 8px; /* Softer cells */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px dashed rgba(139, 69, 19, 0.4); /* SaddleBrown, dashed */
+  font-size: 1.5em; /* For plant icons/stages */
+  position: relative; /* For pseudo-elements like water/wilt */
+}
+
+.garden-plot-cell:hover {
+  background-color: rgba(210, 180, 140, 0.5);
+  border-style: solid;
+}
+
+/* Styling for plant stages within cells - SVGs or text */
+.garden-plot-cell svg {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.garden-plot-cell.watered::after {
+  content: '💧'; /* Water droplet */
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  font-size: 0.5em;
+  opacity: 0.8;
+  animation: pulse-gentle 1.5s infinite;
+}
+
+.garden-plot-cell.wilted {
+  opacity: 0.6;
+  filter: grayscale(80%) sepia(20%);
+}
+.garden-plot-cell.wilted::before {
+  content: '🥀'; /* Wilted flower icon */
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  font-size: 0.5em;
+  opacity: 0.8;
+}
+
+
+/* --- Remove default garden styles that might conflict --- */
+.garden-container, .garden-game, .garden-info-bar, 
+.garden-actions-toolbar > button, /* Previous action toolbar buttons */
+.garden-plant-selection-toolbar .plant-item, /* Previous plant items */
+.garden-plot, .plot-cell, .garden-panel /* Old layout elements */ {
+  /* It's safer to be specific and override, but if these are solely for the old garden, nullify them */
+  /* For example, if .garden-container was the old top-level wrapper: */
+  /* .garden-container { display: none !important; } */
+  /* For now, I'll rely on the new class names and the old ones not being used by garden-template */
+}
+
+/* Adjustments for existing .garden-tool, .plant-btn, etc. if they are still somehow rendered (should not be with JS changes) */
+.garden-tool, .plant-btn { /* Styles for old buttons, ensure they don't interfere or restyle them if needed */
+  /* Example: display: none; if they are truly replaced */
 }

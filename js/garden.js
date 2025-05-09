@@ -1,11 +1,11 @@
-// Garden Planner Game (Enhanced)
+// Garden Planner Game (Enhanced Cottagecore Redesign)
 const ROWS = 4;
 const COLS = 5;
 const PLANTS = [
-  { name: 'Tulip', key: 'tulip', stages: ['seed', 'sprout', 'tulip_mature', 'tulip_harvest'], info: 'Tulip: Grows in 3 days, needs sunlight.' },
-  { name: 'Tomato', key: 'tomato', stages: ['seed', 'sprout', 'tomato_mature', 'tomato_harvest'], info: 'Tomato: Grows in 4 days, needs daily watering.' },
-  { name: 'Lavender', key: 'lavender', stages: ['seed', 'sprout', 'lavender_mature', 'lavender_harvest'], info: 'Lavender: Grows in 5 days, prefers sunny days.' },
-  { name: 'Mushroom', key: 'mushroom', stages: ['seed', 'sprout', 'mushroom_mature', 'mushroom_harvest'], info: 'Mushroom: Grows in 2 days, likes rain.' }
+  { name: 'Tulip', key: 'tulip', stages: ['seed', 'sprout', 'tulip_mature', 'tulip_harvest'], info: 'Tulip: Grows in 3 days, needs sunlight.', icon: '��' },
+  { name: 'Tomato', key: 'tomato', stages: ['seed', 'sprout', 'tomato_mature', 'tomato_harvest'], info: 'Tomato: Grows in 4 days, needs daily watering.', icon: '🍅' },
+  { name: 'Lavender', key: 'lavender', stages: ['seed', 'sprout', 'lavender_mature', 'lavender_harvest'], info: 'Lavender: Grows in 5 days, prefers sunny days.', icon: '💜' },
+  { name: 'Mushroom', key: 'mushroom', stages: ['seed', 'sprout', 'mushroom_mature', 'mushroom_harvest'], info: 'Mushroom: Grows in 2 days, likes rain.', icon: '🍄' }
 ];
 
 let garden = [];
@@ -27,86 +27,115 @@ function initGardenPlanner(container) {
   if (clockInterval) clearInterval(clockInterval);
   clockInterval = setInterval(() => {
     day++;
-    // Change weather every 2 days
     if (day % 2 === 0) {
-      const w = ['sun', 'rain', 'cloud'];
-      weather = w[Math.floor(Math.random() * w.length)];
+      const weatherTypes = ['sun', 'rain', 'cloud'];
+      weather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
     }
     updateGardenGrowth();
     renderGardenUI(container);
-  }, 60000); // 1 min = 1 day
+  }, 60000); // 1 minute = 1 day
   renderGardenUI(container);
 }
 
 function renderGardenUI(container) {
   container.innerHTML = '';
-  // Sidebar
-  const sidebar = document.createElement('div');
-  sidebar.className = 'garden-sidebar';
-  sidebar.innerHTML = `
-    <div class="sidebar-section"><strong>Day:</strong> ${day}</div>
-    <div class="sidebar-section"><strong>Weather:</strong> <span class="weather-icon">${window.GARDEN_SVGS[weather]}</span></div>
-    <div class="sidebar-section"><strong>Water:</strong> ${resources.water}</div>
-    <div class="sidebar-section"><strong>Coins:</strong> ${resources.coins}</div>
-    <div class="sidebar-section"><strong>Seeds:</strong> ${resources.seeds}</div>
+
+  const appLayout = document.createElement('div');
+  appLayout.className = 'garden-app-layout';
+
+  // Add placeholder divs for CSS corner flowers
+  const cornerFlowerTL = document.createElement('div');
+  cornerFlowerTL.className = 'corner-flower-tl';
+  appLayout.appendChild(cornerFlowerTL);
+
+  const cornerFlowerTR = document.createElement('div');
+  cornerFlowerTR.className = 'corner-flower-tr';
+  appLayout.appendChild(cornerFlowerTR);
+  // You can add BR and BL if you make CSS rules for them too.
+
+  const mainTitle = document.createElement('h2');
+  mainTitle.className = 'garden-main-title';
+  mainTitle.textContent = 'My Little Cottage Garden'; 
+  appLayout.appendChild(mainTitle);
+
+  const contentWrapper = document.createElement('div');
+  contentWrapper.className = 'garden-content-wrapper';
+
+  const infoPanel = document.createElement('div');
+  infoPanel.className = 'garden-info-panel';
+  infoPanel.innerHTML = `
+    <h3 class="info-panel-title">Gardener's Log</h3>
+    <div class="info-item"><strong>Day:</strong> <span id="garden-day">${day}</span></div>
+    <div class="info-item"><strong>Weather:</strong> <span id="garden-weather-icon">${window.GARDEN_SVGS[weather] || weather}</span> <span id="garden-weather-text">${weather.charAt(0).toUpperCase() + weather.slice(1)}</span></div>
+    <div class="info-item"><strong>Water:</strong> <span id="garden-water">${resources.water}</span>💧</div>
+    <div class="info-item"><strong>Coins:</strong> <span id="garden-coins">${resources.coins}</span>💰</div>
+    <div class="info-item"><strong>Seeds:</strong> <span id="garden-seeds">${resources.seeds}</span><span class="seed-icon">🌰</span></div>
   `;
-  container.appendChild(sidebar);
-  // Main area
-  const mainArea = document.createElement('div');
-  mainArea.className = 'garden-mainarea';
-  // Toolbar
-  const toolbar = document.createElement('div');
-  toolbar.className = 'garden-toolbar';
-  ['plant','water','harvest','remove'].forEach(tool => {
+  contentWrapper.appendChild(infoPanel);
+
+  const mainContent = document.createElement('div');
+  mainContent.className = 'garden-main-content';
+
+  const actionsToolbar = document.createElement('div');
+  actionsToolbar.className = 'garden-actions-toolbar';
+  ['plant', 'water', 'harvest', 'remove'].forEach(tool => {
     const btn = document.createElement('button');
     btn.textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
-    btn.className = 'garden-tool' + (selectedTool === tool ? ' selected' : '');
+    btn.className = 'garden-action-btn' + (selectedTool === tool ? ' selected' : '');
     btn.onclick = () => { selectedTool = tool; renderGardenUI(container); };
-    toolbar.appendChild(btn);
+    actionsToolbar.appendChild(btn);
   });
-  mainArea.appendChild(toolbar);
-  // Plant selection
-  if (selectedTool === 'plant') {
-    const plantPanel = document.createElement('div');
-    plantPanel.className = 'plant-panel';
-    PLANTS.forEach((plant, idx) => {
-      const btn = document.createElement('button');
-      btn.innerHTML = window.GARDEN_SVGS[plant.stages[2]] + ' ' + plant.name;
-      btn.className = 'plant-btn' + (selectedPlant === idx ? ' selected' : '');
-      btn.title = plant.info;
-      btn.onclick = () => { selectedPlant = idx; renderGardenUI(container); };
-      plantPanel.appendChild(btn);
-    });
-    mainArea.appendChild(plantPanel);
-  }
-  // Garden grid
+  mainContent.appendChild(actionsToolbar);
+
   const grid = document.createElement('div');
-  grid.className = 'garden-grid';
+  grid.className = 'garden-plot-grid';
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const cell = document.createElement('div');
-      cell.className = 'garden-cell';
+      cell.className = 'garden-plot-cell';
       const plot = garden[r][c];
       if (plot) {
         let stageKey = PLANTS[plot.type].stages[plot.stage];
-        cell.innerHTML = window.GARDEN_SVGS[stageKey];
+        cell.innerHTML = window.GARDEN_SVGS[stageKey] || PLANTS[plot.type].icon || '🌱';
         if (plot.wilted) cell.classList.add('wilted');
         if (plot.watered) cell.classList.add('watered');
-        cell.title = PLANTS[plot.type].info + (plot.wilted ? ' (Wilted!)' : '');
+        cell.title = PLANTS[plot.type].name + ' - ' + (plot.wilted ? 'Wilted!' : stageKey);
       } else {
-        cell.innerHTML = window.GARDEN_SVGS.dirt;
+        cell.innerHTML = window.GARDEN_SVGS.dirt || '~';
       }
       cell.onclick = () => handleCellClick(r, c, container);
       grid.appendChild(cell);
     }
   }
-  mainArea.appendChild(grid);
-  container.appendChild(mainArea);
-  // Weather overlay
-  const overlay = document.createElement('div');
-  overlay.className = 'garden-weather-overlay';
-  overlay.innerHTML = window.GARDEN_SVGS[weather];
-  mainArea.appendChild(overlay);
+  mainContent.appendChild(grid);
+
+  if (selectedTool === 'plant') {
+    const plantSelectionToolbar = document.createElement('div');
+    plantSelectionToolbar.className = 'garden-plant-selection-toolbar';
+    PLANTS.forEach((plant, idx) => {
+      const plantItem = document.createElement('div');
+      plantItem.className = 'garden-plant-item' + (selectedPlant === idx ? ' selected' : '');
+      plantItem.title = plant.info;
+      plantItem.onclick = () => { selectedPlant = idx; renderGardenUI(container); };
+      
+      const plantIcon = document.createElement('div');
+      plantIcon.className = 'plant-icon-display';
+      plantIcon.innerHTML = window.GARDEN_SVGS[plant.key + '_mature'] || plant.icon || plant.name.charAt(0);
+
+      const plantName = document.createElement('div');
+      plantName.className = 'plant-name-display';
+      plantName.textContent = plant.name;
+
+      plantItem.appendChild(plantIcon);
+      plantItem.appendChild(plantName);
+      plantSelectionToolbar.appendChild(plantItem);
+    });
+    mainContent.appendChild(plantSelectionToolbar);
+  }
+  
+  contentWrapper.appendChild(mainContent);
+  appLayout.appendChild(contentWrapper);
+  container.appendChild(appLayout);
 }
 
 function handleCellClick(r, c, container) {
@@ -117,9 +146,9 @@ function handleCellClick(r, c, container) {
   } else if (selectedTool === 'water' && plot && !plot.wilted && !plot.watered && resources.water > 0) {
     plot.watered = true;
     resources.water--;
-  } else if (selectedTool === 'harvest' && plot && plot.stage === 3 && !plot.wilted) {
-    resources.coins += 2;
-    resources.seeds++;
+  } else if (selectedTool === 'harvest' && plot && plot.stage === PLANTS[plot.type].stages.length - 1 && !plot.wilted) {
+    resources.coins += PLANTS[plot.type].name === 'Mushroom' ? 3 : 2;
+    resources.seeds += PLANTS[plot.type].name === 'Lavender' ? 2 : 1;
     garden[r][c] = null;
   } else if (selectedTool === 'remove' && plot) {
     garden[r][c] = null;
@@ -131,24 +160,46 @@ function updateGardenGrowth() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const plot = garden[r][c];
-      if (plot) {
-        // Growth logic
+      if (plot) { // Ensure plot exists before trying to access its properties
+        let plantData = PLANTS[plot.type]; // Define here to be available for the whole block
         if (!plot.wilted) {
           plot.days++;
+
           // Weather effects
-          if (weather === 'rain') plot.watered = true;
-          if (weather === 'sun' && plot.stage < 3) plot.days++;
-          // Growth
-          if (plot.watered && plot.stage < 3) {
-            plot.stage++;
-            plot.watered = false;
-          } else if (!plot.watered && plot.stage < 3) {
-            // If not watered, may wilt
-            if (plot.days > 2) plot.wilted = true;
+          if (weather === 'rain') {
+            plot.watered = true;
+          } else if (weather === 'sun' && plantData.name === 'Tulip') {
+            if (plot.stage < plantData.stages.length - 2) plot.days++;
           }
-        } else {
-          // Wilted plants can be revived by watering
-          if (plot.watered) plot.wilted = false;
+
+          let canGrow = plot.watered || plantData.name === 'Mushroom';
+
+          if (canGrow && plot.stage < plantData.stages.length - 2) {
+            let daysToNextStage = 1; // Default, specific logic below overrides
+            if(plantData.name === 'Tulip' && plot.days >= 3) plot.stage++;
+            else if(plantData.name === 'Tomato' && plot.days >= 4) plot.stage++;
+            else if(plantData.name === 'Lavender' && plot.days >= 5) plot.stage++;
+            else if(plantData.name === 'Mushroom' && plot.days >= 2) plot.stage++;
+            // Note: The generic 'else if (plot.days >= daysToNextStage ...)' might be redundant
+            // if all plants have specific growth days.
+
+            if (plot.stage >= plantData.stages.length -2) {
+              plot.stage = plantData.stages.length -2; 
+            }
+            plot.watered = false; 
+          } else if (!plot.watered && plantData.name !== 'Mushroom') {
+            if (plot.days > (plantData.name === 'Tomato' ? 1 : 2) && plot.stage < plantData.stages.length -2) {
+              plot.wilted = true;
+            }
+          }
+          if(plot.stage === plantData.stages.length -2 ) {
+              plot.stage = plantData.stages.length -1; 
+          }
+        } else { // Plot is wilted
+          if (plot.watered && plantData.name !== 'Mushroom') { // Check plantData here too
+            plot.wilted = false;
+            plot.days = 0; 
+          }
         }
       }
     }
