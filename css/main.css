@@ -2465,6 +2465,12 @@ body:not(.night-mode) .mobile-app-modal .day-temp {
   overflow: hidden;
 }
 
+/* Fix for terminal container in dark mode */
+body.night-mode .terminal-container {
+  background-color: #000000 !important;
+  border-radius: 0 0 10px 10px !important;
+}
+
 .terminal-frame {
   flex: 1;
   border: none;
@@ -3767,21 +3773,22 @@ body:not(.night-mode) .mobile-app-modal .day-temp {
 }
 
 .mobile-app-modal .settings-group {
-  background-color: rgba(245, 240, 235, 0.85);
+  background-color: rgba(75, 65, 85, 0.9);
+  border: 2px solid var(--cottage-lavender);
+  color: #E6E1D3;
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 20px;
-  border: 2px solid var(--cottage-sage);
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
 .mobile-app-modal .settings-group-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: 20px;
-  color: #3A2E22;
+  color: #E6E1D3;
   margin-bottom: 15px;
   padding-bottom: 8px;
-  border-bottom: 1px dashed var(--cottage-sage);
+  border-bottom: 1px dashed var(--cottage-lavender);
   font-weight: 600;
 }
 
@@ -3795,7 +3802,7 @@ body:not(.night-mode) .mobile-app-modal .day-temp {
 
 .mobile-app-modal .setting-label {
   font-size: 16px;
-  color: #3A2E22;
+  color: #E6E1D3;
   font-weight: 500;
   font-family: 'Quicksand', sans-serif;
 }
@@ -4534,4 +4541,98 @@ body:not(.night-mode) .mobile-app-modal .day-temp {
 /* Adjustments for existing .garden-tool, .plant-btn, etc. if they are still somehow rendered (should not be with JS changes) */
 .garden-tool, .plant-btn { /* Styles for old buttons, ensure they don't interfere or restyle them if needed */
   /* Example: display: none; if they are truly replaced */
+}
+
+body.night-mode .settings-container {
+  background-color: var(--cottage-beige);
+  background-image: url('../assets/textures/wood-texture.png');
+  background-size: cover;
+  padding: 15px;
+  color: #E6E1D3;
+}
+
+body.night-mode .settings-group {
+  background-color: rgba(75, 65, 85, 0.9);
+  border: 2px solid var(--cottage-lavender);
+  color: #E6E1D3;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+body.night-mode .settings-group-title {
+  color: #E6E1D3;
+  border-bottom: 1px dashed var(--cottage-lavender);
+}
+
+body.night-mode .settings-header {
+  color: #E6E1D3;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+body.night-mode .setting-label {
+  color: #E6E1D3;
+}
+
+body.night-mode .theme-option {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+body.night-mode .theme-option.selected {
+  border: 2px solid var(--cottage-goldenrod);
+  box-shadow: 0 0 8px var(--cottage-goldenrod);
+}
+
+body.night-mode .font-option {
+  background-color: rgba(75, 65, 85, 0.9);
+  color: #E6E1D3;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+body.night-mode .font-option.selected {
+  border: 2px solid var(--cottage-goldenrod);
+  background-color: rgba(95, 85, 105, 0.9);
+}
+
+body.night-mode .cursor-option {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(75, 65, 85, 0.9);
+}
+
+body.night-mode .cursor-option.selected {
+  border: 2px solid var(--cottage-goldenrod);
+  box-shadow: 0 0 8px var(--cottage-goldenrod);
+}
+
+body.night-mode .slider-track {
+  background-color: rgba(55, 45, 65, 0.9);
+  border: 1px solid var(--cottage-lavender);
+}
+
+body.night-mode .slider-handle {
+  background-color: var(--cottage-goldenrod);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+body.night-mode .slider-values {
+  color: #E6E1D3;
+}
+
+body.night-mode .theme-selector, 
+body.night-mode .font-selector, 
+body.night-mode .cursor-selector {
+  background-color: rgba(55, 45, 65, 0.6);
+  border: 1px solid var(--cottage-lavender);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+/* Fixes for dark mode transparent corners */
+body.night-mode .cottage-window {
+  background: rgba(35, 33, 43, 0.95) !important;
+  border-radius: 15px !important;
+  overflow: hidden !important;
+}
+
+body.night-mode .window-titlebar {
+  background: var(--window-titlebar) !important;
+  color: var(--cottage-sepia) !important;
 }
