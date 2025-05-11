@@ -25,6 +25,9 @@
   
   /* Animation Timings */
   --hover-transition: 0.2s ease-out;
+  
+  /* Default Font */
+  font-family: 'Quicksand', sans-serif;
 }
 
 /* THEME: Meadow (default) */
@@ -132,7 +135,7 @@ body, html {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  font-family: 'Quicksand', sans-serif;
+  font-family: inherit;
   color: var(--cottage-sepia);
   background-color: var(--cottage-beige);
   cursor: url('../assets/cursors/leaf-cursor.png'), auto;
@@ -182,6 +185,19 @@ h1, h2, h3, h4, h5, h6 {
 
 .monospace {
   font-family: 'Fira Code', monospace;
+}
+
+/* Font Selection */
+:root[data-font="quicksand"] {
+  font-family: 'Quicksand', sans-serif;
+}
+
+:root[data-font="cormorant"] {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+:root[data-font="nanum"] {
+  font-family: 'Nanum Pen Script', cursive;
 }
 
 /* CottagOS Container */

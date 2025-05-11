@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize topbar actions
   initializeTopbarActions();
   
+  // Initialize font selector
+  initializeFontSelector();
+  
   // Create folder for cursor images
   createFolderIfNeeded('assets/cursors');
 
@@ -563,6 +566,42 @@ function updateAppIconsForTheme() {
       img.src = isNight
         ? `assets/icons/${iconMap[app]}-dark.svg`
         : `assets/icons/${iconMap[app]}.svg`;
+    }
+  });
+}
+
+// Initialize event handlers for font selection
+function initializeFontSelector() {
+  document.addEventListener('windowOpened', function(event) {
+    if (event.detail.app === 'settings') {
+      const fontOptions = document.querySelectorAll('.font-option');
+      if (fontOptions.length > 0) {
+        // First, mark the correct option as selected based on current setting
+        const currentFont = document.documentElement.getAttribute('data-font') || 'quicksand';
+        fontOptions.forEach(option => {
+          option.classList.remove('selected');
+          if (option.getAttribute('data-font') === currentFont) {
+            option.classList.add('selected');
+          }
+        });
+        
+        // Add click event handlers
+        fontOptions.forEach(option => {
+          option.addEventListener('click', function() {
+            const font = this.getAttribute('data-font');
+            // Remove selected class from all options
+            fontOptions.forEach(opt => opt.classList.remove('selected'));
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            // Apply the font
+            document.documentElement.setAttribute('data-font', font);
+            // Save to settings
+            const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
+            settings.font = font;
+            localStorage.setItem('cottagosSettings', JSON.stringify(settings));
+          });
+        });
+      }
     }
   });
 }
