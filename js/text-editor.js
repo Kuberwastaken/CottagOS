@@ -145,6 +145,42 @@
     textBoxes.forEach(box => {
       canvas.appendChild(box.el);
     });
+    
+    // Make sure canvas fills the available height without breaking functionality
+    const updateCanvasHeight = () => {
+      try {
+        const windowElement = editorContainer.closest('.cottage-window');
+        if (!windowElement) return;
+        
+        const windowHeight = windowElement.clientHeight;
+        const toolbarHeight = toolbar.offsetHeight;
+        const titlebarElement = windowElement.querySelector('.window-titlebar');
+        const titlebarHeight = titlebarElement ? titlebarElement.offsetHeight : 0;
+        const availableHeight = windowHeight - toolbarHeight - titlebarHeight;
+        
+        // Don't set a fixed height that could break functionality
+        canvas.style.minHeight = Math.max(320, availableHeight) + 'px';
+      } catch (error) {
+        console.error('Error updating canvas height:', error);
+        // Fallback to a safe minimum height
+        canvas.style.minHeight = '320px';
+      }
+    };
+    
+    // Update height on window resize
+    updateCanvasHeight();
+    
+    try {
+      const resizeObserver = new ResizeObserver(updateCanvasHeight);
+      const windowElement = editorContainer.closest('.cottage-window');
+      if (windowElement) {
+        resizeObserver.observe(windowElement);
+      }
+    } catch (error) {
+      console.error('Error setting up resize observer:', error);
+      // Fallback to window resize event
+      window.addEventListener('resize', updateCanvasHeight);
+    }
   }
 
   // --- Text Box Creation & Editing ---
@@ -162,10 +198,10 @@
     const isNight = document.body.classList.contains('night-mode');
     const defaultColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color') || (isNight ? '#E6E1D3' : '#4A3F35');
     el.style.color = defaultColor.trim();
-    el.style.minWidth = '40px';
-    el.style.minHeight = '24px';
-    el.style.padding = '4px 8px';
-    el.style.borderRadius = '8px';
+    el.style.minWidth = '100px';
+    el.style.minHeight = '40px';
+    el.style.padding = '8px 12px';
+    el.style.borderRadius = '12px';
     el.style.background = 'var(--text-box-bg)';
     el.style.border = '2px solid var(--text-box-border)';
     el.style.outline = 'none';

@@ -537,7 +537,12 @@
             <label class="toolbar-label" for="paint-size">🪶</label>
             <input type="range" id="paint-size" class="paint-size-slider" min="1" max="20" value="4" />
           </div>
+          <div class="toolbar-section file-actions">
+            <button class="tool-btn save-png" title="Save as PNG">💾</button>
+            <button class="tool-btn import-image" title="Import Image">📷</button>
+          </div>
           <button class="tool-btn clear-canvas" title="Clear Canvas">🧹</button>
+          <input type="file" class="file-input" style="display: none;" accept="image/*">
         </div>
         <div class="paint-canvas-container">
           <canvas class="paint-canvas" width="700" height="500"></canvas>

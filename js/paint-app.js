@@ -10,6 +10,9 @@ window.initCottagecorePaintApp = function(mount) {
   const colorPicker = app.querySelector('.paint-color-picker');
   const sizeSlider = app.querySelector('.paint-size-slider');
   const clearBtn = app.querySelector('.clear-canvas');
+  const savePngBtn = app.querySelector('.save-png');
+  const importBtn = app.querySelector('.import-image');
+  const fileInput = app.querySelector('.file-input');
   let currentTool = 'pencil';
   let drawing = false;
   let lastX = 0, lastY = 0;
@@ -30,6 +33,145 @@ window.initCottagecorePaintApp = function(mount) {
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = getCanvasBgColor();
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Save as PNG functionality
+  function saveAsPNG() {
+    try {
+      // Create temporary link element
+      const link = document.createElement('a');
+      // Set download attributes
+      link.download = 'cottageOS-artwork.png';
+      // Convert canvas to data URL
+      const imageData = canvas.toDataURL('image/png');
+      link.href = imageData;
+      // Simulate click to trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Show quick success message
+      const successMsg = document.createElement('div');
+      successMsg.className = 'save-success-message';
+      successMsg.textContent = '✨ Artwork saved! ✨';
+      successMsg.style.position = 'absolute';
+      successMsg.style.top = '50%';
+      successMsg.style.left = '50%';
+      successMsg.style.transform = 'translate(-50%, -50%)';
+      successMsg.style.padding = '10px 20px';
+      successMsg.style.background = 'rgba(156, 175, 136, 0.9)';
+      successMsg.style.color = 'white';
+      successMsg.style.borderRadius = '12px';
+      successMsg.style.fontFamily = "'Indie Flower', cursive";
+      successMsg.style.fontSize = '1.2em';
+      successMsg.style.zIndex = '100';
+      app.appendChild(successMsg);
+      
+      setTimeout(() => {
+        successMsg.style.opacity = '0';
+        successMsg.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => successMsg.remove(), 500);
+      }, 1500);
+    } catch (error) {
+      console.error('Error saving canvas as PNG:', error);
+      alert('Sorry, there was a problem saving your artwork.');
+    }
+  }
+  
+  // Import image functionality
+  function handleImageImport(e) {
+    const file = e.target.files[0];
+    if (!file || !file.type.match('image.*')) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        // Ask the user what they want to do
+        const importDialog = document.createElement('div');
+        importDialog.className = 'import-dialog';
+        importDialog.style.position = 'absolute';
+        importDialog.style.top = '50%';
+        importDialog.style.left = '50%';
+        importDialog.style.transform = 'translate(-50%, -50%)';
+        importDialog.style.background = 'rgba(245, 230, 211, 0.95)';
+        importDialog.style.border = '3px solid #9CAF88';
+        importDialog.style.borderRadius = '16px';
+        importDialog.style.padding = '20px';
+        importDialog.style.zIndex = '200';
+        importDialog.style.width = '280px';
+        importDialog.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+        importDialog.style.fontFamily = "'Indie Flower', cursive";
+        importDialog.style.color = '#4A3F35';
+        
+        importDialog.innerHTML = `
+          <h3 style="text-align:center;margin-top:0;margin-bottom:15px;">Import Image</h3>
+          <p style="margin-bottom:15px;">How would you like to add this image?</p>
+          <div style="display:flex;justify-content:space-around;margin-bottom:10px;">
+            <button id="replace-canvas" style="background:#9CAF88;color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;">Replace Canvas</button>
+            <button id="add-to-canvas" style="background:#E7C4B5;color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;">Add to Canvas</button>
+          </div>
+          <div style="text-align:center;">
+            <button id="cancel-import" style="background:none;color:#4A3F35;border:none;text-decoration:underline;cursor:pointer;font-family:inherit;">Cancel</button>
+          </div>
+        `;
+        
+        app.appendChild(importDialog);
+        
+        // Handle dialog buttons
+        document.getElementById('replace-canvas').addEventListener('click', function() {
+          // Clear the canvas and add the image
+          fillCanvasBg();
+          
+          // Calculate position to center the image
+          const ratio = Math.min(
+            canvas.width / img.width,
+            canvas.height / img.height
+          );
+          const centerX = (canvas.width - img.width * ratio) / 2;
+          const centerY = (canvas.height - img.height * ratio) / 2;
+          
+          ctx.drawImage(
+            img, 
+            centerX, 
+            centerY, 
+            img.width * ratio, 
+            img.height * ratio
+          );
+          
+          importDialog.remove();
+        });
+        
+        document.getElementById('add-to-canvas').addEventListener('click', function() {
+          // Add image at center of canvas, scaled to fit if needed
+          const ratio = Math.min(
+            canvas.width * 0.8 / img.width,
+            canvas.height * 0.8 / img.height
+          );
+          const centerX = (canvas.width - img.width * ratio) / 2;
+          const centerY = (canvas.height - img.height * ratio) / 2;
+          
+          ctx.drawImage(
+            img, 
+            centerX, 
+            centerY, 
+            img.width * ratio, 
+            img.height * ratio
+          );
+          
+          importDialog.remove();
+        });
+        
+        document.getElementById('cancel-import').addEventListener('click', function() {
+          importDialog.remove();
+        });
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset file input so same file can be selected again
+    fileInput.value = '';
   }
 
   // Drawing logic
@@ -204,9 +346,9 @@ window.initCottagecorePaintApp = function(mount) {
   canvas.addEventListener('touchend', endDraw);
 
   // Tool selection
-  toolbar.querySelectorAll('.tool-btn').forEach(btn => {
+  toolbar.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
     btn.addEventListener('click', () => {
-      toolbar.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+      toolbar.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentTool = btn.getAttribute('data-tool');
     });
@@ -227,6 +369,16 @@ window.initCottagecorePaintApp = function(mount) {
   clearBtn.addEventListener('click', () => {
     fillCanvasBg();
   });
+
+  // Save as PNG button click
+  savePngBtn.addEventListener('click', saveAsPNG);
+  
+  // Import image button and file input handling
+  importBtn.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  fileInput.addEventListener('change', handleImageImport);
 
   // Initial canvas background (parchment look, will improve in next steps)
   fillCanvasBg();
