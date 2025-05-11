@@ -1,0 +1,27 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cooking Pot -->
+  <rect x="28" y="65" width="72" height="50" rx="5" ry="5" fill="#555" stroke="#333" stroke-width="2"/>
+  <ellipse cx="64" cy="65" rx="40" ry="10" fill="#777" stroke="#333" stroke-width="2"/>
+  
+  <!-- Pot Handles -->
+  <path d="M 28 75 C 20 75, 20 90, 28 90" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M 100 75 C 108 75, 108 90, 100 90" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Stew -->
+  <ellipse cx="64" cy="65" rx="36" ry="8" fill="#8B5A2B"/>
+  
+  <!-- Steam -->
+  <path d="M 50 55 C 50 45, 45 40, 50 35 C 55 30, 60 35, 60 25" fill="none" stroke="#DDD" stroke-width="2">
+    <animate attributeName="d" values="M 50 55 C 50 45, 45 40, 50 35 C 55 30, 60 35, 60 25;M 50 55 C 50 45, 48 38, 53 35 C 58 32, 55 35, 55 25;M 50 55 C 50 45, 45 40, 50 35 C 55 30, 60 35, 60 25" dur="4s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 70 55 C 70 40, 80 45, 75 35" fill="none" stroke="#DDD" stroke-width="2">
+    <animate attributeName="d" values="M 70 55 C 70 40, 80 45, 75 35;M 70 55 C 70 42, 77 43, 73 33;M 70 55 C 70 40, 80 45, 75 35" dur="3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Mushrooms in stew -->
+  <path d="M 55 60 C 50 60, 45 50, 55 48 C 65 46, 60 60, 55 60" fill="#D2B48C"/>
+  <rect x="54" y="55" width="2" height="5" fill="#D2B48C"/>
+  
+  <path d="M 75 60 C 70 60, 68 52, 75 50 C 82 48, 80 60, 75 60" fill="#A0522D"/>
+  <rect x="74" y="55" width="2" height="5" fill="#A0522D"/>
+</svg> 

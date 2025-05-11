@@ -19,6 +19,22 @@ class RecipeBook {
     const rightPage = document.createElement('div');
     rightPage.classList.add('right-page');
     
+    // Create flipping page element
+    const flippingPage = document.createElement('div');
+    flippingPage.classList.add('flipping-page');
+    const flippingPageContent = document.createElement('div');
+    flippingPageContent.classList.add('flipping-page-content');
+    const flippingPageBack = document.createElement('div');
+    flippingPageBack.classList.add('flipping-page-back');
+    
+    // Add pages to container
+    flippingPage.appendChild(flippingPageContent);
+    flippingPage.appendChild(flippingPageBack);
+    bookPages.appendChild(leftPage);
+    bookPages.appendChild(rightPage);
+    bookPages.appendChild(flippingPage);
+    recipeContentArea.appendChild(bookPages);
+
     // Add page structure
     leftPage.innerHTML = `
       <div class="recipe-title"></div>
@@ -37,9 +53,8 @@ class RecipeBook {
       <div class="page-number">2</div>
     `;
     
-    bookPages.appendChild(leftPage);
-    bookPages.appendChild(rightPage);
-    recipeContentArea.appendChild(bookPages);
+    // Initialize with the same content as the right page
+    flippingPageContent.innerHTML = rightPage.innerHTML;
 
     // Add book styling if not already present
     const styleElement = document.createElement('style');
@@ -48,6 +63,10 @@ class RecipeBook {
         display: flex;
         width: 100%;
         height: 100%;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        position: relative;
+        overflow: hidden;
       }
       .left-page, .right-page {
         flex: 1;
@@ -55,15 +74,88 @@ class RecipeBook {
         padding: 20px;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
         position: relative;
+        backface-visibility: hidden;
       }
       .left-page {
         border-right: 1px solid #d4c1a1;
         border-radius: 5px 0 0 5px;
+        z-index: 1;
       }
       .right-page {
         border-left: 1px solid #d4c1a1;
         border-radius: 0 5px 5px 0;
+        z-index: 0;
       }
+      
+      /* Page flipping effect */
+      .flipping-page {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        overflow: visible;
+        z-index: 2;
+        transform-origin: left center;
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+        border-radius: 0 5px 5px 0;
+      }
+      
+      .flipping-page-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f8f5e6;
+        backface-visibility: hidden;
+        padding: 20px;
+        box-sizing: border-box;
+        border-left: 1px solid #d4c1a1;
+        border-radius: 0 5px 5px 0;
+        overflow: auto;
+      }
+      
+      .flipping-page-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotateY(180deg);
+        background-color: #f8f5e6;
+        backface-visibility: hidden;
+        padding: 20px;
+        box-sizing: border-box;
+        border-right: 1px solid #d4c1a1;
+        border-radius: 5px 0 0 5px;
+        overflow: auto;
+      }
+      
+      .page-flip-next .flipping-page {
+        transform: rotateY(-180deg);
+        box-shadow: -5px 5px 10px rgba(0,0,0,0.1);
+      }
+      
+      /* Page fold shadow effect */
+      .flipping-page::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 15px;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        z-index: 10;
+      }
+      
+      .page-flip-next .flipping-page::after {
+        opacity: 1;
+      }
+      
       .recipe-title {
         font-family: 'Cormorant Garamond', serif;
         font-size: 24px;
@@ -83,6 +175,10 @@ class RecipeBook {
         background-repeat: no-repeat;
         background-position: center;
         margin-bottom: 15px;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 8px;
       }
       .ingredients-title, .instructions-title {
         font-family: 'Cormorant Garamond', serif;
@@ -181,7 +277,7 @@ class RecipeBook {
       {
         title: 'Moonbeam Tea',
         description: 'A calming herbal tea that shimmers with the light of the moon. Perfect for evening contemplation.',
-        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
+        image: 'assets/recipes/moonbeam-tea.svg',
         ingredients: [
           '1 tbsp dried chamomile flowers',
           '1 tsp dried lavender buds',
@@ -201,7 +297,7 @@ class RecipeBook {
       {
         title: 'Forest Mushroom Stew',
         description: 'A hearty vegetarian stew featuring wild mushrooms and root vegetables, perfect for a cozy dinner.',
-        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
+        image: 'assets/recipes/forest-mushroom-stew.svg',
         ingredients: [
           '2 cups assorted wild mushrooms',
           '1 onion, diced',
@@ -224,7 +320,7 @@ class RecipeBook {
       {
         title: 'Lavender Shortbread',
         description: 'Delicate, buttery cookies infused with lavender, perfect with afternoon tea.',
-        image: 'assets/icons/recipes.svg', // Using recipes icon as fallback
+        image: 'assets/recipes/lavender-shortbread.svg',
         ingredients: [
           '1 cup butter, softened',
           '1/2 cup sugar',
@@ -245,100 +341,198 @@ class RecipeBook {
     ];
 
     let currentPagePair = 0;
+    
+    // Create page turn sound effect
+    const pageTurnSound = new Audio('https://cdn.jsdelivr.net/gh/Kuberwastaken/CottagOS@main/assets/sounds/page-turn.mp3');
+    pageTurnSound.volume = 0.3;
 
     function updatePages() {
       const recipeIndex = currentPagePair;
-      const recipe = recipes[recipeIndex];
-
-      if (!recipe) return;
-
-      // Clear previous content cleanly
-      const ingredientsList = leftPage.querySelector('.ingredients-list');
-      const instructionsList = rightPage.querySelector('.instructions-list');
-      
-      if (ingredientsList) {
-        ingredientsList.innerHTML = '<div class="ingredients-title">Ingredients</div>';
+      if (recipeIndex >= recipes.length) {
+        // No more recipes, disable next button
+        nextButton.style.opacity = "0.5";
+        nextButton.style.pointerEvents = "none";
+      } else {
+        nextButton.style.opacity = "1";
+        nextButton.style.pointerEvents = "auto";
       }
       
-      if (instructionsList) {
-        instructionsList.innerHTML = '<div class="instructions-title">Instructions</div>';
+      if (recipeIndex <= 0) {
+        // First page, disable prev button
+        prevButton.style.opacity = "0.5";
+        prevButton.style.pointerEvents = "none";
+      } else {
+        prevButton.style.opacity = "1";
+        prevButton.style.pointerEvents = "auto";
       }
-
-      // Update left page
-      const titleElement = leftPage.querySelector('.recipe-title');
-      const descriptionElement = leftPage.querySelector('.recipe-description');
-      const recipeImageDiv = leftPage.querySelector('.recipe-image');
       
-      if (titleElement) titleElement.textContent = recipe.title;
-      if (descriptionElement) descriptionElement.textContent = recipe.description;
-      
-      if (recipeImageDiv) {
-        try {
-          // Using the recipes icon as a fallback if image doesn't exist
-          recipeImageDiv.style.backgroundImage = `url(${recipe.image})`;
-          recipeImageDiv.style.display = 'block';
-          
-          // Create a backup image element to handle load errors
-          const testImg = new Image();
-          testImg.onerror = () => {
-            // If image fails to load, use a CSS gradient as fallback
-            recipeImageDiv.style.backgroundImage = 'linear-gradient(135deg, #f0e6d2 0%, #d4c1a1 100%)';
-          };
-          testImg.src = recipe.image;
-        } catch (e) {
-          console.error("Error setting recipe image:", e);
-          recipeImageDiv.style.backgroundImage = 'linear-gradient(135deg, #f0e6d2 0%, #d4c1a1 100%)';
+      if (recipeIndex < recipes.length) {
+        const recipe = recipes[recipeIndex];
+        
+        // Update left page (recipe details)
+        leftPage.querySelector('.recipe-title').textContent = recipe.title;
+        leftPage.querySelector('.recipe-description').textContent = recipe.description;
+        
+        // Set the recipe image
+        const recipeImage = leftPage.querySelector('.recipe-image');
+        if (recipe.image && recipe.image.endsWith('.svg')) {
+          // For SVG images, we'll embed them directly
+          fetch(recipe.image)
+            .then(response => response.text())
+            .then(svgContent => {
+              recipeImage.innerHTML = svgContent;
+              recipeImage.style.backgroundImage = 'none';
+              recipeImage.style.display = 'flex';
+              recipeImage.style.justifyContent = 'center';
+              recipeImage.style.alignItems = 'center';
+            })
+            .catch(error => {
+              console.error('Error loading SVG:', error);
+              recipeImage.style.backgroundImage = `url(${recipe.image})`;
+              recipeImage.innerHTML = '';
+            });
+        } else {
+          // For non-SVG images, use background-image
+          recipeImage.style.backgroundImage = `url(${recipe.image})`;
+          recipeImage.innerHTML = '';
         }
-      }
-
-      // Add new ingredients
-      if (ingredientsList && recipe.ingredients) {
+        
+        // Update ingredients
+        const ingredientsList = leftPage.querySelector('.ingredients-list');
+        // Clear existing ingredients, keeping the title
+        const ingredientsTitle = ingredientsList.querySelector('.ingredients-title');
+        ingredientsList.innerHTML = '';
+        ingredientsList.appendChild(ingredientsTitle);
+        
         recipe.ingredients.forEach(ingredient => {
           const item = document.createElement('div');
           item.classList.add('ingredient-item');
-
+          
           const checkbox = document.createElement('div');
           checkbox.classList.add('ingredient-checkbox');
           checkbox.addEventListener('click', function() {
             this.classList.toggle('checked');
           });
-
+          
           const name = document.createElement('div');
           name.classList.add('ingredient-name');
           name.textContent = ingredient;
-
+          
           item.appendChild(checkbox);
           item.appendChild(name);
           ingredientsList.appendChild(item);
         });
-      }
-
-      // Update right page
-      if (instructionsList && recipe.instructions) {
+        
+        // Update right page (instructions)
+        const instructionsList = rightPage.querySelector('.instructions-list');
+        // Clear existing instructions, keeping the title
+        const instructionsTitle = instructionsList.querySelector('.instructions-title');
+        instructionsList.innerHTML = '';
+        instructionsList.appendChild(instructionsTitle);
+        
         recipe.instructions.forEach((instruction, index) => {
           const item = document.createElement('div');
           item.classList.add('instruction-item');
-
-          const step = document.createElement('span');
+          
+          const step = document.createElement('div');
           step.classList.add('instruction-step');
           step.textContent = index + 1;
-
-          const text = document.createElement('span');
+          
+          const text = document.createElement('div');
           text.classList.add('instruction-text');
           text.textContent = instruction;
-
+          
           item.appendChild(step);
           item.appendChild(text);
           instructionsList.appendChild(item);
         });
+        
+        // Update page numbers to reflect recipe index
+        leftPage.querySelector('.page-number').textContent = (recipeIndex * 2) + 1;
+        rightPage.querySelector('.page-number').textContent = (recipeIndex * 2) + 2;
+        
+        // Update flipping page content - create a direct copy of the right page content
+        flippingPageContent.innerHTML = '';
+        
+        // Clone the right page content
+        const rightTitle = document.createElement('div');
+        rightTitle.classList.add('instructions-title');
+        rightTitle.textContent = 'Instructions';
+        flippingPageContent.appendChild(rightTitle);
+        
+        // Clone the instruction list items
+        const instructionItems = Array.from(rightPage.querySelectorAll('.instruction-item'));
+        instructionItems.forEach(item => {
+          flippingPageContent.appendChild(item.cloneNode(true));
+        });
+        
+        // Add page number
+        const pageNum = document.createElement('div');
+        pageNum.classList.add('page-number');
+        pageNum.textContent = (recipeIndex * 2) + 2;
+        pageNum.style.left = '20px';
+        flippingPageContent.appendChild(pageNum);
+        
+        // Check if there's a next recipe to prepare the back of the flipping page
+        if (recipeIndex + 1 < recipes.length) {
+          const nextRecipe = recipes[recipeIndex + 1];
+          
+          // Update the back of the flipping page with the next recipe's content
+          flippingPageBack.innerHTML = '';
+          
+          // Add recipe title
+          const titleElem = document.createElement('div');
+          titleElem.classList.add('recipe-title');
+          titleElem.textContent = nextRecipe.title;
+          flippingPageBack.appendChild(titleElem);
+          
+          // Add recipe description
+          const descElem = document.createElement('div');
+          descElem.classList.add('recipe-description');
+          descElem.textContent = nextRecipe.description;
+          flippingPageBack.appendChild(descElem);
+          
+          // Add recipe image
+          const imgElem = document.createElement('div');
+          imgElem.classList.add('recipe-image');
+          imgElem.style.backgroundImage = `url(${nextRecipe.image})`;
+          flippingPageBack.appendChild(imgElem);
+          
+          // Add ingredients list
+          const ingredientsListElem = document.createElement('div');
+          ingredientsListElem.classList.add('ingredients-list');
+          
+          const ingredientsTitleElem = document.createElement('div');
+          ingredientsTitleElem.classList.add('ingredients-title');
+          ingredientsTitleElem.textContent = 'Ingredients';
+          ingredientsListElem.appendChild(ingredientsTitleElem);
+          
+          nextRecipe.ingredients.forEach(ingredient => {
+            const item = document.createElement('div');
+            item.classList.add('ingredient-item');
+            
+            const checkbox = document.createElement('div');
+            checkbox.classList.add('ingredient-checkbox');
+            
+            const name = document.createElement('div');
+            name.classList.add('ingredient-name');
+            name.textContent = ingredient;
+            
+            item.appendChild(checkbox);
+            item.appendChild(name);
+            ingredientsListElem.appendChild(item);
+          });
+          
+          flippingPageBack.appendChild(ingredientsListElem);
+          
+          // Add page number
+          const pageNumBack = document.createElement('div');
+          pageNumBack.classList.add('page-number');
+          pageNumBack.textContent = (recipeIndex + 1) * 2 + 1;
+          pageNumBack.style.right = '20px';
+          flippingPageBack.appendChild(pageNumBack);
+        }
       }
-
-      // Update page numbers
-      const leftPageNumber = leftPage.querySelector('.page-number');
-      const rightPageNumber = rightPage.querySelector('.page-number');
-      
-      if (leftPageNumber) leftPageNumber.textContent = recipeIndex * 2 + 1;
-      if (rightPageNumber) rightPageNumber.textContent = recipeIndex * 2 + 2;
     }
 
     // Initial page load
@@ -351,6 +545,11 @@ class RecipeBook {
     // Navigation
     prevButton.addEventListener('click', () => {
       if (currentPagePair > 0) {
+        // Play page turn sound
+        pageTurnSound.currentTime = 0;
+        pageTurnSound.play().catch(e => console.log('Sound play error:', e));
+        
+        // Update the content immediately for previous page
         currentPagePair--;
         updatePages();
       }
@@ -358,8 +557,19 @@ class RecipeBook {
 
     nextButton.addEventListener('click', () => {
       if (currentPagePair < recipes.length - 1) {
-        currentPagePair++;
-        updatePages();
+        // Play page turn sound
+        pageTurnSound.currentTime = 0;
+        pageTurnSound.play().catch(e => console.log('Sound play error:', e));
+        
+        // Add page flipping animation class
+        bookPages.classList.add('page-flip-next');
+        
+        // Wait for animation to complete before updating content
+        setTimeout(() => {
+          currentPagePair++;
+          updatePages();
+          bookPages.classList.remove('page-flip-next');
+        }, 600);
       }
     });
   }
