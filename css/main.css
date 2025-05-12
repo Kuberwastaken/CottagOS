@@ -4221,20 +4221,74 @@ body.night-mode .terminal-container {
 
 .mobile-app-modal .weather-status {
   font-size: 28px; /* Larger status text */
+  color: #333333; /* Darker text for better readability on light backgrounds */
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3); /* Subtle text shadow for legibility */
 }
 
 .mobile-app-modal .weather-temp {
   font-size: 24px; /* Larger temperature text */
+  color: #333333; /* Darker text for better readability on light backgrounds */
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3); /* Subtle text shadow for legibility */
+}
+
+/* Ensure text is always visible in both light and dark modes */
+body.night-mode .mobile-app-modal .weather-status,
+body.night-mode .mobile-app-modal .weather-temp {
+  color: #ffffff; /* White text for dark mode */
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3); /* Subtle shadow for better readability */
+}
+
+/* Enhance contrast for the weather info background in light mode */
+body:not(.night-mode) .mobile-app-modal .weather-info {
+  background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque background */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border for definition */
 }
 
 .mobile-app-modal .forecast {
   width: 100%;
   max-width: 380px; /* Match weather-info width */
+  background-color: rgba(255, 255, 255, 0.7); /* Slightly opaque background */
+  border-radius: 8px; /* Rounded corners */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+  padding: 12px 8px; /* Increase padding for better spacing */
+}
+
+.mobile-app-modal .forecast-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px; /* Add padding for better touch targets */
+}
+
+.mobile-app-modal .day-name {
+  font-size: 14px; /* Increase font size for better visibility */
+  margin-bottom: 8px; /* Add spacing between elements */
+  color: #333333; /* Darker text for better contrast */
+  font-weight: 600; /* Make text bolder */
 }
 
 .mobile-app-modal .day-icon {
   width: 35px; /* Larger forecast icons */
   height: 35px;
+  margin-bottom: 8px; /* Add spacing between icon and temperature */
+}
+
+.mobile-app-modal .day-temp {
+  font-size: 14px; /* Increase font size for better visibility */
+  color: #333333; /* Darker text for better contrast */
+  font-weight: 600; /* Make text bolder */
+}
+
+/* Dark mode adjustments for forecast */
+body.night-mode .mobile-app-modal .forecast {
+  background-color: rgba(0, 0, 0, 0.2); /* Subtle dark background */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border for dark mode */
+}
+
+body.night-mode .mobile-app-modal .day-name,
+body.night-mode .mobile-app-modal .day-temp {
+  color: #ffffff; /* White text for better visibility in dark mode */
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); /* Add shadow for better readability */
 }
 
 /* Garden Planner Styling - Cottagecore Redesign REFINED */
@@ -4697,3 +4751,89 @@ body.night-mode .mobile-app-back-btn:active {
 }
 
 /* Mobile SYNEVA app styles */
+
+/* Enhanced mobile responsiveness for weather app */
+@media (max-width: 480px) {
+  .mobile-app-modal .weather-container {
+    padding: 15px 10px;
+    min-height: auto; /* Allow height to adjust to content */
+  }
+  
+  .mobile-app-modal .stained-glass {
+    width: 180px; /* Smaller on very small screens */
+    height: 180px;
+    margin-bottom: 15px;
+  }
+  
+  .mobile-app-modal .weather-status {
+    font-size: 24px; /* Slightly smaller on very small screens */
+  }
+  
+  .mobile-app-modal .weather-temp {
+    font-size: 20px; /* Slightly smaller on very small screens */
+  }
+  
+  .mobile-app-modal .forecast {
+    padding: 8px 5px;
+    flex-wrap: wrap; /* Allow forecast days to wrap on very small screens */
+    justify-content: center;
+  }
+  
+  .mobile-app-modal .forecast-day {
+    padding: 5px;
+    min-width: 60px; /* Ensure minimum touch target size */
+    margin: 0 2px;
+  }
+}
+
+/* Fix for older iOS devices and better touch targets */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-app-modal .forecast-day {
+    padding: 10px; /* Larger touch targets for touch devices */
+  }
+  
+  .mobile-app-modal .day-icon {
+    width: 40px; /* Even larger touch targets */
+    height: 40px;
+  }
+}
+
+/* Comprehensive fix for text visibility in weather app */
+body:not(.night-mode) .mobile-app-modal .weather-container *,
+body:not(.night-mode) .mobile-app-modal .weather-animation *,
+body:not(.night-mode) .mobile-app-modal .weather-info *,
+body:not(.night-mode) .mobile-app-modal .forecast * {
+  color: #333333 !important; /* Force dark text in light mode */
+  text-shadow: none !important; /* Remove any shadows that might affect legibility */
+}
+
+body:not(.night-mode) .mobile-app-modal .weather-status,
+body:not(.night-mode) .mobile-app-modal .weather-temp,
+body:not(.night-mode) .mobile-app-modal .day-name,
+body:not(.night-mode) .mobile-app-modal .day-temp,
+body:not(.night-mode) .mobile-app-modal .detail-label,
+body:not(.night-mode) .mobile-app-modal .detail-value {
+  color: #333333 !important; /* Force dark text with higher specificity */
+  font-weight: 600 !important; /* Make text bolder for better visibility */
+}
+
+/* Ensure text contrast in both modes */
+.mobile-app-modal .weather-info {
+  background-color: rgba(255, 255, 255, 0.85); /* More opaque background */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+body.night-mode .mobile-app-modal .weather-info {
+  background-color: rgba(0, 0, 0, 0.5); /* Darker background in night mode */
+}
+
+/* Fix accessibility issues with minimum contrast ratio */
+.mobile-app-modal .weather-container a,
+.mobile-app-modal .weather-container button {
+  color: #0066cc !important; /* Accessible blue for interactive elements */
+}
+
+body.night-mode .mobile-app-modal .weather-container a,
+body.night-mode .mobile-app-modal .weather-container button {
+  color: #66b0ff !important; /* Lighter blue for night mode */
+}
