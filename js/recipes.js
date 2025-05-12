@@ -671,17 +671,17 @@ class RecipeBook {
         recipe.ingredients.forEach(ingredient => {
           const item = document.createElement('div');
           item.classList.add('ingredient-item');
-          
+
           const checkbox = document.createElement('div');
           checkbox.classList.add('ingredient-checkbox');
           checkbox.addEventListener('click', function() {
             this.classList.toggle('checked');
           });
-          
+
           const name = document.createElement('div');
           name.classList.add('ingredient-name');
           name.textContent = ingredient;
-          
+
           item.appendChild(checkbox);
           item.appendChild(name);
           ingredientsList.appendChild(item);
@@ -697,20 +697,20 @@ class RecipeBook {
         recipe.instructions.forEach((instruction, index) => {
           const item = document.createElement('div');
           item.classList.add('instruction-item');
-          
+
           const step = document.createElement('div');
           step.classList.add('instruction-step');
           step.textContent = index + 1;
-          
+
           const text = document.createElement('div');
           text.classList.add('instruction-text');
           text.textContent = instruction;
-          
+
           item.appendChild(step);
           item.appendChild(text);
           instructionsList.appendChild(item);
         });
-        
+
         // Update page numbers to reflect recipe index
         leftPage.querySelector('.page-number').textContent = (recipeIndex * 2) + 1;
         rightPage.querySelector('.page-number').textContent = (recipeIndex * 2) + 2;
@@ -892,8 +892,8 @@ class RecipeBook {
         
         // Wait for animation to complete before updating content
         setTimeout(() => {
-          currentPagePair++;
-          updatePages();
+        currentPagePair++;
+        updatePages();
           bookPages.classList.remove('page-flip-next');
         }, 600);
       }

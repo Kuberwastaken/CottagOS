@@ -16,7 +16,7 @@ let weather = 'sun';
 let day = 1;
 let clockInterval = null;
 let isMobile = false;
-let isLogExpanded = true;
+let isLogExpanded = false;
 
 function initGardenPlanner(container) {
   // Initialize garden state
@@ -37,14 +37,25 @@ function initGardenPlanner(container) {
     renderGardenUI(container);
   }, 60000); // 1 minute = 1 day
   
-  // Check if we're in mobile mode
-  isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
+  // Better mobile detection
+  isMobile = window.innerWidth <= 768 || 
+             document.body.classList.contains('mobile-mode') || 
+             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Set log expanded state based on device
+  isLogExpanded = !isMobile; // Expanded on desktop, collapsed on mobile
   
   // Add window resize listener to update mobile status
   window.addEventListener('resize', () => {
     const wasMobile = isMobile;
-    isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
+    isMobile = window.innerWidth <= 768 || 
+               document.body.classList.contains('mobile-mode') ||
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Update log expanded state if device type changed
     if (wasMobile !== isMobile) {
+      // Only auto-collapse/expand when the device type changes and the user hasn't manually toggled
+      isLogExpanded = !isMobile;
       renderGardenUI(container);
     }
   });
@@ -71,10 +82,15 @@ function renderGardenUI(container) {
     }
     
     /* Mobile-specific styles */
-    @media (max-width: 768px) {
+    @media (max-width: 768px), 
+    (max-device-width: 768px),
+    (pointer: coarse) {
       .garden-app-layout {
         padding: 0;
         overflow-y: auto;
+        max-height: 100%;
+        min-height: 100%;
+        touch-action: pan-y;
       }
       
       .garden-main-title {
@@ -88,12 +104,12 @@ function renderGardenUI(container) {
       
       .garden-info-panel {
         width: 100% !important;
-        margin: 0 auto 15px !important;
+        margin: 0 auto 8px !important;
         border-radius: 12px !important;
         max-height: ${isLogExpanded ? 'none' : '48px'} !important;
         overflow: hidden;
         transition: all 0.3s ease-in-out;
-        max-width: 90% !important;
+        max-width: 94% !important;
         position: relative;
         padding: ${isLogExpanded ? '15px' : '10px 15px'} !important;
       }
@@ -139,9 +155,10 @@ function renderGardenUI(container) {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 0;
+        padding: 5px 0;
         margin: 0;
         height: 100%;
+        min-height: 44px; /* Minimum touch target size */
       }
       
       .info-panel-title {
@@ -165,33 +182,58 @@ function renderGardenUI(container) {
       
       .garden-plot-grid {
         margin: 0 auto !important;
-        width: 85% !important;
+        width: 94% !important;
         max-width: 340px !important;
-        aspect-ratio: 5/4 !important;
+        gap: 8px !important;
+      }
+      
+      .garden-plot-cell {
+        min-height: 60px !important;
+        min-width: 60px !important;
+        font-size: 1.5em !important; /* Larger plant icons */
+        touch-action: manipulation;
       }
       
       .garden-actions-toolbar {
         margin: 10px auto !important;
-        width: 85% !important;
-        gap: 5px !important;
+        width: 94% !important;
+        gap: 8px !important;
       }
       
       .garden-action-btn {
         flex: 1 !important;
-        padding: 8px 4px !important;
-        font-size: 0.9rem !important;
+        padding: 12px 8px !important; /* Larger touch target */
+        min-height: 44px !important; /* Minimum touch target size */
+        font-size: 1rem !important;
+        touch-action: manipulation;
       }
       
       .garden-plant-selection-toolbar {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         margin: 10px auto !important;
-        width: 85% !important;
+        width: 94% !important;
+        gap: 8px !important;
       }
       
       .garden-plant-item {
         margin: 4px !important;
-        padding: 8px 4px !important;
+        padding: 12px 8px !important; /* Larger touch target */
+        min-height: 80px !important; /* Minimum touch target size */
+        touch-action: manipulation;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+      .plant-icon-display {
+        font-size: 2rem !important;
+        margin-bottom: 8px !important;
+      }
+      
+      .plant-name-display {
+        font-size: 1rem !important;
       }
     }
     
@@ -554,10 +596,17 @@ function renderGardenUI(container) {
     toggleButton.appendChild(collapsedInfo);
   }
   
+  // Add click and touch event listeners
   toggleButton.addEventListener('click', () => {
     isLogExpanded = !isLogExpanded;
     renderGardenUI(container);
   });
+  toggleButton.addEventListener('touchend', (e) => {
+    e.preventDefault(); // Prevent double-tap zoom
+    isLogExpanded = !isLogExpanded;
+    renderGardenUI(container);
+  });
+  
   infoPanel.appendChild(toggleButton);
   
   const infoPanelTitle = document.createElement('h3');
@@ -666,6 +715,9 @@ function renderGardenUI(container) {
     for (let c = 0; c < COLS; c++) {
       const cell = document.createElement('div');
       cell.className = 'garden-plot-cell';
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('aria-label', 'Garden cell');
+      
       const plot = garden[r][c];
       if (plot) {
         let stageKey = PLANTS[plot.type].stages[plot.stage];
@@ -673,10 +725,19 @@ function renderGardenUI(container) {
         if (plot.wilted) cell.classList.add('wilted');
         if (plot.watered) cell.classList.add('watered');
         cell.title = PLANTS[plot.type].name + ' - ' + (plot.wilted ? 'Wilted!' : stageKey);
+        cell.setAttribute('aria-label', PLANTS[plot.type].name + ' ' + (plot.wilted ? 'Wilted!' : stageKey));
       } else {
         cell.innerHTML = window.GARDEN_SVGS.dirt || '~';
+        cell.setAttribute('aria-label', 'Empty garden plot');
       }
-      cell.onclick = () => handleCellClick(r, c, container);
+      
+      // Add both click and touchend event handlers for better mobile support
+      cell.addEventListener('click', () => handleCellClick(r, c, container));
+      cell.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent double-tap zoom
+        handleCellClick(r, c, container);
+      });
+      
       grid.appendChild(cell);
     }
   }
@@ -689,7 +750,19 @@ function renderGardenUI(container) {
     const btn = document.createElement('button');
     btn.textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
     btn.className = 'garden-action-btn' + (selectedTool === tool ? ' selected' : '');
-    btn.onclick = () => { selectedTool = tool; renderGardenUI(container); };
+    btn.setAttribute('aria-pressed', selectedTool === tool ? 'true' : 'false');
+    
+    // Add both click and touchend event handlers
+    btn.addEventListener('click', () => {
+      selectedTool = tool;
+      renderGardenUI(container);
+    });
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault(); // Prevent double-tap zoom 
+      selectedTool = tool;
+      renderGardenUI(container);
+    });
+    
     actionsToolbar.appendChild(btn);
   });
   mainContent.appendChild(actionsToolbar);
@@ -702,7 +775,19 @@ function renderGardenUI(container) {
       const plantItem = document.createElement('div');
       plantItem.className = 'garden-plant-item' + (selectedPlant === idx ? ' selected' : '');
       plantItem.title = plant.info;
-      plantItem.onclick = () => { selectedPlant = idx; renderGardenUI(container); };
+      plantItem.setAttribute('role', 'button');
+      plantItem.setAttribute('aria-pressed', selectedPlant === idx ? 'true' : 'false');
+      
+      // Add both click and touchend event handlers
+      plantItem.addEventListener('click', () => {
+        selectedPlant = idx;
+        renderGardenUI(container);
+      });
+      plantItem.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent double-tap zoom
+        selectedPlant = idx;
+        renderGardenUI(container);
+      });
       
       const plantIcon = document.createElement('div');
       plantIcon.className = 'plant-icon-display';
@@ -722,20 +807,67 @@ function renderGardenUI(container) {
   contentWrapper.appendChild(mainContent);
   appLayout.appendChild(contentWrapper);
   container.appendChild(appLayout);
+  
+  // Enable sound effects for garden actions
+  addSoundEffects(container);
 }
 
+// Add sound effects to garden actions
+function addSoundEffects(container) {
+  // Get the action buttons
+  const plantBtn = container.querySelector('.garden-action-btn:nth-child(1)');
+  const waterBtn = container.querySelector('.garden-action-btn:nth-child(2)');
+  const harvestBtn = container.querySelector('.garden-action-btn:nth-child(3)');
+  
+  // Add sound effects when buttons are clicked
+  if (plantBtn && window.soundManager) {
+    plantBtn.addEventListener('click', () => {
+      window.soundManager.play('garden-plant');
+    });
+  }
+  
+  if (waterBtn && window.soundManager) {
+    waterBtn.addEventListener('click', () => {
+      window.soundManager.play('garden-water');
+    });
+  }
+  
+  if (harvestBtn && window.soundManager) {
+    harvestBtn.addEventListener('click', () => {
+      window.soundManager.play('garden-harvest');
+    });
+  }
+}
+
+// Modified cell click handler to include sound effects
 function handleCellClick(r, c, container) {
   const plot = garden[r][c];
+  
   if (selectedTool === 'plant' && !plot && resources.seeds > 0) {
     garden[r][c] = { type: selectedPlant, stage: 0, watered: false, wilted: false, days: 0 };
     resources.seeds--;
+    
+    // Play planting sound
+    if (window.soundManager) {
+      window.soundManager.play('garden-plant');
+    }
   } else if (selectedTool === 'water' && plot && !plot.wilted && !plot.watered && resources.water > 0) {
     plot.watered = true;
     resources.water--;
+    
+    // Play watering sound
+    if (window.soundManager) {
+      window.soundManager.play('garden-water');
+    }
   } else if (selectedTool === 'harvest' && plot && plot.stage === PLANTS[plot.type].stages.length - 1 && !plot.wilted) {
     resources.coins += PLANTS[plot.type].name === 'Mushroom' ? 3 : 2;
     resources.seeds += PLANTS[plot.type].name === 'Lavender' ? 2 : 1;
     garden[r][c] = null;
+    
+    // Play harvesting sound
+    if (window.soundManager) {
+      window.soundManager.play('garden-harvest');
+    }
   } else if (selectedTool === 'remove' && plot) {
     garden[r][c] = null;
   }

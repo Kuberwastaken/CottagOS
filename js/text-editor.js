@@ -62,6 +62,18 @@
         redo();
       }
     });
+
+    const textarea = mountNode.querySelector('.text-editor-textarea');
+    
+    // Add typing sound effect
+    if (textarea && window.soundManager) {
+      textarea.addEventListener('input', function() {
+        // Only play if sound effects are enabled
+        if (window.soundManager.soundsEnabled) {
+          window.soundManager.startTypingSound();
+        }
+      });
+    }
   }
 
   // --- Toolbar Rendering ---
