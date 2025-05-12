@@ -143,6 +143,75 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     observer.observe(mobileModal, { childList: true, subtree: true });
   }
+
+  // Play system startup sound
+  if (window.soundManager) {
+    window.soundManager.play('system-startup');
+    // Initial BGM play is handled within SoundManager.init()
+  }
+
+  // Add theme toggle sound - only add the sound play, switching is in initializeThemeToggle
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle && window.soundManager) {
+    themeToggle.addEventListener('click', function() {
+      // Play the toggle sound - BGM handled by initializeThemeToggle
+      window.soundManager.play('theme-toggle');
+    });
+  }
+
+  // Add desktop icon click sounds
+  if (window.soundManager) {
+    // Desktop icons
+    document.querySelectorAll('.desktop-icon').forEach(icon => {
+      icon.addEventListener('click', function() {
+        window.soundManager.play('icon-click');
+      });
+    });
+    
+    // Mobile app icons
+    document.querySelectorAll('.mobile-app-icon, .mobile-dock-icon').forEach(icon => {
+      icon.addEventListener('click', function() {
+        window.soundManager.play('icon-click');
+      });
+    });
+  }
+
+  // Add typing sound to text inputs
+  if (window.soundManager) {
+    document.addEventListener('input', function(e) {
+      if (e.target.tagName === 'INPUT' && e.target.type === 'text' || 
+          e.target.tagName === 'TEXTAREA') {
+        window.soundManager.startTypingSound();
+      }
+    });
+  }
+
+  // Add button click sounds
+  if (window.soundManager) {
+    document.addEventListener('click', function(e) {
+      // Only play button-click sound for settings elements
+      const isSettingsElement = e.target.closest('.settings-container') && 
+                               (e.target.tagName === 'BUTTON' || 
+                                e.target.classList.contains('button') || 
+                                e.target.closest('button') ||
+                                e.target.closest('.button') ||
+                                e.target.classList.contains('toggle-switch') || 
+                                e.target.closest('.toggle-switch') ||
+                                e.target.classList.contains('theme-option') ||
+                                e.target.closest('.theme-option') ||
+                                e.target.classList.contains('font-option') ||
+                                e.target.closest('.font-option') ||
+                                e.target.classList.contains('cursor-option') ||
+                                e.target.closest('.cursor-option'));
+                      
+      if (isSettingsElement) {
+        window.soundManager.play('button-click');
+      }
+      
+      // Note: Desktop icon click sounds are already handled separately
+      // in the desktop icon click event handlers above
+    });
+  }
 });
 
 // Initialize Theme based on time of day
@@ -470,15 +539,27 @@ function openApp(appName) {
 function initializeThemeToggle() {
   const themeToggle = document.getElementById('theme-toggle');
   themeToggle.addEventListener('click', function() {
-    const isNight = document.body.classList.toggle('night-mode');
-    if (isNight) {
-      this.classList.add('night');
-    } else {
-      this.classList.remove('night');
+    // First, toggle the class on the body and the button itself
+    const isNowNight = document.body.classList.toggle('night-mode');
+    this.classList.toggle('night', isNowNight);
+
+    // Play the toggle sound
+    if (window.soundManager) {
+      window.soundManager.play('theme-toggle');
     }
+
+    // Determine the theme string for BGM
+    const themeForBGM = isNowNight ? 'night' : 'day';
+    console.log(`Theme toggled. isNowNight: ${isNowNight}. Playing BGM: ${themeForBGM}`); // Debug log
+
+    // Switch BGM
+    if (window.soundManager) {
+      window.soundManager.playBGM(themeForBGM);
+    }
+    
     // Also update settings in localStorage
     const settings = JSON.parse(localStorage.getItem('cottagosSettings') || '{}');
-    settings.nightMode = isNight;
+    settings.nightMode = isNowNight;
     localStorage.setItem('cottagosSettings', JSON.stringify(settings));
     updateAppIconsForTheme();
   });
@@ -901,15 +982,8 @@ function attachMobileHomeAppHandler() {
         modalContent.className = 'mobile-app-modal-content';
         modalContent.appendChild(template.content.cloneNode(true));
         
-        // Add close button to return to home screen
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'mobile-app-close-btn';
-        closeBtn.innerHTML = '←';
-        closeBtn.addEventListener('click', function() {
-          mobileModal.classList.remove('active');
-          mobileModal.innerHTML = '';
-        });
-        modalContent.appendChild(closeBtn);
+        // Add back button to the modal content
+        addMobileBackButton(modalContent);
         
         mobileModal.appendChild(modalContent);
         
@@ -933,22 +1007,21 @@ function attachMobileHomeAppHandler() {
           } else {
             console.error('initGardenPlanner function not found in window object'); // DEBUG
           }
-        } else {
-          // For other apps, use the standard pattern
-          console.log(`Looking for init function for ${appName}`); // DEBUG
-          const initFn = window['init' + appName.charAt(0).toUpperCase() + appName.slice(1)];
-          if (typeof initFn === 'function') {
-            const container = modalContent.querySelector('.' + appName + '-container') || modalContent;
-            console.log(`Calling init function for ${appName}`); // DEBUG
-            try {
-              initFn(container);
-              console.log(`${appName} initialized successfully`); // DEBUG
-            } catch (error) {
-              console.error(`Error initializing ${appName}:`, error); // DEBUG
-            }
-          } else {
-            console.warn(`No init function found for ${appName}`); // DEBUG
+        }
+        // For other apps, use the standard pattern
+        console.log(`Looking for init function for ${appName}`); // DEBUG
+        const initFn = window['init' + appName.charAt(0).toUpperCase() + appName.slice(1)];
+        if (typeof initFn === 'function') {
+          const container = modalContent.querySelector('.' + appName + '-container') || modalContent;
+          console.log(`Calling init function for ${appName}`); // DEBUG
+          try {
+            initFn(container);
+            console.log(`${appName} initialized successfully`); // DEBUG
+          } catch (error) {
+            console.error(`Error initializing ${appName}:`, error); // DEBUG
           }
+        } else {
+          console.warn(`No init function found for ${appName}`); // DEBUG
         }
       } else {
         console.error('Template not found for:', appName); // DEBUG Error
@@ -1116,20 +1189,8 @@ function initSyneva(container) {
   const input = container.querySelector('.syneva-input');
   const typingIndicator = container.querySelector('.typing-indicator');
   
-  // Add back button if not already present
-  if (!container.querySelector('.mobile-app-close-btn')) {
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'mobile-app-close-btn';
-    closeBtn.innerHTML = '←';
-    closeBtn.addEventListener('click', function() {
-      const mobileModal = document.querySelector('.mobile-app-modal');
-      if (mobileModal) {
-        mobileModal.classList.remove('active');
-        mobileModal.innerHTML = '';
-      }
-    });
-    container.appendChild(closeBtn);
-  }
+  // Add back button using helper function
+  addMobileBackButton(container);
   
   // Initialize input handler
   if (input && output && typingIndicator) {
@@ -1231,4 +1292,28 @@ function generateSynevaResponse(message) {
   ];
   
   return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
+
+// Add consistent back button to mobile apps
+function addMobileBackButton(container) {
+  // Check if back button already exists
+  if (!container.querySelector('.mobile-app-back-btn')) {
+    const backBtn = document.createElement('button');
+    backBtn.className = 'mobile-app-back-btn';
+    backBtn.innerHTML = '←';
+    backBtn.title = 'Return to Home';
+    backBtn.setAttribute('aria-label', 'Return to Home');
+    
+    // Add click event to return to home screen
+    backBtn.addEventListener('click', function() {
+      const mobileModal = document.querySelector('.mobile-app-modal');
+      if (mobileModal) {
+        mobileModal.classList.remove('active');
+        mobileModal.innerHTML = '';
+      }
+    });
+    
+    // Insert at the beginning of the container
+    container.insertAdjacentElement('afterbegin', backBtn);
+  }
 }

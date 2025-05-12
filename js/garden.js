@@ -793,4 +793,67 @@ function updateGardenGrowth() {
 }
 
 // Expose init function for window manager
-window.initGardenPlanner = initGardenPlanner; 
+window.initGardenPlanner = initGardenPlanner;
+
+// Add garden sound effects
+function initializeGarden(windowNode) {
+  // ... existing initialization code ...
+  
+  // Add planting sound
+  function playPlantingSound() {
+    if (window.soundManager) {
+      window.soundManager.play('garden-plant');
+    }
+  }
+  
+  // Add watering sound
+  function playWateringSound() {
+    if (window.soundManager) {
+      window.soundManager.play('garden-water');
+    }
+  }
+  
+  // Add harvesting sound
+  function playHarvestingSound() {
+    if (window.soundManager) {
+      window.soundManager.play('garden-harvest');
+    }
+  }
+  
+  // Integrate sounds with garden actions
+  // This would need to be connected to your existing garden actions
+  // For example:
+  
+  // For planting:
+  gardenContainer.addEventListener('plant', function(e) {
+    playPlantingSound();
+  });
+  
+  // For watering:
+  gardenContainer.addEventListener('water', function(e) {
+    playWateringSound();
+  });
+  
+  // For harvesting:
+  gardenContainer.addEventListener('harvest', function(e) {
+    playHarvestingSound();
+  });
+  
+  // If you have buttons for these actions:
+  const plantButtons = windowNode.querySelectorAll('.plant-button');
+  plantButtons.forEach(button => {
+    button.addEventListener('click', playPlantingSound);
+  });
+  
+  const waterButtons = windowNode.querySelectorAll('.water-button');
+  waterButtons.forEach(button => {
+    button.addEventListener('click', playWateringSound);
+  });
+  
+  const harvestButtons = windowNode.querySelectorAll('.harvest-button');
+  harvestButtons.forEach(button => {
+    button.addEventListener('click', playHarvestingSound);
+  });
+  
+  // ... rest of existing code ...
+} 

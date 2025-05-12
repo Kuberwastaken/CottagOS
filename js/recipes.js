@@ -38,6 +38,9 @@ class RecipeBook {
     // Add page structure
     leftPage.innerHTML = `
       <div class="recipe-title"></div>
+      <div class="bookmark-ribbon">
+        <div class="bookmark-icon">❤</div>
+      </div>
       <div class="recipe-description"></div>
       <div class="recipe-image"></div>
       <div class="ingredients-list">
@@ -85,6 +88,60 @@ class RecipeBook {
         border-left: 1px solid #d4c1a1;
         border-radius: 0 5px 5px 0;
         z-index: 0;
+      }
+      
+      /* Bookmark styling */
+      .bookmark-ribbon {
+        position: absolute;
+        top: -5px;
+        right: 30px;
+        width: 30px;
+        height: 60px;
+        background-color: #e8c4c4;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        transform-origin: center top;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        z-index: 5;
+        opacity: 0.7;
+      }
+      
+      .bookmark-ribbon.active {
+        background-color: #d88c8c;
+        height: 70px;
+        opacity: 1;
+      }
+      
+      .bookmark-ribbon:hover {
+        transform: translateY(5px);
+      }
+      
+      .bookmark-icon {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 16px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+      
+      .bookmark-view-button {
+        background-color: #9caf88;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 5px 15px;
+        font-family: 'Quicksand', sans-serif;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.2s ease;
+      }
+      
+      .bookmark-view-button:hover {
+        background-color: #7d9163;
       }
       
       /* Page flipping effect */
@@ -269,6 +326,113 @@ class RecipeBook {
       .page-button:hover {
         background-color: #7d9163;
       }
+      
+      /* Bookmarked recipes view */
+      .bookmarked-recipes-view {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(248, 245, 230, 0.97);
+        z-index: 10;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+      }
+      
+      .bookmarked-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 24px;
+        color: #5a4a42;
+        margin-bottom: 20px;
+        text-align: center;
+        border-bottom: 2px solid #d4c1a1;
+        padding-bottom: 10px;
+        width: 80%;
+      }
+      
+      .bookmarked-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        overflow-y: auto;
+        max-height: calc(100% - 100px);
+        width: 100%;
+        padding: 0 10px;
+      }
+      
+      .bookmarked-item {
+        width: calc(50% - 15px);
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .bookmarked-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+      }
+      
+      .bookmarked-item-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 18px;
+        color: #5a4a42;
+        margin-bottom: 5px;
+      }
+      
+      .bookmarked-item-desc {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 12px;
+        color: #7d6b5d;
+        height: 36px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      
+      .bookmarked-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: #d88c8c;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: background-color 0.2s ease;
+      }
+      
+      .bookmarked-close:hover {
+        background-color: #c57979;
+      }
+      
+      .bookmark-indicator {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        background-color: #d88c8c;
+        border-radius: 0 0 0 8px;
+      }
     `;
     document.head.appendChild(styleElement);
 
@@ -292,7 +456,8 @@ class RecipeBook {
           'Let steep for 5-7 minutes while contemplating the day\'s blessings.',
           'Remove infuser, add honey to taste, and sprinkle with silver dust if using.',
           'Sip slowly while watching the stars through your window.'
-        ]
+        ],
+        bookmarked: false
       },
       {
         title: 'Forest Mushroom Stew',
@@ -315,7 +480,8 @@ class RecipeBook {
           'Pour in vegetable broth and simmer for 30 minutes.',
           'Season with salt and pepper.',
           'Serve with crusty bread and a sprinkle of fresh herbs.'
-        ]
+        ],
+        bookmarked: false
       },
       {
         title: 'Lavender Shortbread',
@@ -336,7 +502,8 @@ class RecipeBook {
           'Gradually add dry ingredients to butter mixture.',
           'Form dough into a log, wrap in parchment, and chill for 1 hour.',
           'Slice into rounds and bake at 325°F for 12-15 minutes.'
-        ]
+        ],
+        bookmarked: false
       }
     ];
 
@@ -345,6 +512,95 @@ class RecipeBook {
     // Create page turn sound effect
     const pageTurnSound = new Audio('https://cdn.jsdelivr.net/gh/Kuberwastaken/CottagOS@main/assets/sounds/page-turn.mp3');
     pageTurnSound.volume = 0.3;
+    
+    // Create bookmark toggle sound effect
+    const bookmarkSound = new Audio('https://cdn.jsdelivr.net/gh/Kuberwastaken/CottagOS@main/assets/sounds/bookmark.mp3');
+    bookmarkSound.volume = 0.3;
+    
+    // Add bookmarked recipes view
+    const bookmarkedView = document.createElement('div');
+    bookmarkedView.classList.add('bookmarked-recipes-view');
+    
+    const bookmarkedTitle = document.createElement('div');
+    bookmarkedTitle.classList.add('bookmarked-title');
+    bookmarkedTitle.textContent = 'Bookmarked Recipes';
+    
+    const bookmarkedList = document.createElement('div');
+    bookmarkedList.classList.add('bookmarked-list');
+    
+    const bookmarkedClose = document.createElement('div');
+    bookmarkedClose.classList.add('bookmarked-close');
+    bookmarkedClose.textContent = '×';
+    bookmarkedClose.addEventListener('click', () => {
+      bookmarkedView.style.display = 'none';
+    });
+    
+    bookmarkedView.appendChild(bookmarkedTitle);
+    bookmarkedView.appendChild(bookmarkedList);
+    bookmarkedView.appendChild(bookmarkedClose);
+    recipeContentArea.appendChild(bookmarkedView);
+    
+    // Add button to show bookmarked recipes
+    const bookmarkViewButton = document.createElement('button');
+    bookmarkViewButton.classList.add('bookmark-view-button');
+    bookmarkViewButton.textContent = 'View Bookmarked';
+    bookmarkViewButton.addEventListener('click', showBookmarkedRecipes);
+    
+    // Add the button to the book navigation
+    const bookNavigation = windowNode.querySelector('.book-navigation');
+    bookNavigation.style.justifyContent = 'space-between';
+    bookNavigation.insertBefore(bookmarkViewButton, nextButton);
+
+    function updateBookmarkedRecipesView() {
+      bookmarkedList.innerHTML = '';
+      
+      const bookmarkedRecipes = recipes.filter(recipe => recipe.bookmarked);
+      
+      if (bookmarkedRecipes.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.style.textAlign = 'center';
+        emptyMessage.style.padding = '20px';
+        emptyMessage.style.color = '#7d6b5d';
+        emptyMessage.style.fontFamily = 'Quicksand, sans-serif';
+        emptyMessage.textContent = 'No bookmarked recipes yet. Click the ribbon on any recipe to bookmark it!';
+        bookmarkedList.appendChild(emptyMessage);
+        return;
+      }
+      
+      bookmarkedRecipes.forEach((recipe, index) => {
+        const item = document.createElement('div');
+        item.classList.add('bookmarked-item');
+        item.dataset.index = recipes.indexOf(recipe);
+        
+        const title = document.createElement('div');
+        title.classList.add('bookmarked-item-title');
+        title.textContent = recipe.title;
+        
+        const desc = document.createElement('div');
+        desc.classList.add('bookmarked-item-desc');
+        desc.textContent = recipe.description;
+        
+        const indicator = document.createElement('div');
+        indicator.classList.add('bookmark-indicator');
+        
+        item.appendChild(title);
+        item.appendChild(desc);
+        item.appendChild(indicator);
+        bookmarkedList.appendChild(item);
+        
+        item.addEventListener('click', () => {
+          const recipeIndex = parseInt(item.dataset.index);
+          currentPagePair = recipeIndex;
+          updatePages();
+          bookmarkedView.style.display = 'none';
+        });
+      });
+    }
+    
+    function showBookmarkedRecipes() {
+      updateBookmarkedRecipesView();
+      bookmarkedView.style.display = 'flex';
+    }
 
     function updatePages() {
       const recipeIndex = currentPagePair;
@@ -372,6 +628,14 @@ class RecipeBook {
         // Update left page (recipe details)
         leftPage.querySelector('.recipe-title').textContent = recipe.title;
         leftPage.querySelector('.recipe-description').textContent = recipe.description;
+        
+        // Update bookmark ribbon state
+        const bookmarkRibbon = leftPage.querySelector('.bookmark-ribbon');
+        if (recipe.bookmarked) {
+          bookmarkRibbon.classList.add('active');
+        } else {
+          bookmarkRibbon.classList.remove('active');
+        }
         
         // Set the recipe image
         const recipeImage = leftPage.querySelector('.recipe-image');
@@ -486,6 +750,18 @@ class RecipeBook {
           titleElem.textContent = nextRecipe.title;
           flippingPageBack.appendChild(titleElem);
           
+          // Add bookmark ribbon for next page (if needed)
+          const nextBookmarkRibbon = document.createElement('div');
+          nextBookmarkRibbon.classList.add('bookmark-ribbon');
+          if (nextRecipe.bookmarked) {
+            nextBookmarkRibbon.classList.add('active');
+          }
+          const nextBookmarkIcon = document.createElement('div');
+          nextBookmarkIcon.classList.add('bookmark-icon');
+          nextBookmarkIcon.textContent = '❤';
+          nextBookmarkRibbon.appendChild(nextBookmarkIcon);
+          flippingPageBack.appendChild(nextBookmarkRibbon);
+          
           // Add recipe description
           const descElem = document.createElement('div');
           descElem.classList.add('recipe-description');
@@ -538,8 +814,58 @@ class RecipeBook {
     // Initial page load
     try {
       updatePages();
+      
+      // Set up bookmark event listener
+      leftPage.querySelector('.bookmark-ribbon').addEventListener('click', function() {
+        // Toggle bookmark state
+        const recipe = recipes[currentPagePair];
+        recipe.bookmarked = !recipe.bookmarked;
+        
+        // Update visual state
+        this.classList.toggle('active');
+        
+        // Play sound
+        bookmarkSound.currentTime = 0;
+        bookmarkSound.play().catch(e => console.log('Sound play error:', e));
+        
+        // Save bookmarked recipes to localStorage
+        saveBookmarkedRecipes();
+      });
+      
+      // Load saved bookmarks
+      loadBookmarkedRecipes();
     } catch (e) {
       console.error("Error initializing recipe book:", e);
+    }
+    
+    // Save bookmarked recipes to localStorage
+    function saveBookmarkedRecipes() {
+      const bookmarkedIndices = recipes
+        .map((recipe, index) => recipe.bookmarked ? index : -1)
+        .filter(index => index !== -1);
+      
+      localStorage.setItem('cottagOS_bookmarkedRecipes', JSON.stringify(bookmarkedIndices));
+    }
+    
+    // Load bookmarked recipes from localStorage
+    function loadBookmarkedRecipes() {
+      try {
+        const savedBookmarks = localStorage.getItem('cottagOS_bookmarkedRecipes');
+        if (savedBookmarks) {
+          const bookmarkedIndices = JSON.parse(savedBookmarks);
+          
+          bookmarkedIndices.forEach(index => {
+            if (index >= 0 && index < recipes.length) {
+              recipes[index].bookmarked = true;
+            }
+          });
+          
+          // Update current page if needed
+          updatePages();
+        }
+      } catch (e) {
+        console.error('Error loading bookmarked recipes:', e);
+      }
     }
 
     // Navigation

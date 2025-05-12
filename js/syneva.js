@@ -1233,3 +1233,124 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.initSyneva = window.initSyneva;
 }
+
+// Add Syneva talking sound when generating responses
+function initializeSyneva(windowNode) {
+  const synevaInput = windowNode.querySelector('#syneva-input');
+  const synevaOutput = windowNode.querySelector('#syneva-output');
+  const typingIndicator = windowNode.querySelector('.typing-indicator');
+  
+  if (!synevaInput || !synevaOutput) {
+    console.error('Syneva elements not found!');
+    return;
+  }
+  
+  // Add event listener for input
+  synevaInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && this.value.trim() !== '') {
+      const userMessage = this.value.trim();
+      this.value = ''; // Clear input
+      
+      // Add user message to chat
+      addUserMessage(userMessage, synevaOutput);
+      
+      // Show typing indicator
+      if (typingIndicator) {
+        typingIndicator.style.display = 'block';
+      }
+      
+      // Start Syneva talking sound
+      let synevaTalkingSound = null;
+      if (window.soundManager) {
+        synevaTalkingSound = window.soundManager.startSynevaTalking();
+      }
+      
+      // Generate response (with a delay to simulate thinking)
+      setTimeout(() => {
+        // Hide typing indicator
+        if (typingIndicator) {
+          typingIndicator.style.display = 'none';
+        }
+        
+        // Stop Syneva talking sound
+        if (window.soundManager) {
+          window.soundManager.stopSynevaTalking();
+        }
+        
+        // Add Syneva's response
+        const response = generateSynevaResponse(userMessage);
+        addSynevaMessage(response, synevaOutput);
+      }, Math.random() * 1000 + 1000); // Random delay between 1-2 seconds
+    }
+  });
+  
+  // Helper function to add user messages to the chat
+  function addUserMessage(message, outputElement) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('user-message');
+    messageElement.innerHTML = `<p>${escapeHtml(message)}</p>`;
+    outputElement.appendChild(messageElement);
+    
+    // Scroll to bottom
+    outputElement.scrollTop = outputElement.scrollHeight;
+  }
+  
+  // Helper function to add Syneva's messages to the chat
+  function addSynevaMessage(message, outputElement) {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('syneva-message');
+    messageElement.innerHTML = `<p>${message}</p>`;
+    outputElement.appendChild(messageElement);
+    
+    // Scroll to bottom
+    outputElement.scrollTop = outputElement.scrollHeight;
+  }
+  
+  // Escape HTML to prevent XSS
+  function escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+  
+  // Generate Syneva's response based on user input
+  function generateSynevaResponse(userMessage) {
+    // Simple response generation logic
+    const lowerUserMessage = userMessage.toLowerCase();
+    
+    if (lowerUserMessage.includes('hello') || lowerUserMessage.includes('hi')) {
+      return "Hello there! How can I assist with your cottage affairs today?";
+    } else if (lowerUserMessage.includes('weather')) {
+      return "The weather in the digital meadow is always pleasant. Perhaps check the Weather app for the real forecast?";
+    } else if (lowerUserMessage.includes('recipe') || lowerUserMessage.includes('cook')) {
+      return "I suggest checking the Hearthfire Recipes app for some delightful culinary inspiration!";
+    } else if (lowerUserMessage.includes('garden')) {
+      return "The Garden Planner can help you organize your virtual or real-world garden. Would you like me to explain more about it?";
+    } else if (lowerUserMessage.includes('who are you') || lowerUserMessage.includes('about you')) {
+      return "I am SYNEVA v0.21, your Synthetic Natural-language Enchanted Virtual Assistant. I'm here to assist with all your cottage computing needs.";
+    } else if (lowerUserMessage.includes('help')) {
+      return "I can provide information about CottagOS, suggest things to try in the apps, or just chat about cottagecore living. What interests you?";
+    } else {
+      // Default responses
+      const defaultResponses = [
+        "How interesting! Tell me more about that.",
+        "I see. Would you like to explore one of the cottage apps?",
+        "That's worth contemplating while watching the butterflies flutter by.",
+        "Perhaps the answer lies in the garden, or in a cup of virtual tea.",
+        "The digital meadow whispers similar thoughts sometimes.",
+        "I'm still learning about that. Is there something else I can help with?"
+      ];
+      
+      return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+    }
+  }
+}
+
+// Add to window object for global access
+window.cottageOS = window.cottageOS || {};
+window.cottageOS.Syneva = {
+  initializeSyneva
+};

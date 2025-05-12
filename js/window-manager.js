@@ -58,6 +58,11 @@ class WindowManager {
     // Initialize app specific functionality
     this.initializeAppFunctionality(windowNode, appName);
     
+    // Play window open sound if sound manager exists
+    if (window.soundManager) {
+      window.soundManager.play('window-open');
+    }
+    
     return windowNode;
   }
   
@@ -199,6 +204,14 @@ class WindowManager {
     
     // Bring to front
     windowElement.style.zIndex = ++this.windowZIndex;
+    
+    // Check if the window is already focused
+    const isAlreadyFocused = windowElement.classList.contains('focused');
+    
+    // Play window focus sound only if it wasn't already focused
+    if (!isAlreadyFocused && window.soundManager) {
+      window.soundManager.play('window-focus');
+    }
   }
   
   closeWindow(windowElement) {
@@ -215,6 +228,11 @@ class WindowManager {
     
     // Remove the window
     windowElement.remove();
+    
+    // Play window close sound if sound manager exists
+    if (window.soundManager) {
+      window.soundManager.play('window-close');
+    }
   }
   
   initializeWindowControls(windowElement) {
@@ -239,6 +257,11 @@ class WindowManager {
     const taskbarApp = document.querySelector(`.taskbar-app[data-app="${appName}"]`);
     if (taskbarApp) {
       taskbarApp.classList.remove('active');
+    }
+    
+    // Play window minimize sound if sound manager exists
+    if (window.soundManager) {
+      window.soundManager.play('window-minimise');
     }
   }
   
@@ -373,8 +396,46 @@ class WindowManager {
         document.removeEventListener('mouseup', resizeEnd);
       };
       
-      document.addEventListener('mousemove', resizeMove);
-      document.addEventListener('mouseup', resizeEnd);
+      // Add resize sound effects to window resize functionality
+      let isResizing = false;
+      resizeHandle.addEventListener('mousedown', function(e) {
+        isResizing = true;
+        
+        // Start resize sound if sound manager exists
+        if (window.soundManager) {
+          window.soundManager.startResizeSound();
+        }
+        
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', function(e) {
+        if (isResizing) {
+          const newWidth = startWidth + (e.clientX - startX);
+          const newHeight = startHeight + (e.clientY - startY);
+          
+          // Minimum size
+          const minWidth = 200;
+          const minHeight = 150;
+          
+          window.style.width = `${Math.max(minWidth, newWidth)}px`;
+          window.style.height = `${Math.max(minHeight, newHeight)}px`;
+        }
+      });
+      
+      document.addEventListener('mouseup', function() {
+        if (isResizing) {
+          isResizing = false;
+          
+          // Stop resize sound if sound manager exists
+          if (window.soundManager) {
+            window.soundManager.stopResizeSound();
+          }
+          
+          document.removeEventListener('mousemove', resizeMove);
+          document.removeEventListener('mouseup', resizeEnd);
+        }
+      });
     });
   }
   

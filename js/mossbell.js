@@ -227,3 +227,36 @@ function initMossbell(windowElement) {
     }
   }, 60000);
 }
+
+// Add beep sound to Mossbell pet buttons
+function initializeMossbell(windowNode) {
+  // ... existing initialization code ...
+  
+  // Add beep sound to all buttons
+  const feedButton = windowNode.querySelector('#feed');
+  const playButton = windowNode.querySelector('#play');
+  const sleepButton = windowNode.querySelector('#sleep');
+  
+  if (feedButton && window.soundManager) {
+    feedButton.addEventListener('click', function() {
+      window.soundManager.play('beep');
+      // ... existing feed functionality ...
+    });
+  }
+  
+  if (playButton && window.soundManager) {
+    playButton.addEventListener('click', function() {
+      window.soundManager.play('beep');
+      // ... existing play functionality ...
+    });
+  }
+  
+  if (sleepButton && window.soundManager) {
+    sleepButton.addEventListener('click', function() {
+      window.soundManager.play('beep');
+      // ... existing sleep functionality ...
+    });
+  }
+  
+  // ... rest of existing code ...
+}

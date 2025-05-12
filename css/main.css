@@ -4652,3 +4652,48 @@ body.night-mode .window-titlebar {
   background: var(--window-titlebar) !important;
   color: var(--cottage-sepia) !important;
 }
+
+/* Mobile app back button styles */
+.mobile-app-back-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  border: 2px solid var(--cottage-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cottage-sepia);
+  font-size: 1.5em;
+  z-index: 99999;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-app-back-btn:hover {
+  background: rgba(255,255,255,0.6);
+}
+
+.mobile-app-back-btn:active {
+  background: var(--cottage-sage);
+  color: #fff;
+  transform: scale(0.96);
+}
+
+/* Night mode styling for back button */
+body.night-mode .mobile-app-back-btn {
+  background: rgba(50,50,70,0.8);
+  border-color: var(--cottage-lavender);
+  color: #f5e6d3;
+}
+
+body.night-mode .mobile-app-back-btn:active {
+  background: var(--cottage-lavender);
+}
+
+/* Mobile SYNEVA app styles */
